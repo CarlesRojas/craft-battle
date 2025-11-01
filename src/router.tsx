@@ -1,9 +1,9 @@
-import { getQueryContext, QueryProvider } from '@/integration/QueryProvider'
+import { QueryProvider, getQueryContext } from '@/integration/QueryProvider'
 import { Language } from '@/locale/language'
 import { routeTree } from '@/routeTree.gen'
 import { createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 export const getRouter = () => {
     const queryContext = getQueryContext()

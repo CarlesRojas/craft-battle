@@ -12,57 +12,55 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LanguageIndexRouteImport } from './routes/$language/index'
 
 const LanguageIndexRoute = LanguageIndexRouteImport.update({
-  id: '/$language/',
-  path: '/$language/',
-  getParentRoute: () => rootRouteImport,
+    id: '/$language/',
+    path: '/$language/',
+    getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/$language': typeof LanguageIndexRoute
+    '/$language': typeof LanguageIndexRoute
 }
 export interface FileRoutesByTo {
-  '/$language': typeof LanguageIndexRoute
+    '/$language': typeof LanguageIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/$language/': typeof LanguageIndexRoute
+    __root__: typeof rootRouteImport
+    '/$language/': typeof LanguageIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$language'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/$language'
-  id: '__root__' | '/$language/'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath
+    fullPaths: '/$language'
+    fileRoutesByTo: FileRoutesByTo
+    to: '/$language'
+    id: '__root__' | '/$language/'
+    fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LanguageIndexRoute: typeof LanguageIndexRoute
+    LanguageIndexRoute: typeof LanguageIndexRoute
 }
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/$language/': {
-      id: '/$language/'
-      path: '/$language'
-      fullPath: '/$language'
-      preLoaderRoute: typeof LanguageIndexRouteImport
-      parentRoute: typeof rootRouteImport
+    interface FileRoutesByPath {
+        '/$language/': {
+            id: '/$language/'
+            path: '/$language'
+            fullPath: '/$language'
+            preLoaderRoute: typeof LanguageIndexRouteImport
+            parentRoute: typeof rootRouteImport
+        }
     }
-  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LanguageIndexRoute: LanguageIndexRoute,
+    LanguageIndexRoute: LanguageIndexRoute,
 }
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
+    interface Register {
+        ssr: true
+        router: Awaited<ReturnType<typeof getRouter>>
+    }
 }

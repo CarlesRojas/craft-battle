@@ -2,7 +2,7 @@ import Header from '@/component/Header'
 import { getLanguage, getLanguageFromPathname } from '@/data/language'
 import ConvexProvider from '@/integration/ConvexProvider'
 import { seo } from '@/lib/seo'
-import { Language } from '@/locale/language'
+import type { Language } from '@/locale/language'
 import appCss from '@/style.css?url'
 import '@fontsource/montserrat/100.css'
 import '@fontsource/montserrat/200.css'
@@ -15,7 +15,7 @@ import '@fontsource/montserrat/800.css'
 import '@fontsource/montserrat/900.css'
 import type { QueryClient } from '@tanstack/react-query'
 import { HeadContent, Scripts, createRootRouteWithContext, redirect } from '@tanstack/react-router'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface MyRouterContext {
     queryClient: QueryClient

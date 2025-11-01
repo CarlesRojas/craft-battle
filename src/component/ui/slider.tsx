@@ -1,6 +1,7 @@
 import { cn } from '@/lib/cn'
 import * as SliderPrimitive from '@radix-ui/react-slider'
-import { ComponentProps, useMemo } from 'react'
+import type { ComponentProps } from 'react'
+import { useMemo } from 'react'
 
 function Slider({
     className,

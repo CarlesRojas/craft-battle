@@ -1,7 +1,7 @@
 import { env } from '@/env'
 import { ConvexQueryClient } from '@convex-dev/react-query'
 import { ConvexProvider as InternalConvexProvider } from 'convex/react'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL)
 

@@ -1,0 +1,15 @@
+//  @ts-check
+
+/** @type {import('prettier').Config} */
+const config = {
+    semi: false,
+    singleQuote: true,
+    trailingComma: 'all',
+    printWidth: 120,
+    arrowParens: 'avoid',
+    tabWidth: 4,
+    plugins: ['prettier-plugin-tailwindcss'],
+    tailwindFunctions: ['cva', 'cn'],
+}
+
+export default config

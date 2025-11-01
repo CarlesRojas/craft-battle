@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "vite dev --port 3000",
         "build": "vite build",
-        "serve": "vite preview",
+        "start": "node .output/server/index.mjs",
         "test": "",
         "lint": "eslint",
         "format": "prettier",
@@ -34,6 +34,7 @@
         "clsx": "^2.1.1",
         "convex": "^1.27.3",
         "lucide-react": "^0.544.0",
+        "nitro": "3.0.1-alpha.0",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "tailwind-merge": "^3.0.2",

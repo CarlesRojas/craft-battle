@@ -9,58 +9,78 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as LanguageIndexRouteImport } from './routes/$language/index'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LanguageIndexRoute = LanguageIndexRouteImport.update({
-    id: '/$language/',
-    path: '/$language/',
-    getParentRoute: () => rootRouteImport,
+  id: '/$language/',
+  path: '/$language/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-    '/$language': typeof LanguageIndexRoute
+  '/': typeof IndexRoute
+  '/$language': typeof LanguageIndexRoute
 }
 export interface FileRoutesByTo {
-    '/$language': typeof LanguageIndexRoute
+  '/': typeof IndexRoute
+  '/$language': typeof LanguageIndexRoute
 }
 export interface FileRoutesById {
-    __root__: typeof rootRouteImport
-    '/$language/': typeof LanguageIndexRoute
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/$language/': typeof LanguageIndexRoute
 }
 export interface FileRouteTypes {
-    fileRoutesByFullPath: FileRoutesByFullPath
-    fullPaths: '/$language'
-    fileRoutesByTo: FileRoutesByTo
-    to: '/$language'
-    id: '__root__' | '/$language/'
-    fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/$language'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/$language'
+  id: '__root__' | '/' | '/$language/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-    LanguageIndexRoute: typeof LanguageIndexRoute
+  IndexRoute: typeof IndexRoute
+  LanguageIndexRoute: typeof LanguageIndexRoute
 }
 
 declare module '@tanstack/react-router' {
-    interface FileRoutesByPath {
-        '/$language/': {
-            id: '/$language/'
-            path: '/$language'
-            fullPath: '/$language'
-            preLoaderRoute: typeof LanguageIndexRouteImport
-            parentRoute: typeof rootRouteImport
-        }
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
+    '/$language/': {
+      id: '/$language/'
+      path: '/$language'
+      fullPath: '/$language'
+      preLoaderRoute: typeof LanguageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-    LanguageIndexRoute: LanguageIndexRoute,
+  IndexRoute: IndexRoute,
+  LanguageIndexRoute: LanguageIndexRoute,
 }
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
-    interface Register {
-        ssr: true
-        router: Awaited<ReturnType<typeof getRouter>>
-    }
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }

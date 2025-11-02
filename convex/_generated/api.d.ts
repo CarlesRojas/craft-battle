@@ -8,7 +8,8 @@
  * @module
  */
 
-import type * as todos from "../todos.js";
+import type * as combination from "../combination.js";
+import type * as fight from "../fight.js";
 
 import type {
   ApiFromModules,
@@ -25,7 +26,8 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  todos: typeof todos;
+  combination: typeof combination;
+  fight: typeof fight;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

@@ -1,19 +1,34 @@
+import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { Loader } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
 interface Props {
+    id?: string
     word: string
     isLoading?: boolean
     className?: string
-    enterAnimation?: boolean
+    isNewCombination?: boolean
 }
 
-const Word = ({ word, className, enterAnimation = false, isLoading = false }: Props) => {
+const Word = ({ id, word, className, isLoading = false, isNewCombination = false }: Props) => {
+    const { updateSize } = useWordInstances()
+
     const props = useSpring({
         from: { backgroundColor: 'oklch(26.9% 0 240.79)' },
         to: { backgroundColor: 'oklch(44.3% 0.11 240.79)' },
     })
+
+    const wordRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (isNewCombination && wordRef.current && id) {
+            const rect = wordRef.current.getBoundingClientRect()
+
+            updateSize({ id, width: rect.width, height: rect.height })
+        }
+    }, [isNewCombination])
 
     return (
         <animated.div
@@ -21,7 +36,8 @@ const Word = ({ word, className, enterAnimation = false, isLoading = false }: Pr
                 'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4 capitalize hover:bg-neutral-700',
                 className,
             )}
-            style={enterAnimation ? props : {}}
+            style={isNewCombination ? props : {}}
+            ref={wordRef}
         >
             <span className={isLoading ? 'opacity-0' : ''}>{word}</span>
 

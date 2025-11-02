@@ -22,6 +22,7 @@ type WordInstancesContextType = {
     getOverlappingWord: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
     combine: (word1: WordInstance, word2: WordInstance) => void
+    updateSize: ({ id, width, height }: { id: string; width: number; height: number }) => void
 }
 
 const WordInstancesContext = createContext<WordInstancesContextType | null>(null)
@@ -87,11 +88,14 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
                 text: result.result,
                 x: word1.x,
                 y: word1.y,
-                // TODO calculate the width and height
                 width: 0,
                 height: 0,
             },
         ])
+    }
+
+    const updateSize = ({ id, width, height }: { id: string; width: number; height: number }) => {
+        setInstances(prev => prev.map(instance => (instance.id === id ? { ...instance, width, height } : instance)))
     }
 
     return (
@@ -106,6 +110,7 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
                 getOverlappingWord,
                 clearOverlapped,
                 combine,
+                updateSize,
             }}
         >
             {children}

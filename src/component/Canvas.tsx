@@ -14,9 +14,11 @@ const Canvas = ({ innerRef }: Props) => {
             {instances.map(instance => (
                 <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
                     <Word
+                        id={instance.id}
                         word={instance.text}
                         className={overlappedWordId === instance.id ? 'bg-sky-800' : ''}
                         isLoading={instance.isLoading}
+                        isNewCombination={instance.width === 0 && instance.height === 0}
                     />
                 </div>
             ))}

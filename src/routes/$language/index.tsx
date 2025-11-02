@@ -1,7 +1,6 @@
 import Canvas from '@/component/Canvas'
 import ListWord from '@/component/ListWord'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
-import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute } from '@tanstack/react-router'
 import { RefObject, useMemo, useRef } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -9,9 +8,6 @@ import { v4 as uuid } from 'uuid'
 export const Route = createFileRoute('/$language/')({ component: Home })
 
 function Home() {
-    const { language } = Route.useRouteContext()
-    const t = getTranslation(language)
-
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)

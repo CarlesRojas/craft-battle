@@ -15,7 +15,7 @@ const Canvas = ({ innerRef }: Props) => {
             {instances.map(instance => (
                 <div
                     key={instance.id}
-                    className="absolute flex h-8 w-fit cursor-grab items-center justify-center rounded bg-red-950 px-4"
+                    className="absolute flex h-8 w-fit cursor-grab items-center justify-center rounded bg-neutral-800 px-4"
                     style={{ left: instance.x, top: instance.y }}
                 >
                     {instance.text}

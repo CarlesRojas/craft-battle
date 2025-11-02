@@ -5,14 +5,16 @@ import { useDrag } from '@use-gesture/react'
 import { RefObject, useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-interface ListWordProps {
+interface Props {
     word: string
     dropArea: RefObject<HTMLDivElement>
     canvasArea: RefObject<HTMLDivElement>
     listArea: RefObject<HTMLDivElement>
+    scrollArea: RefObject<HTMLDivElement>
+    isMobile?: boolean
 }
 
-const ListWord = ({ word, dropArea, canvasArea, listArea }: ListWordProps) => {
+const ListWord = ({ word, canvasArea, dropArea, listArea, scrollArea, isMobile = false }: Props) => {
     const { addInstance } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
@@ -23,9 +25,12 @@ const ListWord = ({ word, dropArea, canvasArea, listArea }: ListWordProps) => {
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
-            if (first) {
-                setActiveInstance(true)
+            const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
+            const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
 
+            if (Math.abs(ox) + Math.abs(oy) > 4 && !activeInstance) setActiveInstance(true)
+
+            if (first) {
                 if (!wordRef.current) return
                 const wordRect = wordRef.current.getBoundingClientRect()
 
@@ -40,8 +45,7 @@ const ListWord = ({ word, dropArea, canvasArea, listArea }: ListWordProps) => {
             if (last) {
                 setActiveInstance(false)
 
-                if (listArea.current && canvasArea.current) {
-                    const listRect = listArea.current.getBoundingClientRect()
+                if (canvasArea.current) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
                     const wordRect = {
@@ -52,13 +56,13 @@ const ListWord = ({ word, dropArea, canvasArea, listArea }: ListWordProps) => {
                     }
 
                     const overlapping = !(
-                        wordRect.x + wordRect.width < listRect.x ||
-                        listRect.x + listRect.width < wordRect.x ||
-                        wordRect.y + wordRect.height < listRect.y ||
-                        listRect.y + listRect.height < wordRect.y
+                        wordRect.x + wordRect.width < canvasRect.x ||
+                        canvasRect.x + canvasRect.width < wordRect.x ||
+                        wordRect.y + wordRect.height < canvasRect.y ||
+                        canvasRect.y + canvasRect.height < wordRect.y
                     )
 
-                    if (!overlapping)
+                    if (overlapping)
                         addInstance({
                             id: uuid(),
                             text: word,
@@ -76,21 +80,21 @@ const ListWord = ({ word, dropArea, canvasArea, listArea }: ListWordProps) => {
                 }
             }
 
-            api.start({ x: ox, y: oy, immediate: down })
+            api.start({ x: ox - scrollLeft, y: oy - scrollTop, immediate: down })
         },
-        { bounds: dropArea, from: () => [0, 0] },
+        { from: () => [0, 0] },
     )
 
     return (
         <div
             {...bind()}
             ref={wordRef}
-            className="flex h-8 w-fit cursor-grab items-center justify-center rounded bg-red-950 px-4"
+            className="flex h-8 w-fit cursor-grab touch-none items-center justify-center rounded bg-neutral-800 px-4"
         >
             {activeInstance && (
                 <animated.div
                     style={{ x, y }}
-                    className="absolute flex h-8 w-fit cursor-grab items-center justify-center rounded bg-red-950 px-4"
+                    className="absolute flex h-8 w-fit cursor-grab items-center justify-center rounded bg-neutral-800 px-4"
                 >
                     {word}
                 </animated.div>

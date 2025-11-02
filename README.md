@@ -28,5 +28,3 @@ pnpx convex dev
 ```
 
 ## Pending Tasks
-
-- [ ] Move elements in the canvas when resize

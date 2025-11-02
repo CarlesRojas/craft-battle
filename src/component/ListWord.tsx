@@ -9,12 +9,13 @@ import { v4 as uuid } from 'uuid'
 
 interface Props {
     word: string
+    icon: string
     canvasArea: RefObject<HTMLDivElement>
     scrollArea: RefObject<HTMLDivElement>
     isMobile?: boolean
 }
 
-const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => {
+const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Props) => {
     const { addInstance, getOverlappingWord, clearOverlapped, combine } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
@@ -33,6 +34,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
             const overlappingWord = getOverlappingWord({
                 id: uuid(),
                 text: word,
+                icon,
                 x: x - clickOffset.current.x,
                 y: y - clickOffset.current.y,
                 width: clickOffset.current.width,
@@ -80,6 +82,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                         const newWordInstance: WordInstance = {
                             id: uuid(),
                             text: word,
+                            icon,
                             x: clamp(
                                 x - clickOffset.current.x,
                                 canvasRect.x,
@@ -121,6 +124,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                     addInstance({
                         id: uuid(),
                         text: word,
+                        icon,
                         x: canvasRect.x + padding + Math.random() * (canvasRect.width - wordRect.width - padding * 2),
                         y: canvasRect.y + padding + Math.random() * (canvasRect.height - wordRect.height - padding * 2),
                         width: wordRect.width,
@@ -134,11 +138,11 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                     style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
                     className="absolute"
                 >
-                    <Word word={word} className="bg-neutral-700" />
+                    <Word word={word} icon={icon} className="bg-neutral-700" />
                 </animated.div>
             )}
 
-            <Word word={word} />
+            <Word word={word} icon={icon} />
         </div>
     )
 }

@@ -3,7 +3,8 @@ import ListWord from '@/component/ListWord'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute } from '@tanstack/react-router'
-import { RefObject, useRef } from 'react'
+import { RefObject, useMemo, useRef } from 'react'
+import { v4 as uuid } from 'uuid'
 
 export const Route = createFileRoute('/$language/')({ component: Home })
 
@@ -17,58 +18,61 @@ function Home() {
     const canvasArea = useRef<HTMLDivElement>(null)
     const listArea = useRef<HTMLDivElement>(null)
 
-    const words = [
-        'ocean',
-        'mountain',
-        'crystal',
-        'dragon',
-        'thunder',
-        'forest',
-        'phoenix',
-        'shadow',
-        'volcano',
-        'river',
-        'storm',
-        'glacier',
-        'desert',
-        'tornado',
-        'star',
-        'moon',
-        'sun',
-        'fire',
-        'water',
-        'earth',
-        'wind',
-        'steel',
-        'diamond',
-        'cloud',
-        'lightning',
-        'ice',
-        'sand',
-        'lava',
-        'rock',
-        'light',
-        'metal',
-        'wood',
-        'glass',
-        'sword',
-        'shield',
-        'time',
-        'space',
-        'magnet',
-        'poison',
-        'flower',
-        'tree',
-        'blade',
-        'armor',
-        'mist',
-        'fog',
-        'snow',
-        'rain',
-        'coral',
-        'ember',
-        'frost',
-    ]
+    const words: { id: string; text: string; icon: string }[] = useMemo(
+        () => [
+            { id: uuid(), text: 'ocean', icon: '🌊' },
+            { id: uuid(), text: 'mountain', icon: '⛰️' },
+            { id: uuid(), text: 'crystal', icon: '💎' },
+            { id: uuid(), text: 'dragon', icon: '🐉' },
+            { id: uuid(), text: 'thunder', icon: '⚡' },
+            { id: uuid(), text: 'forest', icon: '🌳' },
+            { id: uuid(), text: 'phoenix', icon: '🦅' },
+            { id: uuid(), text: 'shadow', icon: '👥' },
+            { id: uuid(), text: 'volcano', icon: '🌋' },
+            { id: uuid(), text: 'river', icon: '🏞️' },
+            { id: uuid(), text: 'storm', icon: '🌪️' },
+            { id: uuid(), text: 'glacier', icon: '🧊' },
+            { id: uuid(), text: 'desert', icon: '🏜️' },
+            { id: uuid(), text: 'tornado', icon: '🌪️' },
+            { id: uuid(), text: 'star', icon: '⭐' },
+            { id: uuid(), text: 'moon', icon: '🌙' },
+            { id: uuid(), text: 'sun', icon: '☀️' },
+            { id: uuid(), text: 'fire', icon: '🔥' },
+            { id: uuid(), text: 'water', icon: '💧' },
+            { id: uuid(), text: 'earth', icon: '🌍' },
+            { id: uuid(), text: 'wind', icon: '💨' },
+            { id: uuid(), text: 'steel', icon: '⚔️' },
+            { id: uuid(), text: 'diamond', icon: '💎' },
+            { id: uuid(), text: 'cloud', icon: '☁️' },
+            { id: uuid(), text: 'lightning', icon: '⚡' },
+            { id: uuid(), text: 'ice', icon: '❄️' },
+            { id: uuid(), text: 'sand', icon: '⌛' },
+            { id: uuid(), text: 'lava', icon: '🌋' },
+            { id: uuid(), text: 'rock', icon: '🪨' },
+            { id: uuid(), text: 'light', icon: '✨' },
+            { id: uuid(), text: 'metal', icon: '🔧' },
+            { id: uuid(), text: 'wood', icon: '🪵' },
+            { id: uuid(), text: 'glass', icon: '🪟' },
+            { id: uuid(), text: 'sword', icon: '⚔️' },
+            { id: uuid(), text: 'shield', icon: '🛡️' },
+            { id: uuid(), text: 'time', icon: '⌛' },
+            { id: uuid(), text: 'space', icon: '🌌' },
+            { id: uuid(), text: 'magnet', icon: '🧲' },
+            { id: uuid(), text: 'poison', icon: '☠️' },
+            { id: uuid(), text: 'flower', icon: '🌸' },
+            { id: uuid(), text: 'tree', icon: '🌳' },
+            { id: uuid(), text: 'blade', icon: '🗡️' },
+            { id: uuid(), text: 'armor', icon: '🛡️' },
+            { id: uuid(), text: 'mist', icon: '🌫️' },
+            { id: uuid(), text: 'fog', icon: '🌫️' },
+            { id: uuid(), text: 'snow', icon: '❄️' },
+            { id: uuid(), text: 'rain', icon: '🌧️' },
+            { id: uuid(), text: 'coral', icon: '🪸' },
+            { id: uuid(), text: 'ember', icon: '🔥' },
+            { id: uuid(), text: 'frost', icon: '❄️' },
+        ],
+        [],
+    )
 
     return (
         <main className="full-page flex flex-col items-center justify-center md:flex-row" ref={dropArea}>
@@ -84,8 +88,9 @@ function Home() {
                     >
                         {words.map(word => (
                             <ListWord
-                                key={word}
-                                word={word}
+                                key={word.id}
+                                word={word.text}
+                                icon={word.icon}
                                 scrollArea={scrollAreaDesktop as RefObject<HTMLDivElement>}
                                 canvasArea={canvasArea as RefObject<HTMLDivElement>}
                             />
@@ -102,8 +107,9 @@ function Home() {
                                     (word, i) =>
                                         i % 4 === mod && (
                                             <ListWord
-                                                key={word}
-                                                word={word}
+                                                key={word.id}
+                                                word={word.text}
+                                                icon={word.icon}
                                                 scrollArea={scrollAreaMobile as RefObject<HTMLDivElement>}
                                                 canvasArea={canvasArea as RefObject<HTMLDivElement>}
                                                 isMobile

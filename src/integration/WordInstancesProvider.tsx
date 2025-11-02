@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid'
 export type WordInstance = {
     id: string
     text: string
+    icon: string
+    explanation?: string
     x: number
     y: number
     width: number

@@ -15,6 +15,8 @@ const Canvas = ({ innerRef }: Props) => {
                 <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
                     <Word
                         id={instance.id}
+                        icon={instance.icon}
+                        explanation={instance.explanation}
                         word={instance.text}
                         className={overlappedWordId === instance.id ? 'bg-sky-800' : ''}
                         isLoading={instance.isLoading}

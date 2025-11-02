@@ -3,6 +3,8 @@ import { useWordInstances } from '@/integration/InstancesProvider'
 const Canvas = () => {
     const { instances } = useWordInstances()
 
+    console.log(instances)
+
     return (
         <div className="w-full grow bg-green-500/10 md:h-full md:w-[unset]">
             {instances.map(instance => (

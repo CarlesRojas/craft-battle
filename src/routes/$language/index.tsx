@@ -1,6 +1,6 @@
 import Canvas from '@/component/Canvas'
 import ListWord from '@/component/ListWord'
-import { WordInstancesProvider } from '@/integration/InstancesProvider'
+import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute } from '@tanstack/react-router'
 import { RefObject, useRef } from 'react'

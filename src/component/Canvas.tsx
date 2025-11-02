@@ -1,5 +1,5 @@
 import Word from '@/component/Word'
-import { useWordInstances } from '@/integration/InstancesProvider'
+import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { RefObject } from 'react'
 
 interface Props {

@@ -12,6 +12,7 @@ function Home() {
     const t = getTranslation(language)
 
     const dropArea = useRef<HTMLDivElement>(null)
+    const canvasArea = useRef<HTMLDivElement>(null)
     const listArea = useRef<HTMLDivElement>(null)
 
     const words = [
@@ -70,7 +71,7 @@ function Home() {
     return (
         <main className="full-page flex flex-col items-center justify-center md:flex-row" ref={dropArea}>
             <WordInstancesProvider>
-                <Canvas />
+                <Canvas innerRef={canvasArea as RefObject<HTMLDivElement>} />
 
                 <div
                     ref={listArea}
@@ -87,6 +88,7 @@ function Home() {
                                 key={word}
                                 word={word}
                                 dropArea={dropArea as RefObject<HTMLDivElement>}
+                                canvasArea={canvasArea as RefObject<HTMLDivElement>}
                                 listArea={listArea as RefObject<HTMLDivElement>}
                             />
                         ))}

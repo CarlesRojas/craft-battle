@@ -1,3 +1,4 @@
+import Word from '@/component/Word'
 import { useWordInstances } from '@/integration/InstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -87,25 +88,17 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
     )
 
     return (
-        <div
-            {...bind()}
-            ref={wordRef}
-            className={cn(
-                'flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4',
-                isMobile && 'touch-pan-x',
-                !isMobile && 'cursor-grab touch-none',
-            )}
-        >
+        <div {...bind()} ref={wordRef} className={cn(isMobile && 'touch-pan-x', !isMobile && 'cursor-grab touch-none')}>
             {activeInstance && (
                 <animated.div
                     style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
-                    className="absolute flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4"
+                    className="absolute"
                 >
-                    {word}
+                    <Word word={word} />
                 </animated.div>
             )}
 
-            {word}
+            <Word word={word} />
         </div>
     )
 }

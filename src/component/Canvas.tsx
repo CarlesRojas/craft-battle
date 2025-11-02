@@ -1,3 +1,4 @@
+import Word from '@/component/Word'
 import { useWordInstances } from '@/integration/InstancesProvider'
 import { RefObject } from 'react'
 
@@ -13,12 +14,8 @@ const Canvas = ({ innerRef }: Props) => {
     return (
         <div className="w-full grow bg-green-500/10 md:h-full md:w-[unset]" ref={innerRef}>
             {instances.map(instance => (
-                <div
-                    key={instance.id}
-                    className="absolute flex h-10 max-h-10 min-h-10 w-fit cursor-grab items-center justify-center rounded-lg bg-neutral-800 px-4"
-                    style={{ left: instance.x, top: instance.y }}
-                >
-                    {instance.text}
+                <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
+                    <Word word={instance.text} />
                 </div>
             ))}
         </div>

@@ -30,3 +30,4 @@ pnpx convex dev
 ## TODO
 
 - [ ] Move elements in the canvas when resize
+- [ ] When click on an element in the list, instantiate it in the canvas automatically

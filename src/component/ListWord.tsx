@@ -31,7 +31,7 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
-            const overlappingWord = getOverlappingWord({
+            const updatedWord: WordInstance = {
                 id: uuid(),
                 text: word,
                 icon,
@@ -39,7 +39,9 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
                 y: y - clickOffset.current.y,
                 width: clickOffset.current.width,
                 height: clickOffset.current.height,
-            })
+            }
+
+            const overlappingWord = getOverlappingWord(updatedWord)
 
             if (first) {
                 isDragging.current = false
@@ -64,25 +66,16 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
                 if (canvasArea.current && isDragging.current) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
-                    const wordRect = {
-                        x: x - clickOffset.current.x,
-                        y: y - clickOffset.current.y,
-                        width: clickOffset.current.width,
-                        height: clickOffset.current.height,
-                    }
-
                     const insideCanvas = !(
-                        wordRect.x + wordRect.width < canvasRect.x ||
-                        canvasRect.x + canvasRect.width < wordRect.x ||
-                        wordRect.y + wordRect.height < canvasRect.y ||
-                        canvasRect.y + canvasRect.height < wordRect.y
+                        updatedWord.x + updatedWord.width < canvasRect.x ||
+                        canvasRect.x + canvasRect.width < updatedWord.x ||
+                        updatedWord.y + updatedWord.height < canvasRect.y ||
+                        canvasRect.y + canvasRect.height < updatedWord.y
                     )
 
                     if (insideCanvas) {
                         const newWordInstance: WordInstance = {
-                            id: uuid(),
-                            text: word,
-                            icon,
+                            ...updatedWord,
                             x: clamp(
                                 x - clickOffset.current.x,
                                 canvasRect.x,
@@ -93,8 +86,6 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
                                 canvasRect.y,
                                 canvasRect.y + canvasRect.height - clickOffset.current.height,
                             ),
-                            width: clickOffset.current.width,
-                            height: clickOffset.current.height,
                         }
 
                         if (overlappingWord) combine(overlappingWord, newWordInstance)
@@ -136,7 +127,7 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
             {activeInstance && (
                 <animated.div
                     style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
-                    className="absolute"
+                    className="absolute z-20"
                 >
                     <Word word={word} icon={icon} className="bg-neutral-700" />
                 </animated.div>

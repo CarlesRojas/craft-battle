@@ -1,27 +1,35 @@
-import Word from '@/component/Word'
+import CanvasWord from '@/component/CanvasWord'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
+import { clamp } from '@/lib/clamp'
 import { RefObject } from 'react'
+import { useDebounceCallback, useEventListener } from 'usehooks-ts'
 
 interface Props {
     innerRef: RefObject<HTMLDivElement>
 }
 
 const Canvas = ({ innerRef }: Props) => {
-    const { instances, overlappedWordId } = useWordInstances()
+    const { instances, replaceInstances } = useWordInstances()
+
+    const onResize = useDebounceCallback(() => {
+        const rect = innerRef.current?.getBoundingClientRect()
+        if (!rect) return
+
+        replaceInstances(
+            instances.map(instance => ({
+                ...instance,
+                x: clamp(instance.x, rect.x, rect.x + rect.width - instance.width),
+                y: clamp(instance.y, rect.y, rect.y + rect.height - instance.height),
+            })),
+        )
+    }, 200)
+    useEventListener('resize', onResize)
 
     return (
         <div className="w-full grow bg-green-500/10 md:h-full md:w-[unset]" ref={innerRef}>
             {instances.map(instance => (
                 <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
-                    <Word
-                        id={instance.id}
-                        icon={instance.icon}
-                        explanation={instance.explanation}
-                        word={instance.text}
-                        className={overlappedWordId === instance.id ? 'bg-sky-800' : ''}
-                        isLoading={instance.isLoading}
-                        isNewCombination={instance.width === 0 && instance.height === 0}
-                    />
+                    <CanvasWord word={instance} canvasArea={innerRef} />
                 </div>
             ))}
         </div>

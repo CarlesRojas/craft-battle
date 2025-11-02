@@ -1,9 +1,8 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/component/ui/tooltip'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { Loader } from 'lucide-react'
-import { ReactNode, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface Props {
     id?: string
@@ -15,7 +14,7 @@ interface Props {
     isNewCombination?: boolean
 }
 
-const Word = ({ id, word, icon, explanation, className, isLoading = false, isNewCombination = false }: Props) => {
+const Word = ({ id, word, icon, className, isLoading = false, isNewCombination = false }: Props) => {
     const { updateSize } = useWordInstances()
 
     const props = useSpring({
@@ -33,33 +32,24 @@ const Word = ({ id, word, icon, explanation, className, isLoading = false, isNew
         }
     }, [isNewCombination])
 
-    const container = (children: ReactNode) =>
-        explanation ? (
-            <Tooltip delayDuration={500}>
-                <TooltipTrigger>{children}</TooltipTrigger>
-                <TooltipContent className="w-fit max-w-96">{explanation}</TooltipContent>
-            </Tooltip>
-        ) : (
-            children
-        )
-
-    return container(
+    return (
         <animated.div
             className={cn(
-                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 rounded-lg bg-neutral-800 px-3 capitalize hover:bg-neutral-700',
+                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 rounded-lg border border-neutral-700 bg-neutral-800 px-3 capitalize hover:bg-neutral-700',
                 className,
+                isLoading && 'pointer-events-none animate-pulse bg-sky-600!',
             )}
             style={isNewCombination ? props : {}}
             ref={wordRef}
         >
-            <span className={isLoading ? 'opacity-0' : ''}>{icon}</span>
+            <span className={cn(isLoading && 'opacity-0')}>{icon}</span>
 
-            <span className={isLoading ? 'opacity-0' : ''}>{word}</span>
+            <span className={cn('font-medium', isLoading && 'opacity-0')}>{word}</span>
 
             {isLoading && (
-                <Loader className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 animate-spin text-sky-500" />
+                <Loader className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 animate-spin stroke-3 text-neutral-900" />
             )}
-        </animated.div>,
+        </animated.div>
     )
 }
 

@@ -20,11 +20,12 @@ type WordInstancesContextType = {
     addInstance: (instance: WordInstance) => void
     removeInstance: (id: string) => void
     updateInstance: (id: string, updates: Partial<WordInstance>) => void
+    replaceInstances: (instances: WordInstance[]) => void
     clearInstances: () => void
     getOverlappingWord: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
     combine: (word1: WordInstance, word2: WordInstance) => void
-    updateSize: ({ id, width, height }: { id: string; width: number; height: number }) => void
+    updateSize: (instance: Partial<WordInstance>) => void
 }
 
 const WordInstancesContext = createContext<WordInstancesContextType | null>(null)
@@ -47,6 +48,10 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
         setInstances(prev => prev.map(instance => (instance.id === id ? { ...instance, ...updates } : instance)))
     }
 
+    const replaceInstances = (instances: WordInstance[]) => {
+        setInstances(instances)
+    }
+
     const clearInstances = () => {
         setInstances([])
     }
@@ -54,7 +59,7 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
     const getOverlappingWord = (word: WordInstance) => {
         const newOverlappedWord =
             instances.find(instance => {
-                if (instance.id === word.id) return false
+                if (instance.id === word.id || instance.isLoading) return false
 
                 return !(
                     instance.x + instance.width < word.x ||
@@ -96,8 +101,20 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
         ])
     }
 
-    const updateSize = ({ id, width, height }: { id: string; width: number; height: number }) => {
-        setInstances(prev => prev.map(instance => (instance.id === id ? { ...instance, width, height } : instance)))
+    const updateSize = ({ id, width, height, x, y }: Partial<WordInstance>) => {
+        setInstances(prev =>
+            prev.map(instance =>
+                instance.id === id
+                    ? {
+                          ...instance,
+                          width: width ?? instance.width,
+                          height: height ?? instance.height,
+                          x: x ?? instance.x,
+                          y: y ?? instance.y,
+                      }
+                    : instance,
+            ),
+        )
     }
 
     return (
@@ -108,6 +125,7 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
                 addInstance,
                 removeInstance,
                 updateInstance,
+                replaceInstances,
                 clearInstances,
                 getOverlappingWord,
                 clearOverlapped,

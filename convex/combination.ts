@@ -7,9 +7,11 @@ export const get = query({
         word2: v.string(),
     },
     handler: async (ctx, { word1, word2 }) => {
+        const sortedWords = [word1, word2].sort()
+
         return await ctx.db
             .query('combination')
-            .withIndex('words', q => q.eq('word1', word1).eq('word2', word2))
+            .withIndex('words', q => q.eq('word1', sortedWords[0]).eq('word2', sortedWords[1]))
             .first()
     },
 })
@@ -23,6 +25,12 @@ export const create = mutation({
         icon: v.string(),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert('combination', args)
+        const sortedWords = [args.word1, args.word2].sort()
+
+        return await ctx.db.insert('combination', {
+            ...args,
+            word1: sortedWords[0],
+            word2: sortedWords[1],
+        })
     },
 })

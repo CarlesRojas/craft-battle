@@ -1,5 +1,5 @@
 import Word from '@/component/Word'
-import { useWordInstances } from '@/integration/WordInstancesProvider'
+import { useWordInstances, WordInstance } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => {
-    const { addInstance } = useWordInstances()
+    const { addInstance, getOverlappingWord, clearOverlapped, combine } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
     const wordRef = useRef<HTMLDivElement>(null)
@@ -30,6 +30,15 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
+            const overlappingWord = getOverlappingWord({
+                id: uuid(),
+                text: word,
+                x: x - clickOffset.current.x,
+                y: y - clickOffset.current.y,
+                width: clickOffset.current.width,
+                height: clickOffset.current.height,
+            })
+
             if (first) {
                 isDragging.current = false
                 setActiveInstance(true)
@@ -60,15 +69,15 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                         height: clickOffset.current.height,
                     }
 
-                    const overlapping = !(
+                    const insideCanvas = !(
                         wordRect.x + wordRect.width < canvasRect.x ||
                         canvasRect.x + canvasRect.width < wordRect.x ||
                         wordRect.y + wordRect.height < canvasRect.y ||
                         canvasRect.y + canvasRect.height < wordRect.y
                     )
 
-                    if (overlapping)
-                        addInstance({
+                    if (insideCanvas) {
+                        const newWordInstance: WordInstance = {
                             id: uuid(),
                             text: word,
                             x: clamp(
@@ -81,9 +90,16 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                                 canvasRect.y,
                                 canvasRect.y + canvasRect.height - clickOffset.current.height,
                             ),
-                        })
+                            width: clickOffset.current.width,
+                            height: clickOffset.current.height,
+                        }
+
+                        if (overlappingWord) combine(overlappingWord, newWordInstance)
+                        else addInstance(newWordInstance)
+                    }
                 }
 
+                clearOverlapped()
                 api.stop()
             }
 
@@ -107,6 +123,8 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                         text: word,
                         x: canvasRect.x + padding + Math.random() * (canvasRect.width - wordRect.width - padding * 2),
                         y: canvasRect.y + padding + Math.random() * (canvasRect.height - wordRect.height - padding * 2),
+                        width: wordRect.width,
+                        height: wordRect.height,
                     })
                 }
             }}

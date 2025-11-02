@@ -32,9 +32,10 @@ export const combineWords = createServerFn({ method: 'POST' })
                 3. The combination should reflect aspects of both input words
                 4. The result should be a single word
                 5. Avoid just concatenating the words together
-                6. The result word should be a real English word
-                7. Provide an icon that should be a single emoji that best represents the new word
-                8. Provide a brief explanation of the combination logic
+                6. If the two words are the same, the result should be different, usually a stronger version of the word
+                7. The result word should be a real English word
+                8. Provide an icon that should be a single emoji that best represents the new word
+                9. Provide a brief explanation of the combination logic. Only one sentence.
 
                 Example:
                 Input: "water" + "fire" -> "steam" 💨 (A combination of water and fire that produces steam)

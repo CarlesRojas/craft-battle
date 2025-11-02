@@ -94,7 +94,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => 
                     style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
                     className="absolute"
                 >
-                    <Word word={word} />
+                    <Word word={word} className="bg-neutral-700" />
                 </animated.div>
             )}
 

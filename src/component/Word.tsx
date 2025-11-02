@@ -16,7 +16,7 @@ const Word = ({ word, className, enterAnimation = false }: Props) => {
     return (
         <animated.div
             className={cn(
-                'flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4',
+                'flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4 capitalize hover:bg-neutral-700',
                 className,
             )}
             style={enterAnimation ? props : {}}

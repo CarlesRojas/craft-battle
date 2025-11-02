@@ -26,3 +26,7 @@ pnpm serve
 ```bash
 pnpx convex dev
 ```
+
+## TODO
+
+- [ ] Move elements in the canvas when resize

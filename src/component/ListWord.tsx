@@ -1,5 +1,6 @@
 import { useWordInstances } from '@/integration/InstancesProvider'
 import { clamp } from '@/lib/clamp'
+import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { RefObject, useRef, useState } from 'react'
@@ -7,14 +8,12 @@ import { v4 as uuid } from 'uuid'
 
 interface Props {
     word: string
-    dropArea: RefObject<HTMLDivElement>
     canvasArea: RefObject<HTMLDivElement>
-    listArea: RefObject<HTMLDivElement>
     scrollArea: RefObject<HTMLDivElement>
     isMobile?: boolean
 }
 
-const ListWord = ({ word, canvasArea, dropArea, listArea, scrollArea, isMobile = false }: Props) => {
+const ListWord = ({ word, canvasArea, scrollArea, isMobile = false }: Props) => {
     const { addInstance } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
@@ -23,14 +22,14 @@ const ListWord = ({ word, canvasArea, dropArea, listArea, scrollArea, isMobile =
 
     const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
+    const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
+    const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
+
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
-            const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
-            const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
-
-            if (Math.abs(ox) + Math.abs(oy) > 4 && !activeInstance) setActiveInstance(true)
-
             if (first) {
+                setActiveInstance(true)
+
                 if (!wordRef.current) return
                 const wordRect = wordRef.current.getBoundingClientRect()
 
@@ -78,9 +77,11 @@ const ListWord = ({ word, canvasArea, dropArea, listArea, scrollArea, isMobile =
                             ),
                         })
                 }
+
+                api.stop()
             }
 
-            api.start({ x: ox - scrollLeft, y: oy - scrollTop, immediate: down })
+            api.start({ x: ox, y: oy, immediate: down })
         },
         { from: () => [0, 0] },
     )
@@ -89,12 +90,16 @@ const ListWord = ({ word, canvasArea, dropArea, listArea, scrollArea, isMobile =
         <div
             {...bind()}
             ref={wordRef}
-            className="flex h-8 w-fit cursor-grab touch-none items-center justify-center rounded bg-neutral-800 px-4"
+            className={cn(
+                'flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4',
+                isMobile && 'touch-pan-x',
+                !isMobile && 'cursor-grab touch-none',
+            )}
         >
             {activeInstance && (
                 <animated.div
-                    style={{ x, y }}
-                    className="absolute flex h-8 w-fit cursor-grab items-center justify-center rounded bg-neutral-800 px-4"
+                    style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
+                    className="absolute flex h-10 max-h-10 min-h-10 w-fit items-center justify-center rounded-lg bg-neutral-800 px-4"
                 >
                     {word}
                 </animated.div>

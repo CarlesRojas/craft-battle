@@ -79,23 +79,21 @@ function Home() {
                     <div className="min-h-12 w-full bg-orange-500/10"></div>
 
                     <div
-                        className="hidden max-h-[calc(100%-3rem)] w-full flex-wrap gap-3 overflow-y-auto p-4 md:flex"
+                        className="hidden max-h-[calc(100%-3rem)] w-full flex-wrap gap-3 overflow-y-auto p-3 md:flex"
                         ref={scrollAreaDesktop}
                     >
                         {words.map(word => (
                             <ListWord
                                 key={word}
                                 word={word}
-                                dropArea={dropArea as RefObject<HTMLDivElement>}
                                 scrollArea={scrollAreaDesktop as RefObject<HTMLDivElement>}
                                 canvasArea={canvasArea as RefObject<HTMLDivElement>}
-                                listArea={listArea as RefObject<HTMLDivElement>}
                             />
                         ))}
                     </div>
 
                     <div
-                        className="grid max-h-49 min-h-49 w-full grid-rows-4 gap-3 overflow-x-auto p-4 md:hidden"
+                        className="grid max-h-55 min-h-55 w-full grid-rows-4 gap-3 overflow-x-auto p-3 md:hidden"
                         ref={scrollAreaMobile}
                     >
                         {Array.from({ length: 4 }, (_, mod) => (
@@ -106,10 +104,8 @@ function Home() {
                                             <ListWord
                                                 key={word}
                                                 word={word}
-                                                dropArea={dropArea as RefObject<HTMLDivElement>}
                                                 scrollArea={scrollAreaMobile as RefObject<HTMLDivElement>}
                                                 canvasArea={canvasArea as RefObject<HTMLDivElement>}
-                                                listArea={listArea as RefObject<HTMLDivElement>}
                                                 isMobile
                                             />
                                         ),

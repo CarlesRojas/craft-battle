@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+    --font-goldman: 'Goldman', system-ui;
+}
+
 @layer components {
     .full-page {
         @apply h-[calc(100dvh-3rem)] max-h-[calc(100dvh-3rem)] min-h-[calc(100dvh-3rem)] w-dvw max-w-dvw min-w-dvw;

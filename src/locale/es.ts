@@ -2,11 +2,13 @@ import type { LanguageObject } from '@/locale/language'
 
 export const es: LanguageObject = {
     home: {
-        welcome: 'Hola, ¡{{USER}}!',
+        welcome: '¡Bienvenido a Craft Battle!',
+        welcomeUser: 'Hola, ¡{{USER}}!',
         findMatch: 'Encontrar partida',
         findRandomOpponent: 'Encuentra un oponente aleatorio',
-        searchPlaceholder: 'Nombre de usuario del oponente',
-        searchOpponent: 'Buscar oponente',
+        searchFriend: 'Buscar amigos',
+        searchPlaceholder: 'Nombre de usuario',
+        searchOpponent: 'Buscar',
         noResults: 'No se encontraron resultados',
         or: 'o',
 

@@ -35,8 +35,8 @@ const CreateUsername = ({ language, onUsernameCreated }: Props) => {
             onSubmitAsync: async ({ value: { username } }) => {
                 if (!username) return { fields: { username: t.form.error.required } }
 
-                const isValid = await convex.query(api.username.isTaken, { username })
-                if (!isValid) return { fields: { username: t.form.error.usernameTaken } }
+                const isTaken = await convex.query(api.username.isTaken, { username })
+                if (isTaken) return { fields: { username: t.form.error.usernameTaken } }
             },
         },
         onSubmit: async ({ value: { username } }) => {
@@ -47,47 +47,58 @@ const CreateUsername = ({ language, onUsernameCreated }: Props) => {
     })
 
     return (
-        <form
-            onSubmit={e => {
-                e.preventDefault()
-                form.handleSubmit()
-            }}
-            className="flex w-full max-w-md flex-col gap-3 p-4"
-        >
-            <FieldGroup>
-                <form.Field
-                    name="username"
-                    children={field => {
-                        const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-                        return (
-                            <Field data-invalid={isInvalid}>
-                                <FieldLabel htmlFor={field.name}>{t.form.label.username}</FieldLabel>
+        <div className="flex w-full max-w-lg flex-col items-center gap-16 place-self-start overscroll-y-auto px-3 py-6">
+            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-slate-500">
+                {t.home.welcome}
+            </h1>
 
-                                <Input
-                                    id={field.name}
-                                    name={field.name}
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={e => field.handleChange(e.target.value)}
-                                    aria-invalid={isInvalid}
-                                    autoComplete="off"
-                                />
+            <form
+                onSubmit={e => {
+                    e.preventDefault()
+                    form.handleSubmit()
+                }}
+                className="flex w-full flex-col gap-3"
+            >
+                <FieldGroup>
+                    <form.Field
+                        name="username"
+                        children={field => {
+                            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                            return (
+                                <Field data-invalid={isInvalid}>
+                                    <FieldLabel
+                                        htmlFor={field.name}
+                                        className="font-goldman w-full text-xl tracking-wide opacity-80"
+                                    >
+                                        {t.form.label.username}
+                                    </FieldLabel>
 
-                                {isInvalid && (
-                                    <FieldError
-                                        errors={field.state.meta.errors.map(e =>
-                                            typeof e === 'string' ? { message: e } : e,
-                                        )}
+                                    <Input
+                                        id={field.name}
+                                        name={field.name}
+                                        value={field.state.value}
+                                        onBlur={field.handleBlur}
+                                        onChange={e => field.handleChange(e.target.value)}
+                                        aria-invalid={isInvalid}
+                                        autoComplete="off"
                                     />
-                                )}
-                            </Field>
-                        )
-                    }}
-                />
-            </FieldGroup>
 
-            <Button type="submit">{t.form.create}</Button>
-        </form>
+                                    {isInvalid && (
+                                        <FieldError
+                                            errors={field.state.meta.errors.map(e =>
+                                                typeof e === 'string' ? { message: e } : e,
+                                            )}
+                                        />
+                                    )}
+                                </Field>
+                            )
+                        }}
+                    />
+                </FieldGroup>
+
+                <Button type="submit">{t.form.create}</Button>
+            </form>
+        </div>
     )
 }
 

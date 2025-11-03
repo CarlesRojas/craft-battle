@@ -12,8 +12,10 @@ export const LanguageSchema = z.nativeEnum(Language)
 export const LanguageObjectSchema = z.object({
     home: z.object({
         welcome: z.string(),
+        welcomeUser: z.string(),
         findMatch: z.string(),
         findRandomOpponent: z.string(),
+        searchFriend: z.string(),
         searchPlaceholder: z.string(),
         searchOpponent: z.string(),
         noResults: z.string(),

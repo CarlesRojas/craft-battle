@@ -50,64 +50,13 @@ const NewGame = ({ language, user }: Props) => {
     })
 
     return (
-        <div className="flex w-full max-w-md flex-col items-center gap-6 place-self-start overscroll-y-auto px-3 py-6">
-            <h1 className="text-xl font-medium">{t.home.welcome.replace('{{USER}}', user.username)}</h1>
+        <div className="flex w-full max-w-lg flex-col items-center gap-16 place-self-start overscroll-y-auto px-3 py-6">
+            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-slate-500">
+                {t.home.welcomeUser.replace('{{USER}}', user.username)}
+            </h1>
 
-            {hasInvites && (
-                <div className="flex w-full flex-col items-center gap-6 rounded-2xl border border-neutral-800 bg-neutral-900 p-3">
-                    <h2 className="w-full font-medium">{t.home.invite.title}</h2>
-
-                    <ul className="flex w-full flex-col gap-2">
-                        {sentInvites &&
-                            sentInvites.map(invite => (
-                                <li
-                                    key={invite._id}
-                                    className="flex w-full items-center justify-between gap-2 rounded-xl border border-neutral-700 bg-neutral-800 p-2"
-                                >
-                                    {invite.receiver && (
-                                        <span className="pl-2 text-sm font-medium">
-                                            {t.home.invite.sent.replace('{{USER}}', invite.receiver.username)}
-                                        </span>
-                                    )}
-
-                                    <Button onClick={() => removeInvite({ inviteId: invite._id })}>
-                                        {t.home.invite.revoke}
-                                    </Button>
-                                </li>
-                            ))}
-
-                        {receivedInvites &&
-                            receivedInvites.map(invite => (
-                                <li
-                                    key={invite._id}
-                                    className="flex w-full items-center justify-between gap-2 rounded-xl border border-neutral-700 bg-neutral-800 p-2"
-                                >
-                                    {invite.receiver && (
-                                        <span className="pl-2 text-sm font-medium">
-                                            {t.home.invite.content.replace('{{USER}}', invite.receiver.username)}
-                                        </span>
-                                    )}
-
-                                    <Button
-                                        onClick={() => {
-                                            acceptInvite({ senderId: invite.senderId, receiverId: invite.receiverId })
-                                            // TODO: Start game
-                                        }}
-                                    >
-                                        {t.home.invite.accept}
-                                    </Button>
-
-                                    <Button onClick={() => removeInvite({ inviteId: invite._id })}>
-                                        {t.home.invite.reject}
-                                    </Button>
-                                </li>
-                            ))}
-                    </ul>
-                </div>
-            )}
-
-            <div className="flex w-full flex-col items-center gap-6 rounded-2xl border border-neutral-800 bg-neutral-900 p-3">
-                <h2 className="w-full font-medium">{t.home.findMatch}</h2>
+            <div className="flex w-full flex-col items-center gap-4">
+                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.findMatch}</h2>
 
                 <Button
                     onClick={() => {
@@ -118,15 +67,17 @@ const NewGame = ({ language, user }: Props) => {
                 >
                     {t.home.findRandomOpponent}
                 </Button>
+            </div>
 
-                <div className="text-sm text-neutral-500">{t.home.or}</div>
+            <div className="flex w-full flex-col items-center gap-4">
+                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.searchFriend}</h2>
 
                 <form
                     onSubmit={e => {
                         e.preventDefault()
                         form.handleSubmit()
                     }}
-                    className="flex w-full flex-col gap-3"
+                    className="flex w-full gap-4"
                 >
                     <FieldGroup>
                         <form.Field
@@ -157,22 +108,25 @@ const NewGame = ({ language, user }: Props) => {
                         />
                     </FieldGroup>
 
-                    <Button type="submit">{t.home.searchOpponent}</Button>
+                    <Button type="submit" className="w-fit">
+                        {t.home.searchOpponent}
+                    </Button>
                 </form>
 
                 {hasSearched &&
                     (opponents.length === 0 ? (
-                        <p className="text-sm text-neutral-500">{t.home.noResults}</p>
+                        <p className="w-full text-left text-sm tracking-wide opacity-50">{t.home.noResults}</p>
                     ) : (
                         <ul className="flex w-full flex-col gap-2">
                             {opponents.map(opponent => (
                                 <li
                                     key={opponent._id}
-                                    className="flex w-full items-center justify-between gap-2 rounded-xl border border-neutral-700 bg-neutral-800 p-2"
+                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
                                 >
-                                    <span className="pl-2 text-sm font-medium">{opponent.username}</span>
+                                    <span className="pl-2 font-medium opacity-80">{opponent.username}</span>
 
                                     <Button
+                                        backgroundColor="bg-neutral-900"
                                         onClick={() => {
                                             form.reset()
                                             setOpponents([])
@@ -187,6 +141,69 @@ const NewGame = ({ language, user }: Props) => {
                         </ul>
                     ))}
             </div>
+
+            {hasInvites && (
+                <div className="flex w-full flex-col items-center gap-4">
+                    <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.invite.title}</h2>
+
+                    <ul className="flex w-full flex-col gap-2">
+                        {sentInvites &&
+                            sentInvites.map(invite => (
+                                <li
+                                    key={invite._id}
+                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
+                                >
+                                    {invite.receiver && (
+                                        <span className="pl-2 font-medium opacity-80">
+                                            {t.home.invite.sent.replace('{{USER}}', invite.receiver.username)}
+                                        </span>
+                                    )}
+
+                                    <Button
+                                        onClick={() => removeInvite({ inviteId: invite._id })}
+                                        backgroundColor="bg-neutral-900"
+                                        variant="destructive"
+                                    >
+                                        {t.home.invite.revoke}
+                                    </Button>
+                                </li>
+                            ))}
+
+                        {receivedInvites &&
+                            receivedInvites.map(invite => (
+                                <li
+                                    key={invite._id}
+                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
+                                >
+                                    {invite.receiver && (
+                                        <span className="pl-2 font-medium opacity-80">
+                                            {t.home.invite.content.replace('{{USER}}', invite.receiver.username)}
+                                        </span>
+                                    )}
+
+                                    <Button
+                                        onClick={() => {
+                                            acceptInvite({ senderId: invite.senderId, receiverId: invite.receiverId })
+                                            // TODO: Start game
+                                        }}
+                                        variant="constructive"
+                                        backgroundColor="bg-neutral-900"
+                                    >
+                                        {t.home.invite.accept}
+                                    </Button>
+
+                                    <Button
+                                        onClick={() => removeInvite({ inviteId: invite._id })}
+                                        backgroundColor="bg-neutral-900"
+                                        variant="destructive"
+                                    >
+                                        {t.home.invite.reject}
+                                    </Button>
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+            )}
         </div>
     )
 }

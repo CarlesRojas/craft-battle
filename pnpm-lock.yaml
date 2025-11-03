@@ -14,6 +14,9 @@ importers:
       '@convex-dev/react-query':
         specifier: 0.0.0-alpha.11
         version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.90.6(react@19.2.0))(convex@1.28.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
+      '@fontsource/goldman':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/montserrat':
         specifier: ^5.2.8
         version: 5.2.8
@@ -721,6 +724,9 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fontsource/goldman@5.2.8':
+    resolution: {integrity: sha512-mhKP7C9ABdI3hkba3TqaAHjsvJD9mYp6V0pOVJAqUAeobj+Qf0f5BVlqrmujZJQBFYMuAZcWLm9S90AwqziYhw==}
 
   '@fontsource/montserrat@5.2.8':
     resolution: {integrity: sha512-xTjLxSbSfCycDB0pwmNsfNvdfWPaDaRQ2LC6yt/ZI7SdvXG52zHnzNYC/09mzuAuWNJyShkteutfCoDgym56hQ==}
@@ -3903,6 +3909,8 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fontsource/goldman@5.2.8': {}
 
   '@fontsource/montserrat@5.2.8': {}
 

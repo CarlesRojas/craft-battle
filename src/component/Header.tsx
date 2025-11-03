@@ -1,5 +1,4 @@
 import type { Language } from '@/locale/language'
-import { Link } from '@tanstack/react-router'
 
 interface Props {
     language: Language
@@ -7,12 +6,8 @@ interface Props {
 
 export default function Header({ language }: Props) {
     return (
-        <header className="flex h-12 items-center bg-gray-800 px-8 text-white shadow-lg">
-            <h1 className="text-xl font-semibold">
-                <Link to={'/$language'} params={{ language }}>
-                    Craft Battle
-                </Link>
-            </h1>
+        <header className="flex h-12 items-center px-4 text-white">
+            <h1 className="font-goldman text-2xl opacity-80">Craft Battle</h1>
         </header>
     )
 }

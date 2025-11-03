@@ -14,6 +14,7 @@
     "dependencies": {
         "@ai-sdk/openai": "^2.0.59",
         "@convex-dev/react-query": "0.0.0-alpha.11",
+        "@fontsource/goldman": "^5.2.8",
         "@fontsource/montserrat": "^5.2.8",
         "@radix-ui/react-label": "^2.1.7",
         "@radix-ui/react-select": "^2.2.6",

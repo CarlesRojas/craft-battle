@@ -4,6 +4,8 @@ import ConvexProvider from '@/integration/ConvexProvider'
 import { seo } from '@/lib/seo'
 import type { Language } from '@/locale/language'
 import appCss from '@/style.css?url'
+import '@fontsource/goldman/400.css'
+import '@fontsource/goldman/700.css'
 import '@fontsource/montserrat/100.css'
 import '@fontsource/montserrat/200.css'
 import '@fontsource/montserrat/300.css'
@@ -71,7 +73,7 @@ function RootDocument({ children }: Props) {
                 <HeadContent />
             </head>
 
-            <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-500/40">
+            <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-slate-700">
                 <ConvexProvider>
                     <Header language={language} />
                     {children}

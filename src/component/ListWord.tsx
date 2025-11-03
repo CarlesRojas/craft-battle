@@ -1,17 +1,19 @@
 import Word from '@/component/Word'
-import { useWordInstances, WordInstance } from '@/integration/WordInstancesProvider'
+import type { WordInstance } from '@/integration/WordInstancesProvider'
+import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { RefObject, useRef, useState } from 'react'
+import type { RefObject } from 'react'
+import { useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 interface Props {
     word: string
     icon: string
-    canvasArea: RefObject<HTMLDivElement>
-    scrollArea: RefObject<HTMLDivElement>
+    canvasArea: RefObject<HTMLDivElement | null>
+    scrollArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
 }
 
@@ -23,7 +25,7 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
     const clickOffset = useRef({ x: 0, y: 0, width: 0, height: 0 })
     const isDragging = useRef(false)
 
-    const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
+    const [spring, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
     const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
     const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
@@ -127,7 +129,7 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
         >
             {activeInstance && (
                 <animated.div
-                    style={{ x: x.to(value => value - scrollLeft), y: y.to(value => value - scrollTop) }}
+                    style={{ x: spring.x.to(value => value - scrollLeft), y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
                     <Word word={word} icon={icon} className="bg-neutral-700" />

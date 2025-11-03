@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LanguageIndexRouteImport } from './routes/$language/index'
+import { Route as LanguageGameIndexRouteImport } from './routes/$language/game/index'
 
 const LanguageIndexRoute = LanguageIndexRouteImport.update({
   id: '/$language/',
   path: '/$language/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LanguageGameIndexRoute = LanguageGameIndexRouteImport.update({
+  id: '/$language/game/',
+  path: '/$language/game/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/$language': typeof LanguageIndexRoute
+  '/$language/game': typeof LanguageGameIndexRoute
 }
 export interface FileRoutesByTo {
   '/$language': typeof LanguageIndexRoute
+  '/$language/game': typeof LanguageGameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/$language/': typeof LanguageIndexRoute
+  '/$language/game/': typeof LanguageGameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$language'
+  fullPaths: '/$language' | '/$language/game'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$language'
-  id: '__root__' | '/$language/'
+  to: '/$language' | '/$language/game'
+  id: '__root__' | '/$language/' | '/$language/game/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   LanguageIndexRoute: typeof LanguageIndexRoute
+  LanguageGameIndexRoute: typeof LanguageGameIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LanguageIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$language/game/': {
+      id: '/$language/game/'
+      path: '/$language/game'
+      fullPath: '/$language/game'
+      preLoaderRoute: typeof LanguageGameIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LanguageIndexRoute: LanguageIndexRoute,
+  LanguageGameIndexRoute: LanguageGameIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -16,4 +16,10 @@ export default defineSchema({
         damageDealt: v.number(),
         explanation: v.string(),
     }).index('words', ['attackWord', 'defenseWord']),
+
+    user: defineTable({
+        username: v.string(),
+        normalizedUsername: v.string(),
+        key: v.string(),
+    }).index('username', ['normalizedUsername']),
 })

@@ -1,5 +1,6 @@
 import { useCombineWords } from '@/hook/useCombineWords'
-import { createContext, ReactNode, useContext, useState } from 'react'
+import type { ReactNode } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 export type WordInstance = {
@@ -15,12 +16,12 @@ export type WordInstance = {
 }
 
 type WordInstancesContextType = {
-    instances: WordInstance[]
+    instances: Array<WordInstance>
     overlappedWordId: string | null
     addInstance: (instance: WordInstance) => void
     removeInstance: (id: string) => void
     updateInstance: (id: string, updates: Partial<WordInstance>) => void
-    replaceInstances: (instances: WordInstance[]) => void
+    replaceInstances: (instances: Array<WordInstance>) => void
     clearInstances: () => void
     getOverlappingWord: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
@@ -31,7 +32,7 @@ type WordInstancesContextType = {
 const WordInstancesContext = createContext<WordInstancesContextType | null>(null)
 
 export function WordInstancesProvider({ children }: { children: ReactNode }) {
-    const [instances, setInstances] = useState<WordInstance[]>([])
+    const [instances, setInstances] = useState<Array<WordInstance>>([])
     const [overlappedWordId, setOverlappedWordId] = useState<string | null>(null)
 
     const combineWords = useCombineWords()
@@ -48,8 +49,8 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
         setInstances(prev => prev.map(instance => (instance.id === id ? { ...instance, ...updates } : instance)))
     }
 
-    const replaceInstances = (instances: WordInstance[]) => {
-        setInstances(instances)
+    const replaceInstances = (newInstances: Array<WordInstance>) => {
+        setInstances(newInstances)
     }
 
     const clearInstances = () => {

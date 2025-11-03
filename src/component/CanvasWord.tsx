@@ -1,14 +1,16 @@
 import Word from '@/component/Word'
-import { useWordInstances, WordInstance } from '@/integration/WordInstancesProvider'
+import type { WordInstance } from '@/integration/WordInstancesProvider'
+import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
     word: WordInstance
-    canvasArea: RefObject<HTMLDivElement>
+    canvasArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
 }
 
@@ -21,7 +23,7 @@ const CanvasWord = ({ word, canvasArea }: Props) => {
     const wordRef = useRef<HTMLDivElement>(null)
     const clickOffset = useRef({ x: 0, y: 0, width: 0, height: 0 })
 
-    const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
+    const [spring, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
@@ -89,13 +91,13 @@ const CanvasWord = ({ word, canvasArea }: Props) => {
 
     useEffect(() => {
         api.set({ x: 0, y: 0 })
-    }, [word.x, word.y])
+    }, [word.x, word.y, api])
 
     return (
         <animated.div
             {...bind()}
             ref={wordRef}
-            style={{ x, y }}
+            style={{ ...spring }}
             className={cn('absolute z-10 cursor-grab touch-none', isDragging ? 'z-30' : '')}
         >
             <Word

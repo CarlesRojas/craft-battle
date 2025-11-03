@@ -1,6 +1,10 @@
 import type { LanguageObject } from '@/locale/language'
 
 export const en: LanguageObject = {
+    home: {
+        welcome: 'Hello, {{USER}}!',
+    },
+
     meta: {
         appName: 'Craft Battle',
         description: 'Craft attack and defense words to battle online against other players.',
@@ -15,12 +19,18 @@ export const en: LanguageObject = {
         save: 'Save',
         edit: 'Edit',
 
+        label: {
+            username: 'Choose a username',
+        },
+
         error: {
             generic: 'Something went wrong',
-            minLength: 'Minimum length is {{min}}',
-            maxLength: 'Maximum length is {{max}}',
+            minLength: 'Minimum length is {{MIN}}',
+            maxLength: 'Maximum length is {{MAX}}',
             required: 'This field is required',
             invalid: 'Invalid value',
+            alphanumeric: 'Only letters, numbers and hyphens are allowed',
+            usernameTaken: 'Username is already taken',
         },
     },
 

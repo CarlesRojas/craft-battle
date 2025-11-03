@@ -10,6 +10,10 @@ export const LANGUAGE_COOKIE_NAME = 'AMBIBOOK_LANGUAGE'
 export const LanguageSchema = z.nativeEnum(Language)
 
 export const LanguageObjectSchema = z.object({
+    home: z.object({
+        welcome: z.string(),
+    }),
+
     meta: z.object({
         appName: z.string(),
         description: z.string(),
@@ -18,12 +22,15 @@ export const LanguageObjectSchema = z.object({
     form: z.object({
         cancel: z.string(),
         clear: z.string(),
-
         create: z.string(),
         update: z.string(),
         delete: z.string(),
         save: z.string(),
         edit: z.string(),
+
+        label: z.object({
+            username: z.string(),
+        }),
 
         error: z.object({
             generic: z.string(),
@@ -31,6 +38,8 @@ export const LanguageObjectSchema = z.object({
             maxLength: z.string(),
             required: z.string(),
             invalid: z.string(),
+            alphanumeric: z.string(),
+            usernameTaken: z.string(),
         }),
     }),
 

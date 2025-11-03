@@ -1,11 +1,11 @@
 import CanvasWord from '@/component/CanvasWord'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
-import { RefObject } from 'react'
+import type { RefObject } from 'react'
 import { useDebounceCallback, useEventListener } from 'usehooks-ts'
 
 interface Props {
-    innerRef: RefObject<HTMLDivElement>
+    innerRef: RefObject<HTMLDivElement | null>
 }
 
 const Canvas = ({ innerRef }: Props) => {

@@ -1,131 +1,65 @@
-import Canvas from '@/component/Canvas'
-import ListWord from '@/component/ListWord'
-import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
+import CreateUsername from '@/component/CreateUsername'
+import { api } from '@/db/_generated/api'
+import { createLocalStorage } from '@/lib/localStorage'
+import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute } from '@tanstack/react-router'
-import { RefObject, useMemo, useRef } from 'react'
-import { v4 as uuid } from 'uuid'
+import { useConvex } from 'convex/react'
+import { Loader } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import z from 'zod'
 
-export const Route = createFileRoute('/$language/')({ component: Home })
+export const Route = createFileRoute('/$language/')({ component: App })
 
-function Home() {
-    const dropArea = useRef<HTMLDivElement>(null)
-    const scrollAreaMobile = useRef<HTMLDivElement>(null)
-    const scrollAreaDesktop = useRef<HTMLDivElement>(null)
-    const canvasArea = useRef<HTMLDivElement>(null)
-    const listArea = useRef<HTMLDivElement>(null)
-    const selectArea = useRef<HTMLDivElement>(null)
+const usernameStorage = createLocalStorage(
+    'USERNAME',
+    z
+        .object({
+            username: z.string(),
+            key: z.string(),
+        })
+        .optional(),
+    undefined,
+)
 
-    const words: { id: string; text: string; icon: string }[] = useMemo(
-        () => [
-            { id: uuid(), text: 'ocean', icon: '🌊' },
-            { id: uuid(), text: 'mountain', icon: '⛰️' },
-            { id: uuid(), text: 'crystal', icon: '💎' },
-            { id: uuid(), text: 'dragon', icon: '🐉' },
-            { id: uuid(), text: 'thunder', icon: '⚡' },
-            { id: uuid(), text: 'forest', icon: '🌳' },
-            { id: uuid(), text: 'phoenix', icon: '🦅' },
-            { id: uuid(), text: 'shadow', icon: '👥' },
-            { id: uuid(), text: 'volcano', icon: '🌋' },
-            { id: uuid(), text: 'river', icon: '🏞️' },
-            { id: uuid(), text: 'storm', icon: '🌪️' },
-            { id: uuid(), text: 'glacier', icon: '🧊' },
-            { id: uuid(), text: 'desert', icon: '🏜️' },
-            { id: uuid(), text: 'tornado', icon: '🌪️' },
-            { id: uuid(), text: 'star', icon: '⭐' },
-            { id: uuid(), text: 'moon', icon: '🌙' },
-            { id: uuid(), text: 'sun', icon: '☀️' },
-            { id: uuid(), text: 'fire', icon: '🔥' },
-            { id: uuid(), text: 'water', icon: '💧' },
-            { id: uuid(), text: 'earth', icon: '🌍' },
-            { id: uuid(), text: 'wind', icon: '💨' },
-            { id: uuid(), text: 'steel', icon: '⚔️' },
-            { id: uuid(), text: 'diamond', icon: '💎' },
-            { id: uuid(), text: 'cloud', icon: '☁️' },
-            { id: uuid(), text: 'lightning', icon: '⚡' },
-            { id: uuid(), text: 'ice', icon: '❄️' },
-            { id: uuid(), text: 'sand', icon: '⌛' },
-            { id: uuid(), text: 'lava', icon: '🌋' },
-            { id: uuid(), text: 'rock', icon: '🪨' },
-            { id: uuid(), text: 'light', icon: '✨' },
-            { id: uuid(), text: 'metal', icon: '🔧' },
-            { id: uuid(), text: 'wood', icon: '🪵' },
-            { id: uuid(), text: 'glass', icon: '🪟' },
-            { id: uuid(), text: 'sword', icon: '⚔️' },
-            { id: uuid(), text: 'shield', icon: '🛡️' },
-            { id: uuid(), text: 'time', icon: '⌛' },
-            { id: uuid(), text: 'space', icon: '🌌' },
-            { id: uuid(), text: 'magnet', icon: '🧲' },
-            { id: uuid(), text: 'poison', icon: '☠️' },
-            { id: uuid(), text: 'flower', icon: '🌸' },
-            { id: uuid(), text: 'tree', icon: '🌳' },
-            { id: uuid(), text: 'blade', icon: '🗡️' },
-            { id: uuid(), text: 'armor', icon: '🛡️' },
-            { id: uuid(), text: 'mist', icon: '🌫️' },
-            { id: uuid(), text: 'fog', icon: '🌫️' },
-            { id: uuid(), text: 'snow', icon: '❄️' },
-            { id: uuid(), text: 'rain', icon: '🌧️' },
-            { id: uuid(), text: 'coral', icon: '🪸' },
-            { id: uuid(), text: 'ember', icon: '🔥' },
-            { id: uuid(), text: 'frost', icon: '❄️' },
-        ],
-        [],
-    )
+function App() {
+    const { language } = Route.useRouteContext()
+    const t = getTranslation(language)
+
+    const convex = useConvex()
+
+    const [username, setUsername] = useState<string | null>(null)
+    const [loaded, setLoaded] = useState(false)
+
+    const loadUsername = useCallback(async () => {
+        const storedUsername = usernameStorage.get()
+
+        if (storedUsername) {
+            const result = await convex.mutation(api.username.create, storedUsername)
+            if (result) setUsername(storedUsername.username)
+            else usernameStorage.remove()
+        }
+
+        setLoaded(true)
+    }, [])
+
+    const onUsernameCreated = useCallback(({ username, key }: { username: string; key: string }) => {
+        setUsername(username)
+        usernameStorage.set({ username, key })
+    }, [])
+
+    useEffect(() => {
+        loadUsername()
+    }, [loadUsername])
+
+    console.log(loaded)
 
     return (
-        <main className="full-page flex flex-col items-center justify-center md:flex-row" ref={dropArea}>
-            <WordInstancesProvider>
-                <div className="w-full grow md:h-full md:w-[unset]">
-                    <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
+        <main className="full-page flex items-center justify-center">
+            {!loaded && <Loader className="size-8 animate-spin" />}
 
-                    <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">
-                        <Canvas innerRef={canvasArea as RefObject<HTMLDivElement>} />
-                    </div>
-                </div>
+            {loaded && !!username && <p>{t.home.welcome.replace('{{USER}}', username)}</p>}
 
-                <div ref={listArea} className="relative h-fit w-full md:h-full md:w-[unset] md:max-w-96 md:min-w-96">
-                    <div
-                        className="h-[calc(100%-3rem) hidden max-h-[calc(100%-3rem)] min-h-[calc(100%-3rem)] w-full overflow-y-auto p-3 md:flex"
-                        ref={scrollAreaDesktop}
-                    >
-                        <div className="flex h-fit w-full flex-wrap gap-3 overflow-y-auto" ref={scrollAreaDesktop}>
-                            {words.map(word => (
-                                <ListWord
-                                    key={word.id}
-                                    word={word.text}
-                                    icon={word.icon}
-                                    scrollArea={scrollAreaDesktop as RefObject<HTMLDivElement>}
-                                    canvasArea={canvasArea as RefObject<HTMLDivElement>}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    <div
-                        className="grid h-55 max-h-55 min-h-55 w-full grid-rows-4 gap-3 overflow-x-auto p-3 md:hidden"
-                        ref={scrollAreaMobile}
-                    >
-                        {Array.from({ length: 4 }, (_, mod) => (
-                            <div className="flex gap-3">
-                                {words.map(
-                                    (word, i) =>
-                                        i % 4 === mod && (
-                                            <ListWord
-                                                key={word.id}
-                                                word={word.text}
-                                                icon={word.icon}
-                                                scrollArea={scrollAreaMobile as RefObject<HTMLDivElement>}
-                                                canvasArea={canvasArea as RefObject<HTMLDivElement>}
-                                                isMobile
-                                            />
-                                        ),
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="h-12 max-h-12 min-h-12 w-full bg-orange-500/10"></div>
-                </div>
-            </WordInstancesProvider>
+            {loaded && !username && <CreateUsername language={language} onUsernameCreated={onUsernameCreated} />}
         </main>
     )
 }

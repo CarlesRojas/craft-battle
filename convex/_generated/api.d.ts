@@ -10,6 +10,7 @@
 
 import type * as combination from "../combination.js";
 import type * as fight from "../fight.js";
+import type * as username from "../username.js";
 
 import type {
   ApiFromModules,
@@ -28,6 +29,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   combination: typeof combination;
   fight: typeof fight;
+  username: typeof username;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

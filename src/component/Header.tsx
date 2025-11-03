@@ -1,4 +1,4 @@
-import { Language } from '@/locale/language'
+import type { Language } from '@/locale/language'
 import { Link } from '@tanstack/react-router'
 
 interface Props {

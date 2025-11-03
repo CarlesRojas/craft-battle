@@ -30,7 +30,7 @@ const Word = ({ id, word, icon, className, isLoading = false, isNewCombination =
 
             updateSize({ id, width: rect.width, height: rect.height })
         }
-    }, [isNewCombination])
+    }, [id, updateSize, isNewCombination])
 
     return (
         <animated.div

@@ -51,7 +51,7 @@ const NewGame = ({ language, user }: Props) => {
 
     return (
         <div className="flex w-full max-w-lg flex-col items-center gap-16 place-self-start overscroll-y-auto px-3 py-6">
-            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-slate-500">
+            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-slate-400">
                 {t.home.welcomeUser.replace('{{USER}}', user.username)}
             </h1>
 

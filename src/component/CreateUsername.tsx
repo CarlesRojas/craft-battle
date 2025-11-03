@@ -2,24 +2,23 @@ import { Button } from '@/component/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/component/ui/field'
 import { Input } from '@/component/ui/input'
 import { api } from '@/db/_generated/api'
+import { User } from '@/db/username'
 import { isAlphanumeric } from '@/lib/normalize'
 import { getTranslation } from '@/locale/getTranslation'
 import { Language } from '@/locale/language'
 import { useForm } from '@tanstack/react-form'
 import { useConvex } from 'convex/react'
-import { useRef } from 'react'
 import { v4 as uuid } from 'uuid'
 import z from 'zod'
 
 interface Props {
     language: Language
-    onUsernameCreated: ({ username, key }: { username: string; key: string }) => void
+    onUsernameCreated: (user: User, key: string) => void
 }
 
 const CreateUsername = ({ language, onUsernameCreated }: Props) => {
     const t = getTranslation(language)
     const convex = useConvex()
-    const newUuid = useRef(uuid())
 
     const formSchema = z.object({
         username: z
@@ -36,13 +35,14 @@ const CreateUsername = ({ language, onUsernameCreated }: Props) => {
             onSubmitAsync: async ({ value: { username } }) => {
                 if (!username) return { fields: { username: t.form.error.required } }
 
-                const isValid = await convex.mutation(api.username.create, { username, key: newUuid.current })
-
+                const isValid = await convex.query(api.username.isTaken, { username })
                 if (!isValid) return { fields: { username: t.form.error.usernameTaken } }
             },
         },
         onSubmit: async ({ value: { username } }) => {
-            onUsernameCreated({ username, key: newUuid.current })
+            const key = uuid()
+            const newUser = await convex.mutation(api.username.create, { username, key })
+            if (newUser) onUsernameCreated(newUser, key)
         },
     })
 
@@ -52,7 +52,7 @@ const CreateUsername = ({ language, onUsernameCreated }: Props) => {
                 e.preventDefault()
                 form.handleSubmit()
             }}
-            className="w-full max-w-96 p-4"
+            className="flex w-full max-w-md flex-col gap-3 p-4"
         >
             <FieldGroup>
                 <form.Field

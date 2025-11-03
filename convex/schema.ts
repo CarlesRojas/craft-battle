@@ -21,5 +21,14 @@ export default defineSchema({
         username: v.string(),
         normalizedUsername: v.string(),
         key: v.string(),
-    }).index('username', ['normalizedUsername']),
+    })
+        .index('username', ['normalizedUsername'])
+        .searchIndex('user', { searchField: 'normalizedUsername' }),
+
+    invite: defineTable({
+        senderId: v.id('user'),
+        receiverId: v.id('user'),
+    })
+        .index('sender', ['senderId'])
+        .index('receiver', ['receiverId']),
 })

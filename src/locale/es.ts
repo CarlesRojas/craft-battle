@@ -2,7 +2,23 @@ import type { LanguageObject } from '@/locale/language'
 
 export const es: LanguageObject = {
     home: {
-        welcome: 'Hola, {{USER}}!',
+        welcome: 'Hola, ¡{{USER}}!',
+        findMatch: 'Encontrar partida',
+        findRandomOpponent: 'Encuentra un oponente aleatorio',
+        searchPlaceholder: 'Nombre de usuario del oponente',
+        searchOpponent: 'Buscar oponente',
+        noResults: 'No se encontraron resultados',
+        or: 'o',
+
+        invite: {
+            title: 'Invitaciones',
+            send: 'Enviar invitación',
+            sent: 'Has invitado a {{USER}} a una batalla.',
+            content: '¡El usuario {{USER}} te ha invitado a una batalla!',
+            accept: 'Aceptar',
+            reject: 'Rechazar',
+            revoke: 'Revocar',
+        },
     },
 
     meta: {

@@ -27,7 +27,6 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
 
     const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
     const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
-    const canvasRect = canvasArea.current?.getBoundingClientRect()
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
@@ -106,8 +105,10 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
         <div
             {...bind()}
             ref={wordRef}
-            className={cn(isMobile && 'touch-pan-x', !isMobile && 'cursor-grab touch-none')}
+            className={cn('h-fit', isMobile && 'touch-pan-x', !isMobile && 'cursor-grab touch-none')}
             onClick={() => {
+                const canvasRect = canvasArea.current?.getBoundingClientRect()
+
                 if (!isDragging.current && canvasRect && wordRef.current) {
                     const wordRect = wordRef.current.getBoundingClientRect()
                     const padding = 8

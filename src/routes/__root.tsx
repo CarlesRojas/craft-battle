@@ -73,7 +73,7 @@ function RootDocument({ children }: Props) {
 
             <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-500/40">
                 <ConvexProvider>
-                    <Header />
+                    <Header language={language} />
                     {children}
                 </ConvexProvider>
 

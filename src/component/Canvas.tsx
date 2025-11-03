@@ -26,7 +26,7 @@ const Canvas = ({ innerRef }: Props) => {
     useEventListener('resize', onResize)
 
     return (
-        <div className="w-full grow bg-green-500/10 md:h-full md:w-[unset]" ref={innerRef}>
+        <div className="size-full bg-green-500/10" ref={innerRef}>
             {instances.map(instance => (
                 <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
                     <CanvasWord word={instance} canvasArea={innerRef} />

@@ -1,27 +1,29 @@
-import { CreateWord } from '@/db/game'
+import type { CreateWord } from '@/db/game'
 import { useCombineWords } from '@/hook/useCombineWords'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import z from 'zod'
 
-export type WordInstance = {
-    id: string
-    text: string
-    icon: string
-    explanation?: string
-    x: number
-    y: number
-    width: number
-    height: number
-    isLoading?: boolean
-}
+const WordInstanceSchema = z.object({
+    id: z.string(),
+    text: z.string(),
+    icon: z.string(),
+    explanation: z.string().optional(),
+    x: z.number(),
+    y: z.number(),
+    width: z.number(),
+    height: z.number(),
+    isLoading: z.boolean().optional(),
+})
+
+export type WordInstance = z.infer<typeof WordInstanceSchema>
 
 type WordInstancesContextType = {
     instances: Array<WordInstance>
     overlappedWordId: string | null
     addInstance: (instance: WordInstance) => void
     removeInstance: (id: string) => void
-    updateInstance: (id: string, updates: Partial<WordInstance>) => void
     replaceInstances: (instances: Array<WordInstance>) => void
     clearInstances: () => void
     getOverlappingWord: (word: WordInstance) => WordInstance | null
@@ -49,10 +51,6 @@ export function WordInstancesProvider({ children, onCombine }: Props) {
 
     const removeInstance = (id: string) => {
         setInstances(prev => prev.filter(instance => instance.id !== id))
-    }
-
-    const updateInstance = (id: string, updates: Partial<WordInstance>) => {
-        setInstances(prev => prev.map(instance => (instance.id === id ? { ...instance, ...updates } : instance)))
     }
 
     const replaceInstances = (newInstances: Array<WordInstance>) => {
@@ -133,7 +131,6 @@ export function WordInstancesProvider({ children, onCombine }: Props) {
                 overlappedWordId,
                 addInstance,
                 removeInstance,
-                updateInstance,
                 replaceInstances,
                 clearInstances,
                 getOverlappingWord,

@@ -1,6 +1,6 @@
 import { api } from '@/db/_generated/api'
 import type { Doc } from '@/db/_generated/dataModel'
-import { CreateWord } from '@/db/game'
+import type { CreateWord } from '@/db/game'
 import type { User } from '@/db/username'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'

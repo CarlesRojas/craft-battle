@@ -105,7 +105,7 @@ const CanvasWord = ({ word, canvasArea }: Props) => {
                 word={word.text}
                 icon={word.icon}
                 explanation={word.explanation}
-                className={overlappedWordId === word.id ? 'bg-sky-800' : ''}
+                className={overlappedWordId === word.id ? 'border-sky-800 bg-sky-950' : ''}
                 isLoading={word.isLoading}
                 isNewCombination={word.width === 0 && word.height === 0}
             />

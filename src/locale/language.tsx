@@ -6,7 +6,7 @@ export enum Language {
 }
 export const DEFAULT_LANGUAGE = Language.EN
 export const LANGUAGES = Object.values(Language)
-export const LANGUAGE_COOKIE_NAME = 'AMBIBOOK_LANGUAGE'
+export const LANGUAGE_COOKIE_NAME = 'CRAFT_BATTLE_LANGUAGE'
 export const LanguageSchema = z.nativeEnum(Language)
 
 export const LanguageObjectSchema = z.object({

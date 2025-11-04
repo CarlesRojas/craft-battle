@@ -1,5 +1,6 @@
 import CreateUsername from '@/component/CreateUsername'
 import NewGame from '@/component/NewGame'
+import Particles from '@/component/Particles'
 import { api } from '@/db/_generated/api'
 import { User } from '@/db/username'
 import { createLocalStorage } from '@/lib/localStorage'
@@ -47,7 +48,18 @@ function App() {
     }, [loadUsername])
 
     return (
-        <main className="full-page flex items-center justify-center">
+        <main className="full-page relative flex items-center justify-center">
+            <Particles
+                particleColors={['#ffffff']}
+                particleCount={300}
+                particleSpread={20}
+                speed={0.05}
+                particleBaseSize={70}
+                moveParticlesOnHover={true}
+                particleHoverFactor={0.5}
+                className="absolute -z-10 opacity-40"
+            />
+
             {!loaded && <Loader className="size-8 animate-spin" />}
 
             {loaded && !!user && <NewGame language={language} user={user} />}

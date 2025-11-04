@@ -35,7 +35,7 @@ const Word = ({ id, word, icon, className, isLoading = false, isNewCombination =
     return (
         <animated.div
             className={cn(
-                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 rounded-lg border border-neutral-700 bg-neutral-800 px-3 capitalize hover:bg-neutral-700',
+                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 border border-neutral-800 bg-neutral-900 p-2 px-3 capitalize hover:bg-neutral-800',
                 className,
                 isLoading && 'pointer-events-none animate-pulse bg-sky-600!',
             )}

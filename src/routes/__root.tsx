@@ -30,7 +30,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
             { charSet: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             { name: 'theme-color', content: '#010a0a' }, // TODO Change theme
-            ...seo({ title: 'Ambibook', description: `Read or listen to books with extra ambiance` }),
+            ...seo({
+                title: 'Craft Battle',
+                description: `Craft attack and defense words to battle online against other players.`,
+            }),
         ],
         links: [
             { rel: 'stylesheet', href: appCss },
@@ -73,7 +76,7 @@ function RootDocument({ children }: Props) {
                 <HeadContent />
             </head>
 
-            <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-slate-700">
+            <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-700/60">
                 <ConvexProvider>
                     <Header language={language} />
                     {children}

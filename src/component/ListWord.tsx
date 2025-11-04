@@ -132,7 +132,7 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
                     style={{ x: spring.x.to(value => value - scrollLeft), y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
-                    <Word word={word} icon={icon} className="bg-neutral-700" />
+                    <Word word={word} icon={icon} className="bg-neutral-800" />
                 </animated.div>
             )}
 

@@ -1,5 +1,6 @@
 import Canvas from '@/component/Canvas'
 import ListWord from '@/component/ListWord'
+import Particles from '@/component/Particles'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useRef } from 'react'
@@ -73,6 +74,17 @@ function Game() {
 
     return (
         <main className="full-page flex flex-col items-center justify-center md:flex-row" ref={dropArea}>
+            <Particles
+                particleColors={['#ffffff']}
+                particleCount={300}
+                particleSpread={20}
+                speed={0.05}
+                particleBaseSize={70}
+                moveParticlesOnHover={true}
+                particleHoverFactor={0.5}
+                className="absolute -z-10 opacity-40"
+            />
+
             <WordInstancesProvider>
                 <div className="w-full grow md:h-full md:w-[unset]">
                     <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>

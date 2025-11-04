@@ -50,8 +50,8 @@ const NewGame = ({ language, user }: Props) => {
     })
 
     return (
-        <div className="flex w-full max-w-lg flex-col items-center gap-16 place-self-start overscroll-y-auto px-3 py-6">
-            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-slate-400">
+        <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
+            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
                 {t.home.welcomeUser.replace('{{USER}}', user.username)}
             </h1>
 
@@ -121,12 +121,13 @@ const NewGame = ({ language, user }: Props) => {
                             {opponents.map(opponent => (
                                 <li
                                     key={opponent._id}
-                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
+                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-800/50 p-2"
                                 >
-                                    <span className="pl-2 font-medium opacity-80">{opponent.username}</span>
+                                    <span className="pl-2 leading-tight font-medium opacity-80">
+                                        {opponent.username}
+                                    </span>
 
                                     <Button
-                                        backgroundColor="bg-neutral-900"
                                         onClick={() => {
                                             form.reset()
                                             setOpponents([])
@@ -151,21 +152,23 @@ const NewGame = ({ language, user }: Props) => {
                             sentInvites.map(invite => (
                                 <li
                                     key={invite._id}
-                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
+                                    className="@container w-full border border-neutral-800 bg-neutral-800/50 p-2"
                                 >
-                                    {invite.receiver && (
-                                        <span className="pl-2 font-medium opacity-80">
-                                            {t.home.invite.sent.replace('{{USER}}', invite.receiver.username)}
-                                        </span>
-                                    )}
+                                    <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
+                                        {invite.receiver && (
+                                            <span className="pl-2 leading-tight font-medium opacity-80">
+                                                {t.home.invite.sent.replace('{{USER}}', invite.receiver.username)}
+                                            </span>
+                                        )}
 
-                                    <Button
-                                        onClick={() => removeInvite({ inviteId: invite._id })}
-                                        backgroundColor="bg-neutral-900"
-                                        variant="destructive"
-                                    >
-                                        {t.home.invite.revoke}
-                                    </Button>
+                                        <Button
+                                            onClick={() => removeInvite({ inviteId: invite._id })}
+                                            variant="destructive"
+                                            className="w-fit place-self-end"
+                                        >
+                                            {t.home.invite.revoke}
+                                        </Button>
+                                    </div>
                                 </li>
                             ))}
 
@@ -173,32 +176,37 @@ const NewGame = ({ language, user }: Props) => {
                             receivedInvites.map(invite => (
                                 <li
                                     key={invite._id}
-                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-900 p-2"
+                                    className="@container w-full border border-neutral-800 bg-neutral-800/50 p-2"
                                 >
-                                    {invite.receiver && (
-                                        <span className="pl-2 font-medium opacity-80">
-                                            {t.home.invite.content.replace('{{USER}}', invite.receiver.username)}
-                                        </span>
-                                    )}
+                                    <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
+                                        {invite.receiver && (
+                                            <span className="leading-tight font-medium opacity-80 @md:pl-2">
+                                                {t.home.invite.content.replace('{{USER}}', invite.receiver.username)}
+                                            </span>
+                                        )}
 
-                                    <Button
-                                        onClick={() => {
-                                            acceptInvite({ senderId: invite.senderId, receiverId: invite.receiverId })
-                                            // TODO: Start game
-                                        }}
-                                        variant="constructive"
-                                        backgroundColor="bg-neutral-900"
-                                    >
-                                        {t.home.invite.accept}
-                                    </Button>
+                                        <div className="flex items-center gap-3 place-self-end @md:place-self-auto">
+                                            <Button
+                                                onClick={() => {
+                                                    acceptInvite({
+                                                        senderId: invite.senderId,
+                                                        receiverId: invite.receiverId,
+                                                    })
+                                                    // TODO: Start game
+                                                }}
+                                                variant="constructive"
+                                            >
+                                                {t.home.invite.accept}
+                                            </Button>
 
-                                    <Button
-                                        onClick={() => removeInvite({ inviteId: invite._id })}
-                                        backgroundColor="bg-neutral-900"
-                                        variant="destructive"
-                                    >
-                                        {t.home.invite.reject}
-                                    </Button>
+                                            <Button
+                                                onClick={() => removeInvite({ inviteId: invite._id })}
+                                                variant="destructive"
+                                            >
+                                                {t.home.invite.reject}
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </li>
                             ))}
                     </ul>

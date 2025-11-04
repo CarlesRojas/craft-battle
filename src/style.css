@@ -11,6 +11,43 @@
     .full-page {
         @apply h-[calc(100dvh-3rem)] max-h-[calc(100dvh-3rem)] min-h-[calc(100dvh-3rem)] w-dvw max-w-dvw min-w-dvw;
     }
+
+    .target-tl {
+        clip-path: polygon(0 0, 12px 0, 12px 2px, 2px 2px, 2px 12px, 0 12px);
+    }
+
+    .target-tr {
+        clip-path: polygon(
+            100% 0,
+            100% 12px,
+            calc(100% - 2px) 12px,
+            calc(100% - 2px) 2px,
+            calc(100% - 12px) 2px,
+            calc(100% - 12px) 0
+        );
+    }
+
+    .target-bl {
+        clip-path: polygon(
+            0 100%,
+            12px 100%,
+            12px calc(100% - 2px),
+            2px calc(100% - 2px),
+            2px calc(100% - 12px),
+            0 calc(100% - 12px)
+        );
+    }
+
+    .target-br {
+        clip-path: polygon(
+            100% 100%,
+            100% calc(100% - 12px),
+            calc(100% - 2px) calc(100% - 12px),
+            calc(100% - 2px) calc(100% - 2px),
+            calc(100% - 12px) calc(100% - 2px),
+            calc(100% - 12px) 100%
+        );
+    }
 }
 
 @layer base {

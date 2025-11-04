@@ -3,31 +3,11 @@ import type { ComponentProps } from 'react'
 
 function Input({ className, type, backgroundColor, ...props }: ComponentProps<'input'> & { backgroundColor?: string }) {
     return (
-        <div className="group relative size-fit">
-            <div className="pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-focus-within:block group-hover:block aria-invalid:bg-red-800/70" />
-
-            <div
-                className={cn(
-                    'pointer-events-none absolute -inset-1 hidden bg-neutral-950 group-focus-within:block group-hover:block',
-                    !!backgroundColor && backgroundColor,
-                )}
-            />
-
-            <div
-                className={cn(
-                    'pointer-events-none absolute -inset-x-1.5 inset-y-1.5 hidden bg-neutral-950 group-focus-within:block group-hover:block',
-                    !!backgroundColor && backgroundColor,
-                )}
-            />
-
-            <div
-                className={cn(
-                    'pointer-events-none absolute inset-x-1.5 -inset-y-1.5 hidden bg-neutral-950 group-focus-within:block group-hover:block',
-                    !!backgroundColor && backgroundColor,
-                )}
-            />
-
-            <div className="pointer-events-none absolute inset-0 border border-neutral-600 bg-neutral-700/70 group-focus-within:bg-neutral-700/90 group-hover:bg-neutral-700/90" />
+        <div className="group relative size-fit border border-neutral-600 bg-neutral-700/70 focus-within:bg-neutral-700/90 hover:bg-neutral-700/90">
+            <div className="target-tl pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-focus-within:block group-hover:block" />
+            <div className="target-tr pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-focus-within:block group-hover:block" />
+            <div className="target-bl pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-focus-within:block group-hover:block" />
+            <div className="target-br pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-focus-within:block group-hover:block" />
 
             <input
                 type={type}

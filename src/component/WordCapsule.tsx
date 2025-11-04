@@ -14,7 +14,7 @@ interface Props {
     isNewCombination?: boolean
 }
 
-const Word = ({ id, word, icon, className, isLoading = false, isNewCombination = false }: Props) => {
+const WordCapsule = ({ id, word, icon, className, isLoading = false, isNewCombination = false }: Props) => {
     const { updateSize } = useWordInstances()
 
     const props = useSpring({
@@ -53,4 +53,4 @@ const Word = ({ id, word, icon, className, isLoading = false, isNewCombination =
     )
 }
 
-export default Word
+export default WordCapsule

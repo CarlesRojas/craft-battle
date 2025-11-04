@@ -1,4 +1,4 @@
-import Word from '@/component/Word'
+import WordCapsule from '@/component/WordCapsule'
 import type { WordInstance } from '@/integration/WordInstancesProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
@@ -109,7 +109,7 @@ const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
             style={{ ...spring }}
             className={cn('absolute z-10 cursor-grab touch-none', isDragging ? 'z-30' : '')}
         >
-            <Word
+            <WordCapsule
                 id={word.id}
                 word={word.text}
                 icon={word.icon}

@@ -1,4 +1,5 @@
 import { useCombineWords } from '@/hook/useCombineWords'
+import { Word } from '@/integration/WordListProvider'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -31,7 +32,12 @@ type WordInstancesContextType = {
 
 const WordInstancesContext = createContext<WordInstancesContextType | null>(null)
 
-export function WordInstancesProvider({ children }: { children: ReactNode }) {
+interface Props {
+    children: ReactNode
+    onCombine: (result: Word) => void
+}
+
+export function WordInstancesProvider({ children, onCombine }: Props) {
     const [instances, setInstances] = useState<Array<WordInstance>>([])
     const [overlappedWordId, setOverlappedWordId] = useState<string | null>(null)
 
@@ -87,6 +93,14 @@ export function WordInstancesProvider({ children }: { children: ReactNode }) {
         )
 
         const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
+
+        onCombine({
+            id: uuid(),
+            text: result.result,
+            icon: result.icon,
+            explanation: result.explanation,
+            discoveredAt: new Date(),
+        })
 
         setInstances(prev => [
             ...prev.filter(instance => ![word1.id, word2.id].includes(instance.id)),

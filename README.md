@@ -6,6 +6,9 @@ To run this application:
 
 ```bash
 pnpm i
+```
+
+```bash
 pnpm dev
 ```
 

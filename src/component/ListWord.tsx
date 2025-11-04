@@ -1,4 +1,4 @@
-import Word from '@/component/Word'
+import WordCapsule from '@/component/WordCapsule'
 import type { WordInstance } from '@/integration/WordInstancesProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
@@ -139,11 +139,11 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                     style={{ x: spring.x.to(value => value - scrollLeft), y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
-                    <Word word={word} icon={icon} className="bg-neutral-800" />
+                    <WordCapsule word={word} icon={icon} className="bg-neutral-800" />
                 </animated.div>
             )}
 
-            <Word word={word} icon={icon} />
+            <WordCapsule word={word} icon={icon} />
         </div>
     )
 }

@@ -56,12 +56,12 @@ export const combineWords = createServerFn({ method: 'POST' })
                 - If no clear emergent outcome exists, choose a concrete, widely known intersection concept shared by both.
                 - Avoid generic categories or trivial overlaps when a specific emergent outcome exists.
 
-                Heuristics for emergent results (apply in order):
+                Heuristics for emergent results (apply in order). If the result is an abstract concept, try to apply the next heuristic:
                 1) Material + Process/Force ⇒ Product/Byproduct
                 - sand + heat → glass
                 - milk + bacteria → yogurt
                 - earth + fire → lava
-                2) Environment/Resource + Agent/Seed ⇒ Growth/Outcome
+                2) Resource + Agent ⇒ Outcome
                 - earth + water → plant
                 - idea + effort → project
                 - fire + wind → smoke
@@ -100,6 +100,14 @@ export const combineWords = createServerFn({ method: 'POST' })
                     "result": "plant",
                     "icon": "🌱",
                     "explanation": "When you water earth, a plant may grow."
+                }
+
+                Input: "earth" + "wind"
+                Output:
+                {
+                    "result": "dust",
+                    "icon": "🌫️",
+                    "explanation": "When you wind earth, it may produce dust."
                 }
 
                 Input: "sand" + "heat"

@@ -107,7 +107,11 @@ const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
             {...bind()}
             ref={wordRef}
             style={{ ...spring }}
-            className={cn('absolute z-10 cursor-grab touch-none', isDragging ? 'z-30' : '')}
+            className={cn(
+                'absolute z-10 cursor-grab touch-none',
+                isDragging && 'z-30',
+                word.isLoading && 'pointer-events-none',
+            )}
         >
             <WordCapsule
                 id={word.id}

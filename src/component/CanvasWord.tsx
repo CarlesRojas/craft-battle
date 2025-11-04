@@ -12,9 +12,10 @@ interface Props {
     word: WordInstance
     canvasArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
+    setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
-const CanvasWord = ({ word, canvasArea }: Props) => {
+const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
     const { overlappedWordId, getOverlappingWord, clearOverlapped, combine, removeInstance, updateSize } =
         useWordInstances()
 
@@ -50,16 +51,23 @@ const CanvasWord = ({ word, canvasArea }: Props) => {
                 }
             }
 
+            let insideCanvas = false
+            if (canvasArea.current) {
+                const canvasRect = canvasArea.current.getBoundingClientRect()
+
+                insideCanvas = !(
+                    updatedWord.x + updatedWord.width < canvasRect.x ||
+                    canvasRect.x + canvasRect.width < updatedWord.x ||
+                    updatedWord.y + updatedWord.height < canvasRect.y ||
+                    canvasRect.y + canvasRect.height < updatedWord.y
+                )
+
+                setDraggingOverCanvas(insideCanvas)
+            }
+
             if (last) {
                 if (canvasArea.current) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
-
-                    const insideCanvas = !(
-                        updatedWord.x + updatedWord.width < canvasRect.x ||
-                        canvasRect.x + canvasRect.width < updatedWord.x ||
-                        updatedWord.y + updatedWord.height < canvasRect.y ||
-                        canvasRect.y + canvasRect.height < updatedWord.y
-                    )
 
                     if (!insideCanvas) removeInstance(word.id)
                     else if (overlappingWord) combine(overlappingWord, updatedWord)
@@ -80,6 +88,7 @@ const CanvasWord = ({ word, canvasArea }: Props) => {
                 }
 
                 setIsDragging(false)
+                setDraggingOverCanvas(false)
                 clearOverlapped()
                 api.stop()
             }

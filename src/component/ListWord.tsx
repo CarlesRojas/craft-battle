@@ -15,9 +15,10 @@ interface Props {
     canvasArea: RefObject<HTMLDivElement | null>
     scrollArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
+    setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
-const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Props) => {
+const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDraggingOverCanvas }: Props) => {
     const { addInstance, getOverlappingWord, clearOverlapped, combine } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
@@ -61,40 +62,46 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false }: Prop
 
             if (Math.abs(mx) > 3 || Math.abs(my) > 3) isDragging.current = true
 
+            let insideCanvas = false
+            if (canvasArea.current && isDragging.current) {
+                const canvasRect = canvasArea.current.getBoundingClientRect()
+
+                insideCanvas = !(
+                    updatedWord.x + updatedWord.width < canvasRect.x ||
+                    canvasRect.x + canvasRect.width < updatedWord.x ||
+                    updatedWord.y + updatedWord.height < canvasRect.y ||
+                    canvasRect.y + canvasRect.height < updatedWord.y
+                )
+
+                setDraggingOverCanvas(insideCanvas)
+            }
+
             if (last) {
                 setActiveInstance(false)
 
-                if (canvasArea.current && isDragging.current) {
+                if (canvasArea.current && isDragging.current && insideCanvas) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
-                    const insideCanvas = !(
-                        updatedWord.x + updatedWord.width < canvasRect.x ||
-                        canvasRect.x + canvasRect.width < updatedWord.x ||
-                        updatedWord.y + updatedWord.height < canvasRect.y ||
-                        canvasRect.y + canvasRect.height < updatedWord.y
-                    )
-
-                    if (insideCanvas) {
-                        const newWordInstance: WordInstance = {
-                            ...updatedWord,
-                            x: clamp(
-                                x - clickOffset.current.x,
-                                canvasRect.x,
-                                canvasRect.x + canvasRect.width - clickOffset.current.width,
-                            ),
-                            y: clamp(
-                                y - clickOffset.current.y,
-                                canvasRect.y,
-                                canvasRect.y + canvasRect.height - clickOffset.current.height,
-                            ),
-                        }
-
-                        if (overlappingWord) combine(overlappingWord, newWordInstance)
-                        else addInstance(newWordInstance)
+                    const newWordInstance: WordInstance = {
+                        ...updatedWord,
+                        x: clamp(
+                            x - clickOffset.current.x,
+                            canvasRect.x,
+                            canvasRect.x + canvasRect.width - clickOffset.current.width,
+                        ),
+                        y: clamp(
+                            y - clickOffset.current.y,
+                            canvasRect.y,
+                            canvasRect.y + canvasRect.height - clickOffset.current.height,
+                        ),
                     }
+
+                    if (overlappingWord) combine(overlappingWord, newWordInstance)
+                    else addInstance(newWordInstance)
                 }
 
                 clearOverlapped()
+                setDraggingOverCanvas(false)
                 api.stop()
             }
 

@@ -3,7 +3,7 @@ import ListWord from '@/component/ListWord'
 import Particles from '@/component/Particles'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 export const Route = createFileRoute('/$language/game/')({ component: Game })
@@ -15,6 +15,8 @@ function Game() {
     const canvasArea = useRef<HTMLDivElement>(null)
     const listArea = useRef<HTMLDivElement>(null)
     const selectArea = useRef<HTMLDivElement>(null)
+
+    const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
     const words: Array<{ id: string; text: string; icon: string }> = useMemo(
         () => [
@@ -90,7 +92,11 @@ function Game() {
                     <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
 
                     <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">
-                        <Canvas innerRef={canvasArea} />
+                        <Canvas
+                            innerRef={canvasArea}
+                            draggingOverCanvas={draggingOverCanvas}
+                            setDraggingOverCanvas={setDraggingOverCanvas}
+                        />
                     </div>
                 </div>
 
@@ -107,6 +113,7 @@ function Game() {
                                     icon={word.icon}
                                     scrollArea={scrollAreaDesktop}
                                     canvasArea={canvasArea}
+                                    setDraggingOverCanvas={setDraggingOverCanvas}
                                 />
                             ))}
                         </div>
@@ -127,6 +134,7 @@ function Game() {
                                                 icon={word.icon}
                                                 scrollArea={scrollAreaMobile}
                                                 canvasArea={canvasArea}
+                                                setDraggingOverCanvas={setDraggingOverCanvas}
                                                 isMobile
                                             />
                                         ),

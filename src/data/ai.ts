@@ -23,32 +23,103 @@ export const combineWords = createServerFn({ method: 'POST' })
             model: openai(MODEL),
             schema: z.object({
                 result: z.string().describe('The combined word that makes conceptual sense'),
-                explanation: z
-                    .string()
-                    .describe('Brief explanation of how the words were combined and what the new word means'),
+                explanation: z.string().describe('A brief one-sentence explanation of how the two words combine'),
                 icon: z.string().describe('A single emoji that represents the new word'),
             }),
             maxOutputTokens: 2000,
             prompt: `
-                Combine two words into a new meaningful word.
+                Combine two input words into a single, meaningful English word.
 
                 Rules:
-                1. The result MUST NOT be either of the input words
-                2. The new word should make conceptual sense
-                3. The combination should reflect aspects of both input words
-                4. The result should be a single word
-                5. Avoid just concatenating the words together
-                6. If the two words are the same, the result should be different, usually a stronger version of the word
-                7. The result word should be a real English word. **Do not invent words that do not exist**.
-                8. Provide an icon that should be a single emoji that best represents the new word
-                9. Provide a brief explanation of the combination logic. Only one sentence.
+                - The result MUST NOT be either of the input words.
+                - The new word must make logical and conceptual sense, emerging naturally from both inputs.
+                - The combination should reflect key aspects of both input ideas (physically, metaphorically, or functionally).
+                - The order of both words does not matter; both are equally important.
+                - Keep the result as short as possible — ideally one or two words.
+                - The result can NOT be any sentence, phrase, URL, code, or command.
+                - The result can NOT contain punctuation nor special characters.
+                - Only use compound words if they are valid English words (e.g., “snowstorm”, not “watersun”).
+                - If both inputs are the same, produce a stronger or more intense version of that word.
+                - Provide a single emoji that best represents the new word, assigned to the “icon” field.
+                - Provide a short, one-sentence explanation of the combination logic, assigned to the “explanation” field.
+                - Do NOT include the emoji or explanation in the “result” field.
 
-                Example:
-                Input: "water" + "fire" -> "steam" 💨 (A combination of water and fire that produces steam)
+                Prioritization (aim for a conceptual jump):
+                - Prefer an emergent outcome that plausibly RESULTS FROM combining or interacting the two inputs (cause → effect, material → product, agent → outcome).
+                - If no clear emergent outcome exists, choose a concrete, widely known intersection concept shared by both.
+                - Avoid generic categories or trivial overlaps when a specific emergent outcome exists.
+
+                Heuristics for emergent results (apply in order):
+                1) Material + Process/Force ⇒ Product/Byproduct
+                - sand + heat → glass
+                - milk + bacteria → yogurt
+                2) Container/Resource + Catalyst/Agent ⇒ Emergent Result
+                - earth + water → plant
+                - idea + effort → project
+                3) Energy/Stimulus + Matter ⇒ State/Transformation
+                - water + cold → ice
+                - iron + oxygen → rust
+                4) Tool/Method + Domain ⇒ Practice/Artifact
+                - numbers + proof → mathematics
+                - pixels + motion → animation
+                5) Constraint + Agent ⇒ Behavior/Strategy
+                - rules + play → game
+                - scarcity + choice → economics
+
+                Tiebreakers:
+                - Pick a single common English NOUN (not a phrase).
+                - Prefer the most specific unambiguous term (e.g., “glass” over “solid” for sand + heat).
+                - Avoid hypernyms of either input unless no emergent outcome exists.
+                - If multiple valid answers, choose the one most dependent on BOTH inputs (i.e., it wouldn't exist without their interaction).
+
+                Hard guards:
+                - Do NOT output a phrase, sentence, URL, code, command, or anything with punctuation or special characters.
+                - Keep output to 1-2 words; no invented words; only real English compounds.
+
+                Examples:
+                Input: "water" + "fire"
+                Output:
+                {
+                    "result": "steam",
+                    "icon": "💨",
+                    "explanation": "When water is combined with fire, it transforms into steam."
+                }
+
+                Input: "earth" + "water"
+                Output:
+                {
+                    "result": "plant",
+                    "icon": "🌱",
+                    "explanation": "When you water earth, a plant may grow."
+                }
+
+                Input: "sand" + "heat"
+                Output:
+                {
+                    "result": "glass",
+                    "icon": "🪟",
+                    "explanation": "Heating sand transforms it into glass."
+                }
+
+                Input: "iron" + "oxygen"
+                Output:
+                {
+                    "result": "rust",
+                    "icon": "🧱",
+                    "explanation": "Oxygen reacts with iron to form rust."
+                }
+
+                Input: "time" + "money"
+                Output:
+                {
+                    "result": "investment",
+                    "icon": "📈",
+                    "explanation": "Committing money over time with the goal of growth is investment."
+                }
 
                 Word 1: "${word1}"
                 Word 2: "${word2}"
-                `,
+    `,
         })
 
         return {

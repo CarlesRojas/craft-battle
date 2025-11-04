@@ -35,11 +35,18 @@ export const combineWords = createServerFn({ method: 'POST' })
                 - The new word must make logical and conceptual sense, emerging naturally from both inputs.
                 - The combination should reflect key aspects of both input ideas (physically, metaphorically, or functionally).
                 - The order of both words does not matter; both are equally important.
+                - ALWAYS prioritize nouns over verbs, adjectives, or adverbs. The result should typically be a tangible or conceptual noun (e.g., “plant”, “steam”, “glass”, “game”).
+                - Prefer concrete, physical nouns (objects, materials, substances, living things, or phenomena) over abstract or conceptual ones.
+                    The result should usually be something that could exist or be observed in the real world — e.g., “dust”, “tree”, “metal”, “storm”, “phone”, “cat”
+                    rather than abstract ideas like “erosion”, “growth”, or “communication”.
                 - Keep the result as short as possible — ideally one or two words.
                 - The result can NOT be any sentence, phrase, URL, code, or command.
                 - The result can NOT contain punctuation nor special characters.
                 - Only use compound words if they are valid English words (e.g., “snowstorm”, not “watersun”).
-                - If both inputs are the same, produce a stronger or more intense version of that word.
+                - When both inputs share the same or closely related meaning, create the next stronger, larger, or more tangible version of that thing — not a category or description of it.
+                    For example, "earth" + "earth" → "mountain", "fire" + "fire" → "volcano", "water" + "water" → "lake".
+                    Avoid abstract or general results like “terrain”, “energy”, or “substance”.
+                    Do not make really big leaps if a smaller one is possible. Example 'water' + 'water' → 'lake' not 'ocean'.
                 - Provide a single emoji that best represents the new word, assigned to the “icon” field.
                 - Provide a short, one-sentence explanation of the combination logic, assigned to the “explanation” field.
                 - Do NOT include the emoji or explanation in the “result” field.
@@ -53,9 +60,11 @@ export const combineWords = createServerFn({ method: 'POST' })
                 1) Material + Process/Force ⇒ Product/Byproduct
                 - sand + heat → glass
                 - milk + bacteria → yogurt
-                2) Container/Resource + Catalyst/Agent ⇒ Emergent Result
+                - earth + fire → lava
+                2) Environment/Resource + Agent/Seed ⇒ Growth/Outcome
                 - earth + water → plant
                 - idea + effort → project
+                - fire + wind → smoke
                 3) Energy/Stimulus + Matter ⇒ State/Transformation
                 - water + cold → ice
                 - iron + oxygen → rust
@@ -67,8 +76,8 @@ export const combineWords = createServerFn({ method: 'POST' })
                 - scarcity + choice → economics
 
                 Tiebreakers:
-                - Pick a single common English NOUN (not a phrase).
-                - Prefer the most specific unambiguous term (e.g., “glass” over “solid” for sand + heat).
+                - Pick a single, common English NOUN (not a phrase).
+                - Prefer the most specific and unambiguous term (e.g., “glass” over “solid” for sand + heat).
                 - Avoid hypernyms of either input unless no emergent outcome exists.
                 - If multiple valid answers, choose the one most dependent on BOTH inputs (i.e., it wouldn't exist without their interaction).
 

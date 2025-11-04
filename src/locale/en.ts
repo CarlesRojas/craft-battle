@@ -1,9 +1,36 @@
 import type { LanguageObject } from '@/locale/language'
 
 export const en: LanguageObject = {
-    home: {
-        welcome: 'Welcome to Craft Battle!',
+    common: {
         welcomeUser: 'Hello, {{USER}}!',
+    },
+
+    createUsername: {
+        welcome: 'Welcome to Craft Battle!',
+        chooseUsername: 'Choose a username',
+    },
+
+    mode: {
+        choose: 'Choose a mode',
+        comingSoon: 'Coming soon',
+
+        classic: {
+            title: 'Classic',
+            description:
+                'The classic mode where you play solo and can craft any word by continuously combining 2 words',
+        },
+        bingo: {
+            title: 'Bingo',
+            description: 'Race to craft the random words in the bingo. You can play solo or with a friend.',
+        },
+        battle: {
+            title: 'Battle',
+            description:
+                'Craft a word to attack your opponent, then another to defend against their attack. The first player to reach 0 HP loses.',
+        },
+    },
+
+    home: {
         findMatch: 'Find a match',
         findRandomOpponent: 'Find a random opponent',
         searchFriend: 'Search for friends',
@@ -36,10 +63,6 @@ export const en: LanguageObject = {
         delete: 'Delete',
         save: 'Save',
         edit: 'Edit',
-
-        label: {
-            username: 'Choose a username',
-        },
 
         error: {
             generic: 'Something went wrong',

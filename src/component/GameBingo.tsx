@@ -10,6 +10,7 @@ const Game = () => {
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
     const canvasArea = useRef<HTMLDivElement>(null)
     const listArea = useRef<HTMLDivElement>(null)
+    const selectArea = useRef<HTMLDivElement>(null)
 
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
@@ -19,7 +20,9 @@ const Game = () => {
         <WordInstancesProvider onCombine={addWord}>
             <div className="flex size-full flex-col items-center justify-center md:flex-row" ref={dropArea}>
                 <div className="w-full grow md:h-full md:w-[unset]">
-                    <div className="size-full max-h-full min-h-full">
+                    <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
+
+                    <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">
                         <Canvas
                             innerRef={canvasArea}
                             draggingOverCanvas={draggingOverCanvas}

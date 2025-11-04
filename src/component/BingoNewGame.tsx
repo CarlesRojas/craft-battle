@@ -16,7 +16,7 @@ interface Props {
     user: User
 }
 
-const NewGame = ({ language, user }: Props) => {
+const BingoNewGame = ({ language, user }: Props) => {
     const t = getTranslation(language)
 
     const searchOpponent = useConvexMutation(api.username.search)
@@ -52,7 +52,7 @@ const NewGame = ({ language, user }: Props) => {
     return (
         <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
             <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
-                {t.home.welcomeUser.replace('{{USER}}', user.username)}
+                {t.common.welcomeUser.replace('{{USER}}', user.username)}
             </h1>
 
             <div className="flex w-full flex-col items-center gap-4">
@@ -188,10 +188,7 @@ const NewGame = ({ language, user }: Props) => {
                                         <div className="flex items-center gap-3 place-self-end @md:place-self-auto">
                                             <Button
                                                 onClick={() => {
-                                                    acceptInvite({
-                                                        senderId: invite.senderId,
-                                                        receiverId: invite.receiverId,
-                                                    })
+                                                    acceptInvite(invite)
                                                     // TODO: Start game
                                                 }}
                                                 variant="constructive"
@@ -216,4 +213,4 @@ const NewGame = ({ language, user }: Props) => {
     )
 }
 
-export default NewGame
+export default BingoNewGame

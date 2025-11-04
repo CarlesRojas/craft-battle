@@ -10,9 +10,36 @@ export const LANGUAGE_COOKIE_NAME = 'CRAFT_BATTLE_LANGUAGE'
 export const LanguageSchema = z.nativeEnum(Language)
 
 export const LanguageObjectSchema = z.object({
-    home: z.object({
-        welcome: z.string(),
+    common: z.object({
         welcomeUser: z.string(),
+    }),
+
+    createUsername: z.object({
+        welcome: z.string(),
+        chooseUsername: z.string(),
+    }),
+
+    mode: z.object({
+        choose: z.string(),
+        comingSoon: z.string(),
+
+        classic: z.object({
+            title: z.string(),
+            description: z.string(),
+        }),
+
+        bingo: z.object({
+            title: z.string(),
+            description: z.string(),
+        }),
+
+        battle: z.object({
+            title: z.string(),
+            description: z.string(),
+        }),
+    }),
+
+    home: z.object({
         findMatch: z.string(),
         findRandomOpponent: z.string(),
         searchFriend: z.string(),
@@ -45,10 +72,6 @@ export const LanguageObjectSchema = z.object({
         delete: z.string(),
         save: z.string(),
         edit: z.string(),
-
-        label: z.object({
-            username: z.string(),
-        }),
 
         error: z.object({
             generic: z.string(),

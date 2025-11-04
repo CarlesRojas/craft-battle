@@ -5,6 +5,7 @@
 
 @theme {
     --font-goldman: 'Goldman', system-ui;
+    --font-montserrat: 'Montserrat', sans-serif;
 }
 
 @layer components {
@@ -53,10 +54,6 @@
 @layer base {
     * {
         @apply m-0 box-border p-0 antialiased outline-none! select-none!;
-    }
-
-    body {
-        font-family: 'Montserrat', sans-serif;
     }
 
     img,

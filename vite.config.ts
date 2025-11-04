@@ -9,7 +9,7 @@ const config = defineConfig({
     plugins: [
         viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
         tailwindcss(),
-        tanstackStart(),
+        tanstackStart({ spa: { enabled: true } }),
         nitro(),
         viteReact(),
     ],

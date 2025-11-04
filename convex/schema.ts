@@ -31,4 +31,24 @@ export default defineSchema({
     })
         .index('sender', ['senderId'])
         .index('receiver', ['receiverId']),
+
+    game: defineTable({
+        playerId: v.id('user'),
+    }).index('player', ['playerId']),
+
+    bingoGame: defineTable({
+        player1Id: v.id('user'),
+        player2Id: v.id('user'),
+        objectives: v.array(v.string()),
+    })
+        .index('player1', ['player1Id'])
+        .index('player2', ['player2Id']),
+
+    word: defineTable({
+        text: v.string(),
+        icon: v.string(),
+        explanation: v.optional(v.string()),
+        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        playerId: v.id('user'),
+    }).index('player', ['gameId', 'playerId']),
 })

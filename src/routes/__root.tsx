@@ -1,9 +1,11 @@
 import Header from '@/component/Header'
+import Particles from '@/component/Particles'
 import { getLanguage, getLanguageFromPathname } from '@/data/language'
-import ConvexProvider from '@/integration/ConvexProvider'
+import { User } from '@/db/username'
 import { seo } from '@/lib/seo'
 import type { Language } from '@/locale/language'
 import appCss from '@/style.css?url'
+import { ConvexQueryClient } from '@convex-dev/react-query'
 import '@fontsource/goldman/400.css'
 import '@fontsource/goldman/700.css'
 import '@fontsource/montserrat/100.css'
@@ -17,11 +19,13 @@ import '@fontsource/montserrat/800.css'
 import '@fontsource/montserrat/900.css'
 import type { QueryClient } from '@tanstack/react-query'
 import { HeadContent, Scripts, createRootRouteWithContext, redirect } from '@tanstack/react-router'
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 interface MyRouterContext {
-    queryClient: QueryClient
+    query: QueryClient
+    convex: ConvexQueryClient
     language: Language
+    user: User | null
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -76,11 +80,21 @@ function RootDocument({ children }: Props) {
                 <HeadContent />
             </head>
 
-            <body className="size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-700/60">
-                <ConvexProvider>
-                    <Header language={language} />
-                    {children}
-                </ConvexProvider>
+            <body className="font-montserrat size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-700/60">
+                <Header language={language} />
+
+                <Particles
+                    particleColors={['#ffffff']}
+                    particleCount={300}
+                    particleSpread={20}
+                    speed={0.05}
+                    particleBaseSize={70}
+                    moveParticlesOnHover
+                    particleHoverFactor={0.3}
+                    className="absolute inset-0 -z-10 size-full opacity-40"
+                />
+
+                {children}
 
                 <Scripts />
             </body>

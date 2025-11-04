@@ -1,70 +1,116 @@
-import CreateUsername from '@/component/CreateUsername'
-import NewGame from '@/component/NewGame'
-import Particles from '@/component/Particles'
+import { Button } from '@/component/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/component/ui/field'
+import { Input } from '@/component/ui/input'
+import { getUser, setUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
-import { User } from '@/db/username'
-import { createLocalStorage } from '@/lib/localStorage'
-import { createFileRoute } from '@tanstack/react-router'
+import { isAlphanumeric } from '@/lib/normalize'
+import { getTranslation } from '@/locale/getTranslation'
+import { useForm } from '@tanstack/react-form'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useConvex } from 'convex/react'
-import { Loader } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import z from 'zod'
 
-export const Route = createFileRoute('/$language/')({ component: App })
+export const Route = createFileRoute('/$language/')({
+    component: CreateUsernamePage,
+    beforeLoad: async ({ context: { convex, language } }) => {
+        const user = await getUser({ convex })
+        if (!!user) throw redirect({ to: '/$language/mode', params: { language } })
 
-const usernameStorage = createLocalStorage(
-    'USERNAME',
-    z.object({ username: z.string(), key: z.string() }).optional(),
-    undefined,
-)
+        return { user }
+    },
+})
 
-function App() {
+function CreateUsernamePage() {
     const { language } = Route.useRouteContext()
 
+    const router = useRouter()
     const convex = useConvex()
+    const t = getTranslation(language)
 
-    const [user, setUser] = useState<User | null>(null)
-    const [loaded, setLoaded] = useState(false)
+    const formSchema = z.object({
+        username: z
+            .string()
+            .refine(isAlphanumeric, t.form.error.alphanumeric)
+            .min(3, t.form.error.minLength.replace('{{MIN}}', '3'))
+            .max(32, t.form.error.maxLength.replace('{{MAX}}', '32')),
+    })
 
-    const loadUsername = useCallback(async () => {
-        const storedUsername = usernameStorage.get()
+    const form = useForm({
+        defaultValues: { username: '' },
+        validators: {
+            onSubmit: formSchema,
+            onSubmitAsync: async ({ value: { username } }) => {
+                if (!username) return { fields: { username: t.form.error.required } }
 
-        if (storedUsername) {
-            const result = await convex.mutation(api.username.create, storedUsername)
-            if (result) setUser(result)
-            else usernameStorage.remove()
-        }
+                const isTaken = await convex.query(api.username.isTaken, { username })
+                if (isTaken) return { fields: { username: t.form.error.usernameTaken } }
+            },
+        },
+        onSubmit: async ({ value: { username } }) => {
+            const key = uuid()
+            const newUser = await convex.mutation(api.username.create, { username, key })
+            if (!newUser) return
 
-        setLoaded(true)
-    }, [])
-
-    const onUsernameCreated = useCallback((user: User, key: string) => {
-        setUser(user)
-        usernameStorage.set({ username: user.username, key })
-    }, [])
-
-    useEffect(() => {
-        loadUsername()
-    }, [loadUsername])
+            setUser(newUser, key)
+            router.navigate({ to: '/$language/mode', params: { language } })
+        },
+    })
 
     return (
-        <main className="full-page relative flex items-center justify-center">
-            <Particles
-                particleColors={['#ffffff']}
-                particleCount={300}
-                particleSpread={20}
-                speed={0.05}
-                particleBaseSize={70}
-                moveParticlesOnHover={true}
-                particleHoverFactor={0.5}
-                className="absolute -z-10 opacity-40"
-            />
+        <main className="full-page relative flex items-center justify-center pt-8">
+            <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
+                <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
+                    {t.createUsername.welcome}
+                </h1>
 
-            {!loaded && <Loader className="size-8 animate-spin" />}
+                <form
+                    onSubmit={e => {
+                        e.preventDefault()
+                        form.handleSubmit()
+                    }}
+                    className="flex w-full flex-col gap-3"
+                >
+                    <FieldGroup>
+                        <form.Field
+                            name="username"
+                            children={field => {
+                                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                                return (
+                                    <Field data-invalid={isInvalid}>
+                                        <FieldLabel
+                                            htmlFor={field.name}
+                                            className="font-goldman w-full text-xl tracking-wide opacity-80"
+                                        >
+                                            {t.createUsername.chooseUsername}
+                                        </FieldLabel>
 
-            {loaded && !!user && <NewGame language={language} user={user} />}
+                                        <Input
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value}
+                                            onBlur={field.handleBlur}
+                                            onChange={e => field.handleChange(e.target.value)}
+                                            aria-invalid={isInvalid}
+                                            autoComplete="off"
+                                        />
 
-            {loaded && !user && <CreateUsername language={language} onUsernameCreated={onUsernameCreated} />}
+                                        {isInvalid && (
+                                            <FieldError
+                                                errors={field.state.meta.errors.map(e =>
+                                                    typeof e === 'string' ? { message: e } : e,
+                                                )}
+                                            />
+                                        )}
+                                    </Field>
+                                )
+                            }}
+                        />
+                    </FieldGroup>
+
+                    <Button type="submit">{t.form.create}</Button>
+                </form>
+            </div>
         </main>
     )
 }

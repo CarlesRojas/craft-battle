@@ -12,7 +12,7 @@ export const getSent = query({
             .collect()
 
         return Promise.all(
-            (invites ?? []).map(async invite => ({
+            invites.map(async invite => ({
                 ...invite,
                 receiver: await ctx.db.get(invite.receiverId),
                 sender: await ctx.db.get(invite.senderId),
@@ -32,7 +32,7 @@ export const getReceived = query({
             .collect()
 
         return Promise.all(
-            (invites ?? []).map(async invite => ({
+            invites.map(async invite => ({
                 ...invite,
                 receiver: await ctx.db.get(invite.receiverId),
                 sender: await ctx.db.get(invite.senderId),

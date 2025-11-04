@@ -1,8 +1,9 @@
 import { v } from 'convex/values'
-import { Doc } from './_generated/dataModel'
-import { mutation } from './_generated/server'
+import { normalize } from '../src/lib/normalize'
+import type { Doc } from './_generated/dataModel'
+import { mutation, query } from './_generated/server'
 
-const DEFAULT_WORDS: Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' | 'playerId'>[] = [
+const DEFAULT_WORDS: Array<Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' | 'playerId'>> = [
     { text: 'water', icon: '💧' },
     { text: 'fire', icon: '🔥' },
     { text: 'wind', icon: '💨' },
@@ -14,6 +15,12 @@ export const create = mutation({
         playerId: v.id('user'),
     },
     handler: async (ctx, args) => {
+        const existingGame = await ctx.db
+            .query('game')
+            .withIndex('player', q => q.eq('playerId', args.playerId))
+            .first()
+        if (existingGame) await ctx.db.delete(existingGame._id)
+
         const gameId = await ctx.db.insert('game', args)
 
         await Promise.all(
@@ -26,7 +33,7 @@ export const create = mutation({
     },
 })
 
-export const get = mutation({
+export const get = query({
     args: {
         playerId: v.id('user'),
     },
@@ -46,3 +53,28 @@ export const get = mutation({
         return { game, words }
     },
 })
+
+export const addWord = mutation({
+    args: {
+        playerId: v.id('user'),
+        gameId: v.id('game'),
+        text: v.string(),
+        icon: v.string(),
+        explanation: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const normalizedText = normalize(args.text, true)
+
+        const words = await ctx.db
+            .query('word')
+            .withIndex('word', q => q.eq('text', normalizedText))
+            .collect()
+
+        if (words.length > 0) return words[0]._id
+
+        const wordId = await ctx.db.insert('word', { ...args, text: normalizedText })
+        return wordId
+    },
+})
+
+export type CreateWord = Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' | 'playerId'>

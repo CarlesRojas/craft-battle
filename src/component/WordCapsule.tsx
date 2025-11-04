@@ -35,7 +35,7 @@ const WordCapsule = ({ id, word, icon, className, isLoading = false, isNewCombin
     return (
         <animated.div
             className={cn(
-                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 border border-neutral-800 bg-neutral-900 p-2 px-3 capitalize hover:bg-neutral-800',
+                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 border border-neutral-800 bg-neutral-900 p-2 px-3 hover:bg-neutral-800',
                 className,
                 isLoading && 'pointer-events-none animate-pulse bg-sky-600!',
             )}
@@ -44,7 +44,7 @@ const WordCapsule = ({ id, word, icon, className, isLoading = false, isNewCombin
         >
             <span className={cn(isLoading && 'opacity-0')}>{icon}</span>
 
-            <span className={cn('font-medium', isLoading && 'opacity-0')}>{word}</span>
+            <span className={cn('font-medium capitalize', isLoading && 'opacity-0')}>{word}</span>
 
             {isLoading && (
                 <Loader className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 animate-spin stroke-3 text-neutral-900" />

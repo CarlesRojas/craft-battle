@@ -2,7 +2,7 @@ import { Button } from '@/component/ui/button'
 import { Field, FieldError, FieldGroup } from '@/component/ui/field'
 import { Input } from '@/component/ui/input'
 import { api } from '@/db/_generated/api'
-import { User } from '@/db/username'
+import type { User } from '@/db/username'
 import { isAlphanumeric } from '@/lib/normalize'
 import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
@@ -28,7 +28,7 @@ const BingoNewGame = ({ language, user }: Props) => {
     const sentInvites = useConvexQuery(api.invite.getSent, { senderId: user._id })
     const hasInvites = (receivedInvites && receivedInvites.length > 0) || (sentInvites && sentInvites.length > 0)
 
-    const [opponents, setOpponents] = useState<User[]>([])
+    const [opponents, setOpponents] = useState<Array<User>>([])
     const [hasSearched, setHasSearched] = useState(false)
 
     const formSchema = z.object({
@@ -43,7 +43,7 @@ const BingoNewGame = ({ language, user }: Props) => {
         defaultValues: { opponent: '' },
         validators: { onSubmit: formSchema },
         onSubmit: async ({ value }) => {
-            const search = await searchOpponent({ query: value.opponent, excludeId: user._id })
+            const search = await searchOpponent({ searchQuery: value.opponent, excludeId: user._id })
             setOpponents(search)
             setHasSearched(true)
         },

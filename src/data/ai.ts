@@ -1,3 +1,4 @@
+import { normalize } from '@/lib/normalize'
 import { openai } from '@ai-sdk/openai'
 import { createServerFn } from '@tanstack/react-start'
 import { generateObject } from 'ai'
@@ -41,6 +42,7 @@ export const combineWords = createServerFn({ method: 'POST' })
                     rather than abstract ideas like “erosion”, “growth”, or “communication”.
                 - Keep the result as short as possible — ideally one or two words.
                 - The result can NOT be any sentence, phrase, URL, code, or command.
+                - The result can only contain letters, numbers, spaces, and hyphens.
                 - The result can NOT contain punctuation nor special characters.
                 - Only use compound words if they are valid English words (e.g., “snowstorm”, not “watersun”).
                 - When both inputs share the same or closely related meaning, create the next stronger, larger, or more tangible version of that thing — not a category or description of it.
@@ -142,7 +144,8 @@ export const combineWords = createServerFn({ method: 'POST' })
         return {
             word1,
             word2,
-            ...object,
+            result: normalize(object.result, true),
+            explanation: object.explanation,
             icon: getFirstEmoji(object.icon),
         }
     })

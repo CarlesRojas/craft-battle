@@ -1,15 +1,15 @@
-export const normalize = (str: string) =>
+export const normalize = (str: string, withSpaces = false) =>
     str
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9-_]/gi, '')
+        .replace(withSpaces ? /[^a-zA-Z0-9-_ ]/gi : /[^a-zA-Z0-9-_]/gi, '')
         .trim()
         .toLowerCase()
 
-export const isAlphanumeric = (str: string) =>
+export const isAlphanumeric = (str: string, withSpaces = false) =>
     str ===
     str
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9-_]/gi, '')
+        .replace(withSpaces ? /[^a-zA-Z0-9-_ ]/gi : /[^a-zA-Z0-9-_]/gi, '')
         .trim()

@@ -50,5 +50,7 @@ export default defineSchema({
         explanation: v.optional(v.string()),
         gameId: v.union(v.id('game'), v.id('bingoGame')),
         playerId: v.id('user'),
-    }).index('player', ['gameId', 'playerId']),
+    })
+        .index('player', ['gameId', 'playerId'])
+        .index('word', ['text']),
 })

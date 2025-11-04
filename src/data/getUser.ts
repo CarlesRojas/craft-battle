@@ -1,7 +1,7 @@
 import { api } from '@/db/_generated/api'
-import { User } from '@/db/username'
+import type { User } from '@/db/username'
 import { createLocalStorage } from '@/lib/localStorage'
-import { ConvexQueryClient } from '@convex-dev/react-query'
+import type { ConvexQueryClient } from '@convex-dev/react-query'
 import z from 'zod'
 
 interface Props {

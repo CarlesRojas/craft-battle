@@ -1,5 +1,5 @@
+import { CreateWord } from '@/db/game'
 import { useCombineWords } from '@/hook/useCombineWords'
-import { Word } from '@/integration/WordListProvider'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -34,7 +34,7 @@ const WordInstancesContext = createContext<WordInstancesContextType | null>(null
 
 interface Props {
     children: ReactNode
-    onCombine: (result: Word) => void
+    onCombine: (result: CreateWord) => void
 }
 
 export function WordInstancesProvider({ children, onCombine }: Props) {
@@ -94,13 +94,7 @@ export function WordInstancesProvider({ children, onCombine }: Props) {
 
         const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
 
-        onCombine({
-            id: uuid(),
-            text: result.result,
-            icon: result.icon,
-            explanation: result.explanation,
-            discoveredAt: new Date(),
-        })
+        onCombine({ text: result.result, icon: result.icon, explanation: result.explanation })
 
         setInstances(prev => [
             ...prev.filter(instance => ![word1.id, word2.id].includes(instance.id)),

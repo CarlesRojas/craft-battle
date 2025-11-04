@@ -15,7 +15,7 @@ export const Route = createFileRoute('/$language/')({
     component: CreateUsernamePage,
     beforeLoad: async ({ context: { convex, language } }) => {
         const user = await getUser({ convex })
-        if (!!user) throw redirect({ to: '/$language/mode', params: { language } })
+        if (user) throw redirect({ to: '/$language/mode', params: { language } })
 
         return { user }
     },

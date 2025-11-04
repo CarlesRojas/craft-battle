@@ -1,8 +1,10 @@
 import { Label } from '@/component/ui/label'
 import { Separator } from '@/component/ui/separator'
 import { cn } from '@/lib/cn'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { ComponentProps, ReactNode, useMemo } from 'react'
+import type { VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
+import type { ComponentProps, ReactNode } from 'react'
+import { useMemo } from 'react'
 
 function FieldSet({ className, ...props }: ComponentProps<'fieldset'>) {
     return (
@@ -190,9 +192,7 @@ function FieldError({
 
         const uniqueErrors = [...new Map(errors.map(error => [error?.message, error])).values()]
 
-        if (uniqueErrors?.length == 1) {
-            return uniqueErrors[0]?.message
-        }
+        if (uniqueErrors.length == 1) return uniqueErrors[0]?.message
 
         return (
             <ul className="ml-4 flex list-disc flex-col gap-1">

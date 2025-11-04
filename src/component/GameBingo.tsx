@@ -38,7 +38,7 @@ const Game = () => {
                         <div className="flex h-fit w-full flex-wrap gap-3 overflow-y-auto" ref={scrollAreaDesktop}>
                             {list.map(word => (
                                 <ListWord
-                                    key={word.id}
+                                    key={word._id}
                                     word={word.text}
                                     icon={word.icon}
                                     scrollArea={scrollAreaDesktop}
@@ -59,7 +59,7 @@ const Game = () => {
                                     (word, i) =>
                                         i % 4 === mod && (
                                             <ListWord
-                                                key={word.id}
+                                                key={word._id}
                                                 word={word.text}
                                                 icon={word.icon}
                                                 scrollArea={scrollAreaMobile}

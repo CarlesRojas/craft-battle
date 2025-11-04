@@ -1,11 +1,11 @@
 import Header from '@/component/Header'
 import Particles from '@/component/Particles'
 import { getLanguage, getLanguageFromPathname } from '@/data/language'
-import { User } from '@/db/username'
+import type { User } from '@/db/username'
 import { seo } from '@/lib/seo'
 import type { Language } from '@/locale/language'
 import appCss from '@/style.css?url'
-import { ConvexQueryClient } from '@convex-dev/react-query'
+import type { ConvexQueryClient } from '@convex-dev/react-query'
 import '@fontsource/goldman/400.css'
 import '@fontsource/goldman/700.css'
 import '@fontsource/montserrat/100.css'
@@ -19,7 +19,7 @@ import '@fontsource/montserrat/800.css'
 import '@fontsource/montserrat/900.css'
 import type { QueryClient } from '@tanstack/react-query'
 import { HeadContent, Scripts, createRootRouteWithContext, redirect } from '@tanstack/react-router'
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface MyRouterContext {
     query: QueryClient

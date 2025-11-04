@@ -14,9 +14,11 @@ export const Route = createFileRoute('/$language/game')({
 })
 
 function GamePage() {
+    const { user } = Route.useRouteContext()
+
     return (
         <main className="full-page">
-            <WordListProvider>
+            <WordListProvider user={user}>
                 <Game />
             </WordListProvider>
         </main>

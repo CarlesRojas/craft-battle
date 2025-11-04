@@ -1,21 +1,17 @@
+import { api } from '@/db/_generated/api'
+import type { Doc } from '@/db/_generated/dataModel'
+import { CreateWord } from '@/db/game'
+import type { User } from '@/db/username'
+import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
-import { createContext, useCallback, useContext, useState } from 'react'
-import { v4 as uuid } from 'uuid'
-
-export type Word = {
-    id: string
-    text: string
-    icon: string
-    discoveredAt: Date
-    explanation?: string
-}
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 export type Order = 'asc' | 'desc'
 export type Sort = 'discovered' | 'name'
 
 type WordListContextType = {
-    list: Array<Word>
-    addWord: (word: Word) => void
+    list: Array<Doc<'word'>>
+    addWord: (word: CreateWord) => void
     applySearch: (query: string) => void
     clearSearch: () => void
     applySort: (sort: Sort, order: Order) => void
@@ -25,7 +21,7 @@ type WordListContextType = {
 const WordListContext = createContext<WordListContextType | null>(null)
 
 interface FilterAndSortProps {
-    listToFilter: Array<Word>
+    listToFilter: Array<Doc<'word'>>
     query: string
     sort: Sort
     order: Order
@@ -34,12 +30,11 @@ interface FilterAndSortProps {
 const filterAndSortList = ({ listToFilter, query, sort, order }: FilterAndSortProps) => {
     const result = [...listToFilter]
 
-    if (!!query) result.filter(word => word.text.toLowerCase().includes(query.toLowerCase()))
+    if (query) result.filter(word => word.text.toLowerCase().includes(query.toLowerCase()))
 
     result.sort((a, b) => {
-        if (sort === 'discovered') return a.discoveredAt.getTime() - b.discoveredAt.getTime()
-        else if (sort === 'name') return a.text.localeCompare(b.text)
-        return 0
+        if (sort === 'discovered') return a._creationTime - b._creationTime
+        else return a.text.localeCompare(b.text)
     })
 
     if (order === 'desc') result.reverse()
@@ -50,56 +45,63 @@ const filterAndSortList = ({ listToFilter, query, sort, order }: FilterAndSortPr
 const DEFAULT_SORT = 'discovered'
 const DEFAULT_ORDER = 'asc'
 
-export function WordListProvider({ children }: { children: ReactNode }) {
-    const [list, setList] = useState<Array<Word>>([
-        { id: uuid(), text: 'water', icon: '💧', discoveredAt: new Date() },
-        { id: uuid(), text: 'fire', icon: '🔥', discoveredAt: new Date() },
-        { id: uuid(), text: 'wind', icon: '💨', discoveredAt: new Date() },
-        { id: uuid(), text: 'earth', icon: '🌍', discoveredAt: new Date() },
-    ])
+interface Props {
+    children: ReactNode
+    user: User
+}
+
+export function WordListProvider({ children, user }: Props) {
+    const currentGame = useConvexQuery(api.game.get, { playerId: user._id })
+
+    const addWordMutation = useConvexMutation(api.game.addWord)
+
+    // const [list, setList] = useState<Array<Word>>([
+    //     { id: uuid(), text: 'water', icon: '💧', discoveredAt: new Date() },
+    //     { id: uuid(), text: 'fire', icon: '🔥', discoveredAt: new Date() },
+    //     { id: uuid(), text: 'wind', icon: '💨', discoveredAt: new Date() },
+    //     { id: uuid(), text: 'earth', icon: '🌍', discoveredAt: new Date() },
+    // ])
+
     const [query, setQuery] = useState<string>('')
     const [sort, setSort] = useState<Sort>(DEFAULT_SORT)
     const [order, setOrder] = useState<Order>(DEFAULT_ORDER)
 
-    const addWord = useCallback(
-        (word: Word) => {
-            setList(prev => filterAndSortList({ listToFilter: [...prev, word], query, sort, order }))
-        },
-        [query, sort, order],
+    const filteredList = useMemo(
+        () => (currentGame ? filterAndSortList({ listToFilter: currentGame.words, query, sort, order }) : []),
+        [currentGame, query, sort, order],
     )
 
-    const applySearch = useCallback(
-        (newQuery: string) => {
-            setQuery(newQuery)
-            setList(prev => filterAndSortList({ listToFilter: prev, query: newQuery, sort, order }))
+    const addWord = useCallback(
+        (word: CreateWord) => {
+            if (!currentGame) return
+
+            addWordMutation({ ...word, playerId: user._id, gameId: currentGame.game._id })
         },
-        [sort, order],
+        [currentGame, addWordMutation, user],
     )
+
+    const applySearch = useCallback((newQuery: string) => {
+        setQuery(newQuery)
+    }, [])
 
     const clearSearch = useCallback(() => {
         setQuery('')
-        setList(prev => filterAndSortList({ listToFilter: prev, query: '', sort, order }))
-    }, [sort, order])
+    }, [])
 
-    const applySort = useCallback(
-        (newSort: Sort, newOrder: Order) => {
-            setSort(newSort)
-            setOrder(newOrder)
-            setList(prev => filterAndSortList({ listToFilter: prev, query, sort: newSort, order: newOrder }))
-        },
-        [query],
-    )
+    const applySort = useCallback((newSort: Sort, newOrder: Order) => {
+        setSort(newSort)
+        setOrder(newOrder)
+    }, [])
 
     const resetSort = useCallback(() => {
         setSort(DEFAULT_SORT)
         setOrder(DEFAULT_ORDER)
-        setList(prev => filterAndSortList({ listToFilter: prev, query, sort: DEFAULT_SORT, order: DEFAULT_ORDER }))
-    }, [query])
+    }, [])
 
     return (
         <WordListContext.Provider
             value={{
-                list,
+                list: filteredList,
                 addWord,
                 applySearch,
                 clearSearch,

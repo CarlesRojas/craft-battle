@@ -1,7 +1,9 @@
 import { Button } from '@/component/ui/button'
 import { getUser } from '@/data/getUser'
+import { api } from '@/db/_generated/api'
 import { getTranslation } from '@/locale/getTranslation'
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { useConvex } from 'convex/react'
 
 export const Route = createFileRoute('/$language/mode')({
     component: SelectGamePage,
@@ -16,6 +18,8 @@ export const Route = createFileRoute('/$language/mode')({
 function SelectGamePage() {
     const { user, language } = Route.useRouteContext()
     const t = getTranslation(language)
+    const router = useRouter()
+    const convex = useConvex()
 
     return (
         <main className="full-page relative flex items-center justify-center pt-8">
@@ -28,19 +32,25 @@ function SelectGamePage() {
                     <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.choose}</h2>
 
                     <ul className="grid w-full grid-rows-3 gap-4">
-                        <Link to="/$language/game">
-                            <Button size="fit" variant="white" className="size-full" asChild>
-                                <div className="flex flex-col justify-start">
-                                    <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
-                                        {t.mode.classic.title}
-                                    </h3>
+                        <Button
+                            onClick={async () => {
+                                await convex.mutation(api.game.create, { playerId: user._id })
+                                router.navigate({ to: '/$language/game', params: { language } })
+                            }}
+                            size="fit"
+                            variant="white"
+                            className="size-full"
+                        >
+                            <div className="flex flex-col justify-start">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                    {t.mode.classic.title}
+                                </h3>
 
-                                    <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                        {t.mode.classic.description}
-                                    </p>
-                                </div>
-                            </Button>
-                        </Link>
+                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
+                                    {t.mode.classic.description}
+                                </p>
+                            </div>
+                        </Button>
 
                         <Link to="/$language/new-bingo">
                             <Button size="fit" variant="white" className="size-full" asChild>

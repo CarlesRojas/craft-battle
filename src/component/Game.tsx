@@ -27,6 +27,7 @@ const Game = () => {
                         />
                     </div>
                 </div>
+
                 <div ref={listArea} className="relative h-fit w-full md:h-full md:w-[unset] md:max-w-96 md:min-w-96">
                     <div
                         className="h-[calc(100%-3rem) hidden max-h-[calc(100%-3rem)] min-h-[calc(100%-3rem)] w-full overflow-y-auto border-l border-neutral-500/30 p-3 md:flex"
@@ -35,7 +36,7 @@ const Game = () => {
                         <div className="flex h-fit w-full flex-wrap gap-3 overflow-y-auto" ref={scrollAreaDesktop}>
                             {list.map(word => (
                                 <ListWord
-                                    key={word.id}
+                                    key={word._id}
                                     word={word.text}
                                     icon={word.icon}
                                     scrollArea={scrollAreaDesktop}
@@ -51,12 +52,12 @@ const Game = () => {
                         ref={scrollAreaMobile}
                     >
                         {Array.from({ length: 4 }, (_, mod) => (
-                            <div className="flex gap-3">
+                            <div className="flex gap-3" key={mod}>
                                 {list.map(
                                     (word, i) =>
                                         i % 4 === mod && (
                                             <ListWord
-                                                key={word.id}
+                                                key={word._id}
                                                 word={word.text}
                                                 icon={word.icon}
                                                 scrollArea={scrollAreaMobile}

@@ -1,6 +1,6 @@
 import { v } from 'convex/values'
 import { normalize } from '../src/lib/normalize'
-import { Doc } from './_generated/dataModel'
+import type { Doc } from './_generated/dataModel'
 import { mutation, query } from './_generated/server'
 
 const parseUser = (user: Doc<'user'> | null) => {
@@ -45,16 +45,16 @@ export const create = mutation({
 })
 
 export const search = mutation({
-    args: { query: v.string(), excludeId: v.id('user') },
-    handler: async (ctx, { query, excludeId }) => {
-        const search = await ctx.db
+    args: { searchQuery: v.string(), excludeId: v.id('user') },
+    handler: async (ctx, { searchQuery, excludeId }) => {
+        const result = await ctx.db
             .query('user')
-            .withSearchIndex('user', q => q.search('normalizedUsername', normalize(query)))
+            .withSearchIndex('user', q => q.search('normalizedUsername', normalize(searchQuery)))
             .take(4)
 
         // TODO only look for users not currently in a game
 
-        return search
+        return result
             .filter(user => user._id !== excludeId)
             .map(({ key, ...user }) => user)
             .slice(0, 3)

@@ -1,32 +1,22 @@
-import type { CreateWord } from '@/db/game'
+import { api } from '@/db/_generated/api'
+import { Id } from '@/db/_generated/dataModel'
+import { WordInstance } from '@/db/instance'
+import { User } from '@/db/username'
+import type { CreateWord } from '@/db/word'
 import { useCombineWords } from '@/hook/useCombineWords'
+import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { v4 as uuid } from 'uuid'
-import z from 'zod'
-
-const WordInstanceSchema = z.object({
-    id: z.string(),
-    text: z.string(),
-    icon: z.string(),
-    explanation: z.string().optional(),
-    x: z.number(),
-    y: z.number(),
-    width: z.number(),
-    height: z.number(),
-    isLoading: z.boolean().optional(),
-})
-
-export type WordInstance = z.infer<typeof WordInstanceSchema>
 
 type WordInstancesContextType = {
     instances: Array<WordInstance>
-    overlappedWordId: string | null
+    overlappedInstanceId: string | null
+    loadingInstances: Array<Id<'instance'>>
     addInstance: (instance: WordInstance) => void
-    removeInstance: (id: string) => void
+    removeInstance: (instanceId: Id<'instance'>) => void
     replaceInstances: (instances: Array<WordInstance>) => void
-    clearInstances: () => void
-    getOverlappingWord: (word: WordInstance) => WordInstance | null
+    getOverlappingInstance: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
     combine: (word1: WordInstance, word2: WordInstance) => void
     updateSize: (instance: Partial<WordInstance>) => void
@@ -36,104 +26,174 @@ const WordInstancesContext = createContext<WordInstancesContextType | null>(null
 
 interface Props {
     children: ReactNode
-    onCombine: (result: CreateWord) => void
+    onCombine: (result: CreateWord) => Promise<Id<'word'>>
+    user: User
 }
 
-export function WordInstancesProvider({ children, onCombine }: Props) {
-    const [instances, setInstances] = useState<Array<WordInstance>>([])
-    const [overlappedWordId, setOverlappedWordId] = useState<string | null>(null)
-
+export function WordInstancesProvider({ children, onCombine, user }: Props) {
+    const game = useConvexQuery(api.game.get, { playerId: user._id })
+    const instances = useMemo(() => game?.instances ?? [], [game])
     const combineWords = useCombineWords()
 
+    const addInstanceMutation = useConvexMutation(api.instance.add).withOptimisticUpdate((localStore, args) => {
+        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+
+        if (!!currentValue)
+            localStore.setQuery(
+                api.game.get,
+                { playerId: user._id },
+                {
+                    ...currentValue,
+                    instances: [
+                        ...currentValue.instances,
+                        { ...args, _creationTime: 0, _id: `temporal-id-${uuid()}` as Id<'instance'> },
+                    ],
+                },
+            )
+    })
+
+    const removeInstanceMutation = useConvexMutation(api.instance.remove).withOptimisticUpdate((localStore, args) => {
+        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+
+        if (!!currentValue)
+            localStore.setQuery(
+                api.game.get,
+                { playerId: user._id },
+                {
+                    ...currentValue,
+                    instances: currentValue.instances.filter(instance => instance._id !== args.instanceId),
+                },
+            )
+    })
+
+    const replaceAllMutation = useConvexMutation(api.instance.replaceAll).withOptimisticUpdate((localStore, args) => {
+        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+
+        if (!!currentValue)
+            localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: args.instances })
+    })
+
+    const updateMutation = useConvexMutation(api.instance.update).withOptimisticUpdate((localStore, args) => {
+        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+
+        if (!!currentValue)
+            localStore.setQuery(
+                api.game.get,
+                { playerId: user._id },
+                {
+                    ...currentValue,
+                    instances: currentValue.instances.map(instance =>
+                        instance._id === args.instanceId
+                            ? {
+                                  ...instance,
+                                  x: args.x ?? instance.x,
+                                  y: args.y ?? instance.y,
+                                  width: args.width ?? instance.width,
+                                  height: args.height ?? instance.height,
+                              }
+                            : instance,
+                    ),
+                },
+            )
+    })
+
+    const [loadingInstances, setLoadingInstances] = useState<Array<Id<'instance'>>>([])
+    const [overlappedInstanceId, setOverlappedInstanceId] = useState<string | null>(null)
+
     const addInstance = (instance: WordInstance) => {
-        setInstances(prev => [...prev, instance])
+        addInstanceMutation({
+            wordId: instance.wordId,
+            x: instance.x,
+            y: instance.y,
+            width: instance.width,
+            height: instance.height,
+            icon: instance.icon,
+            playerId: instance.playerId,
+            text: instance.text,
+            gameId: instance.gameId,
+            _creationTime: instance._creationTime,
+        })
     }
 
-    const removeInstance = (id: string) => {
-        setInstances(prev => prev.filter(instance => instance.id !== id))
+    const removeInstance = (instanceId: Id<'instance'>) => {
+        if (instanceId.startsWith('temporal-id')) return
+        removeInstanceMutation({ instanceId })
     }
 
     const replaceInstances = (newInstances: Array<WordInstance>) => {
-        setInstances(newInstances)
+        replaceAllMutation({ instances: newInstances.filter(instance => !instance._id.startsWith('temporal-id')) })
     }
 
-    const clearInstances = () => {
-        setInstances([])
-    }
-
-    const getOverlappingWord = (word: WordInstance) => {
-        const newOverlappedWord =
+    const getOverlappingInstance = (instanceToCheck: WordInstance) => {
+        const newOverlappedInstance =
             instances.find(instance => {
-                if (instance.id === word.id || instance.isLoading) return false
+                if (instance._id === instanceToCheck._id || loadingInstances.includes(instance._id)) return false
 
                 return !(
-                    instance.x + instance.width < word.x ||
-                    word.x + word.width < instance.x ||
-                    instance.y + instance.height < word.y ||
-                    word.y + word.height < instance.y
+                    instance.x + instance.width < instanceToCheck.x ||
+                    instanceToCheck.x + instanceToCheck.width < instance.x ||
+                    instance.y + instance.height < instanceToCheck.y ||
+                    instanceToCheck.y + instanceToCheck.height < instance.y
                 )
             }) ?? null
 
-        if (overlappedWordId !== newOverlappedWord?.id) setOverlappedWordId(newOverlappedWord?.id ?? null)
+        if (overlappedInstanceId !== newOverlappedInstance?._id)
+            setOverlappedInstanceId(newOverlappedInstance?._id ?? null)
 
-        return newOverlappedWord
+        return newOverlappedInstance
     }
 
     const clearOverlapped = () => {
-        setOverlappedWordId(null)
+        setOverlappedInstanceId(null)
     }
 
     const combine = async (word1: WordInstance, word2: WordInstance) => {
-        setInstances(prev =>
-            prev
-                .filter(instance => word2.id !== instance.id)
-                .map(instance => (instance.id === word1.id ? { ...instance, isLoading: true } : instance)),
-        )
+        removeInstance(word2._id)
+        setLoadingInstances(prev => [...prev, word1._id])
 
         const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
 
-        onCombine({ text: result.result, icon: result.icon, explanation: result.explanation })
+        const wordId = await onCombine({ text: result.result, icon: result.icon, explanation: result.explanation })
 
-        setInstances(prev => [
-            ...prev.filter(instance => ![word1.id, word2.id].includes(instance.id)),
-            {
-                ...result,
-                id: uuid(),
-                text: result.result,
-                x: word1.x,
-                y: word1.y,
-                width: 0,
-                height: 0,
-            },
-        ])
+        removeInstance(word1._id)
+        addInstance({
+            wordId,
+            x: word1.x,
+            y: word1.y,
+            width: 0,
+            height: 0,
+            icon: result.icon,
+            text: result.result,
+            explanation: result.explanation,
+            gameId: game!.game._id,
+            _id: `temporal-id-${uuid()}` as Id<'instance'>,
+            playerId: user._id,
+            _creationTime: new Date().getTime(),
+        })
     }
 
-    const updateSize = ({ id, width, height, x, y }: Partial<WordInstance>) => {
-        setInstances(prev =>
-            prev.map(instance =>
-                instance.id === id
-                    ? {
-                          ...instance,
-                          width: width ?? instance.width,
-                          height: height ?? instance.height,
-                          x: x ?? instance.x,
-                          y: y ?? instance.y,
-                      }
-                    : instance,
-            ),
-        )
+    const updateSize = (instance: Partial<WordInstance>) => {
+        if (!instance._id || instance._id.startsWith('temporal-id')) return
+
+        updateMutation({
+            instanceId: instance._id,
+            x: instance.x,
+            y: instance.y,
+            width: instance.width,
+            height: instance.height,
+        })
     }
 
     return (
         <WordInstancesContext.Provider
             value={{
                 instances,
-                overlappedWordId,
+                loadingInstances,
+                overlappedInstanceId,
                 addInstance,
                 removeInstance,
                 replaceInstances,
-                clearInstances,
-                getOverlappingWord,
+                getOverlappingInstance,
                 clearOverlapped,
                 combine,
                 updateSize,

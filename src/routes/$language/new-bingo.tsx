@@ -14,7 +14,6 @@ export const Route = createFileRoute('/$language/new-bingo')({
 
 function NewBingoGamePage() {
     const { user, language } = Route.useRouteContext()
-    console.log('SELECT', user)
 
     return (
         <main className="full-page relative flex items-center justify-center pt-8">

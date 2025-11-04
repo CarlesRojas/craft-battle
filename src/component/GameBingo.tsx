@@ -1,10 +1,15 @@
 import { default as Canvas } from '@/component/Canvas'
 import { default as ListWord } from '@/component/ListWord'
+import { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
 import { useRef, useState } from 'react'
 
-const Game = () => {
+interface GameProps {
+    user: User
+}
+
+const Game = ({ user }: GameProps) => {
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
@@ -17,7 +22,7 @@ const Game = () => {
     const { list, addWord } = useWordList()
 
     return (
-        <WordInstancesProvider onCombine={addWord}>
+        <WordInstancesProvider onCombine={addWord} user={user}>
             <div className="flex size-full flex-col items-center justify-center md:flex-row" ref={dropArea}>
                 <div className="w-full grow md:h-full md:w-[unset]">
                     <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
@@ -39,8 +44,7 @@ const Game = () => {
                             {list.map(word => (
                                 <ListWord
                                     key={word._id}
-                                    word={word.text}
-                                    icon={word.icon}
+                                    word={word}
                                     scrollArea={scrollAreaDesktop}
                                     canvasArea={canvasArea}
                                     setDraggingOverCanvas={setDraggingOverCanvas}
@@ -60,8 +64,7 @@ const Game = () => {
                                         i % 4 === mod && (
                                             <ListWord
                                                 key={word._id}
-                                                word={word.text}
-                                                icon={word.icon}
+                                                word={word}
                                                 scrollArea={scrollAreaMobile}
                                                 canvasArea={canvasArea}
                                                 setDraggingOverCanvas={setDraggingOverCanvas}

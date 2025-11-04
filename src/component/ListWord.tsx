@@ -1,5 +1,6 @@
 import WordCapsule from '@/component/WordCapsule'
-import type { WordInstance } from '@/integration/WordInstancesProvider'
+import { Doc, Id } from '@/db/_generated/dataModel'
+import { WordInstance } from '@/db/instance'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -10,16 +11,15 @@ import { useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 interface Props {
-    word: string
-    icon: string
+    word: Doc<'word'>
     canvasArea: RefObject<HTMLDivElement | null>
     scrollArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
-const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDraggingOverCanvas }: Props) => {
-    const { addInstance, getOverlappingWord, clearOverlapped, combine } = useWordInstances()
+const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingOverCanvas }: Props) => {
+    const { addInstance, getOverlappingInstance, clearOverlapped, combine } = useWordInstances()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
     const wordRef = useRef<HTMLDivElement>(null)
@@ -33,17 +33,17 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
-            const updatedWord: WordInstance = {
-                id: uuid(),
-                text: word,
-                icon,
+            const updatedInstance: WordInstance = {
+                ...word,
+                _id: `temporal-id-${uuid()}` as Id<'instance'>,
+                wordId: word._id,
                 x: x - clickOffset.current.x,
                 y: y - clickOffset.current.y,
                 width: clickOffset.current.width,
                 height: clickOffset.current.height,
             }
 
-            const overlappingWord = getOverlappingWord(updatedWord)
+            const overlappingInstance = getOverlappingInstance(updatedInstance)
 
             if (first) {
                 isDragging.current = false
@@ -67,10 +67,10 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                 const canvasRect = canvasArea.current.getBoundingClientRect()
 
                 insideCanvas = !(
-                    updatedWord.x + updatedWord.width < canvasRect.x ||
-                    canvasRect.x + canvasRect.width < updatedWord.x ||
-                    updatedWord.y + updatedWord.height < canvasRect.y ||
-                    canvasRect.y + canvasRect.height < updatedWord.y
+                    updatedInstance.x + updatedInstance.width < canvasRect.x ||
+                    canvasRect.x + canvasRect.width < updatedInstance.x ||
+                    updatedInstance.y + updatedInstance.height < canvasRect.y ||
+                    canvasRect.y + canvasRect.height < updatedInstance.y
                 )
 
                 setDraggingOverCanvas(insideCanvas)
@@ -82,8 +82,8 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                 if (canvasArea.current && isDragging.current && insideCanvas) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
-                    const newWordInstance: WordInstance = {
-                        ...updatedWord,
+                    const newInstance: WordInstance = {
+                        ...updatedInstance,
                         x: clamp(
                             x - clickOffset.current.x,
                             canvasRect.x,
@@ -96,8 +96,8 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                         ),
                     }
 
-                    if (overlappingWord) combine(overlappingWord, newWordInstance)
-                    else addInstance(newWordInstance)
+                    if (overlappingInstance) combine(overlappingInstance, newInstance)
+                    else addInstance(newInstance)
                 }
 
                 clearOverlapped()
@@ -123,13 +123,13 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                     const padding = 8
 
                     addInstance({
-                        id: uuid(),
-                        text: word,
-                        icon,
+                        wordId: word._id,
                         x: canvasRect.x + padding + Math.random() * (canvasRect.width - wordRect.width - padding * 2),
                         y: canvasRect.y + padding + Math.random() * (canvasRect.height - wordRect.height - padding * 2),
                         width: wordRect.width,
                         height: wordRect.height,
+                        ...word,
+                        _id: `temporal-id-${uuid()}` as Id<'instance'>,
                     })
                 }
             }}
@@ -139,11 +139,11 @@ const ListWord = ({ word, icon, canvasArea, scrollArea, isMobile = false, setDra
                     style={{ x: spring.x.to(value => value - scrollLeft), y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
-                    <WordCapsule word={word} icon={icon} className="bg-neutral-800" />
+                    <WordCapsule word={word} className="bg-neutral-800" />
                 </animated.div>
             )}
 
-            <WordCapsule word={word} icon={icon} />
+            <WordCapsule word={word} />
         </div>
     )
 }

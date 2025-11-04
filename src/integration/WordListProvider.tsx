@@ -1,7 +1,7 @@
 import { api } from '@/db/_generated/api'
-import type { Doc } from '@/db/_generated/dataModel'
-import type { CreateWord } from '@/db/game'
+import type { Doc, Id } from '@/db/_generated/dataModel'
 import type { User } from '@/db/username'
+import type { CreateWord } from '@/db/word'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
@@ -11,7 +11,7 @@ export type Sort = 'discovered' | 'name'
 
 type WordListContextType = {
     list: Array<Doc<'word'>>
-    addWord: (word: CreateWord) => void
+    addWord: (word: CreateWord) => Promise<Id<'word'>>
     applySearch: (query: string) => void
     clearSearch: () => void
     applySort: (sort: Sort, order: Order) => void
@@ -51,33 +51,24 @@ interface Props {
 }
 
 export function WordListProvider({ children, user }: Props) {
-    const currentGame = useConvexQuery(api.game.get, { playerId: user._id })
-
-    const addWordMutation = useConvexMutation(api.game.addWord)
-
-    // const [list, setList] = useState<Array<Word>>([
-    //     { id: uuid(), text: 'water', icon: '💧', discoveredAt: new Date() },
-    //     { id: uuid(), text: 'fire', icon: '🔥', discoveredAt: new Date() },
-    //     { id: uuid(), text: 'wind', icon: '💨', discoveredAt: new Date() },
-    //     { id: uuid(), text: 'earth', icon: '🌍', discoveredAt: new Date() },
-    // ])
+    const game = useConvexQuery(api.game.get, { playerId: user._id })
+    const addWordMutation = useConvexMutation(api.word.add)
 
     const [query, setQuery] = useState<string>('')
     const [sort, setSort] = useState<Sort>(DEFAULT_SORT)
     const [order, setOrder] = useState<Order>(DEFAULT_ORDER)
 
     const filteredList = useMemo(
-        () => (currentGame ? filterAndSortList({ listToFilter: currentGame.words, query, sort, order }) : []),
-        [currentGame, query, sort, order],
+        () => (game ? filterAndSortList({ listToFilter: game.words, query, sort, order }) : []),
+        [game, query, sort, order],
     )
 
     const addWord = useCallback(
-        (word: CreateWord) => {
-            if (!currentGame) return
-
-            addWordMutation({ ...word, playerId: user._id, gameId: currentGame.game._id })
+        async (word: CreateWord) => {
+            const wordId: Id<'word'> = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
+            return wordId
         },
-        [currentGame, addWordMutation, user],
+        [game, addWordMutation, user],
     )
 
     const applySearch = useCallback((newQuery: string) => {

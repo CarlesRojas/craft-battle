@@ -48,9 +48,18 @@ export default defineSchema({
         text: v.string(),
         icon: v.string(),
         explanation: v.optional(v.string()),
+
         gameId: v.union(v.id('game'), v.id('bingoGame')),
         playerId: v.id('user'),
     })
         .index('player', ['gameId', 'playerId'])
         .index('word', ['text']),
+
+    instance: defineTable({
+        wordId: v.id('word'),
+        x: v.number(),
+        y: v.number(),
+        width: v.number(),
+        height: v.number(),
+    }).index('word', ['wordId']),
 })

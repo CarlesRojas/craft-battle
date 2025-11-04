@@ -1,4 +1,4 @@
-import CanvasWord from '@/component/CanvasWord'
+import CanvasWordInstance from '@/component/CanvasWordInstance'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) => {
-    const { instances, replaceInstances } = useWordInstances()
+    const { instances, replaceInstances, loadingInstances } = useWordInstances()
 
     const onResize = useDebounceCallback(() => {
         const rect = innerRef.current?.getBoundingClientRect()
@@ -39,8 +39,13 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
             </div>
 
             {instances.map(instance => (
-                <div key={instance.id} className="absolute" style={{ left: instance.x, top: instance.y }}>
-                    <CanvasWord word={instance} canvasArea={innerRef} setDraggingOverCanvas={setDraggingOverCanvas} />
+                <div key={instance._id} className="absolute" style={{ left: instance.x, top: instance.y }}>
+                    <CanvasWordInstance
+                        instance={instance}
+                        canvasArea={innerRef}
+                        setDraggingOverCanvas={setDraggingOverCanvas}
+                        isLoading={loadingInstances.includes(instance._id)}
+                    />
                 </div>
             ))}
         </div>

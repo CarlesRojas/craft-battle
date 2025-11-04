@@ -13,7 +13,6 @@ export const Route = createFileRoute('/$language/new-battle')({
 
 function NewBattlePage() {
     const { user } = Route.useRouteContext()
-    console.log('SELECT', user)
 
     return <main className="full-page relative flex items-center justify-center pt-8">New Battle</main>
 }

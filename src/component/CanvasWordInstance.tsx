@@ -1,5 +1,5 @@
 import WordCapsule from '@/component/WordCapsule'
-import type { WordInstance } from '@/integration/WordInstancesProvider'
+import type { WordInstance } from '@/db/instance'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -9,39 +9,40 @@ import type { RefObject } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 interface Props {
-    word: WordInstance
+    instance: WordInstance
     canvasArea: RefObject<HTMLDivElement | null>
     isMobile?: boolean
+    isLoading?: boolean
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
-const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
-    const { overlappedWordId, getOverlappingWord, clearOverlapped, combine, removeInstance, updateSize } =
+const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggingOverCanvas }: Props) => {
+    const { overlappedInstanceId, getOverlappingInstance, clearOverlapped, combine, removeInstance, updateSize } =
         useWordInstances()
 
     const [isDragging, setIsDragging] = useState(false)
 
-    const wordRef = useRef<HTMLDivElement>(null)
+    const instanceRef = useRef<HTMLDivElement>(null)
     const clickOffset = useRef({ x: 0, y: 0, width: 0, height: 0 })
 
     const [spring, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
     const bind = useDrag(
         ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
-            const updatedWord: WordInstance = {
-                ...word,
+            const updatedInstance: WordInstance = {
+                ...instance,
                 x: x - clickOffset.current.x,
                 y: y - clickOffset.current.y,
                 width: clickOffset.current.width,
                 height: clickOffset.current.height,
             }
 
-            const overlappingWord = getOverlappingWord(updatedWord)
+            const overlappingInstance = getOverlappingInstance(updatedInstance)
 
             if (first) {
                 setIsDragging(true)
-                if (!wordRef.current) return
-                const wordRect = wordRef.current.getBoundingClientRect()
+                if (!instanceRef.current) return
+                const wordRect = instanceRef.current.getBoundingClientRect()
 
                 clickOffset.current = {
                     x: x - wordRect.left,
@@ -56,10 +57,10 @@ const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
                 const canvasRect = canvasArea.current.getBoundingClientRect()
 
                 insideCanvas = !(
-                    updatedWord.x + updatedWord.width < canvasRect.x ||
-                    canvasRect.x + canvasRect.width < updatedWord.x ||
-                    updatedWord.y + updatedWord.height < canvasRect.y ||
-                    canvasRect.y + canvasRect.height < updatedWord.y
+                    updatedInstance.x + updatedInstance.width < canvasRect.x ||
+                    canvasRect.x + canvasRect.width < updatedInstance.x ||
+                    updatedInstance.y + updatedInstance.height < canvasRect.y ||
+                    canvasRect.y + canvasRect.height < updatedInstance.y
                 )
 
                 setDraggingOverCanvas(insideCanvas)
@@ -69,11 +70,11 @@ const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
                 if (canvasArea.current) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
-                    if (!insideCanvas) removeInstance(word.id)
-                    else if (overlappingWord) combine(overlappingWord, updatedWord)
+                    if (!insideCanvas) removeInstance(instance._id)
+                    else if (overlappingInstance) combine(overlappingInstance, updatedInstance)
                     else
                         updateSize({
-                            ...updatedWord,
+                            ...updatedInstance,
                             x: clamp(
                                 x - clickOffset.current.x,
                                 canvasRect.x,
@@ -100,30 +101,28 @@ const CanvasWord = ({ word, canvasArea, setDraggingOverCanvas }: Props) => {
 
     useEffect(() => {
         api.set({ x: 0, y: 0 })
-    }, [word.x, word.y, api])
+    }, [instance.x, instance.y, api])
 
     return (
         <animated.div
             {...bind()}
-            ref={wordRef}
+            ref={instanceRef}
             style={{ ...spring }}
             className={cn(
                 'absolute z-10 cursor-grab touch-none',
                 isDragging && 'z-30',
-                word.isLoading && 'pointer-events-none',
+                isLoading && 'pointer-events-none',
             )}
         >
             <WordCapsule
-                id={word.id}
-                word={word.text}
-                icon={word.icon}
-                explanation={word.explanation}
-                className={overlappedWordId === word.id ? 'border-sky-800 bg-sky-950' : ''}
-                isLoading={word.isLoading}
-                isNewCombination={word.width === 0 && word.height === 0}
+                instanceId={instance._id}
+                word={{ ...instance, _id: instance.wordId }}
+                className={overlappedInstanceId === instance._id ? 'border-sky-800 bg-sky-950' : ''}
+                isLoading={isLoading}
+                isNewCombination={instance.width === 0 && instance.height === 0}
             />
         </animated.div>
     )
 }
 
-export default CanvasWord
+export default CanvasWordInstance

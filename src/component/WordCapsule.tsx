@@ -1,4 +1,4 @@
-import { Doc, Id } from '@/db/_generated/dataModel'
+import type { Doc, Id } from '@/db/_generated/dataModel'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'

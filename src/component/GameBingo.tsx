@@ -1,6 +1,6 @@
 import { default as Canvas } from '@/component/Canvas'
 import { default as ListWord } from '@/component/ListWord'
-import { User } from '@/db/username'
+import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
 import { useRef, useState } from 'react'

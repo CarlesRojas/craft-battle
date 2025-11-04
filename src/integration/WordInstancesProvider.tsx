@@ -1,7 +1,7 @@
 import { api } from '@/db/_generated/api'
-import { Id } from '@/db/_generated/dataModel'
-import { WordInstance } from '@/db/instance'
-import { User } from '@/db/username'
+import type { Id } from '@/db/_generated/dataModel'
+import type { WordInstance } from '@/db/instance'
+import type { User } from '@/db/username'
 import type { CreateWord } from '@/db/word'
 import { useCombineWords } from '@/hook/useCombineWords'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
@@ -37,64 +37,64 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
 
     const addInstanceMutation = useConvexMutation(api.instance.add).withOptimisticUpdate((localStore, args) => {
         const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        if (!currentValue) return
 
-        if (!!currentValue)
-            localStore.setQuery(
-                api.game.get,
-                { playerId: user._id },
-                {
-                    ...currentValue,
-                    instances: [
-                        ...currentValue.instances,
-                        { ...args, _creationTime: 0, _id: `temporal-id-${uuid()}` as Id<'instance'> },
-                    ],
-                },
-            )
+        localStore.setQuery(
+            api.game.get,
+            { playerId: user._id },
+            {
+                ...currentValue,
+                instances: [
+                    ...currentValue.instances,
+                    { ...args, _creationTime: 0, _id: `temporal-id-${uuid()}` as Id<'instance'> },
+                ],
+            },
+        )
     })
 
     const removeInstanceMutation = useConvexMutation(api.instance.remove).withOptimisticUpdate((localStore, args) => {
         const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        if (!currentValue) return
 
-        if (!!currentValue)
-            localStore.setQuery(
-                api.game.get,
-                { playerId: user._id },
-                {
-                    ...currentValue,
-                    instances: currentValue.instances.filter(instance => instance._id !== args.instanceId),
-                },
-            )
+        localStore.setQuery(
+            api.game.get,
+            { playerId: user._id },
+            {
+                ...currentValue,
+                instances: currentValue.instances.filter(instance => instance._id !== args.instanceId),
+            },
+        )
     })
 
     const replaceAllMutation = useConvexMutation(api.instance.replaceAll).withOptimisticUpdate((localStore, args) => {
         const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        if (!currentValue) return
 
-        if (!!currentValue)
-            localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: args.instances })
+        localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: args.instances })
     })
 
     const updateMutation = useConvexMutation(api.instance.update).withOptimisticUpdate((localStore, args) => {
         const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        if (!currentValue) return
 
-        if (!!currentValue)
-            localStore.setQuery(
-                api.game.get,
-                { playerId: user._id },
-                {
-                    ...currentValue,
-                    instances: currentValue.instances.map(instance =>
-                        instance._id === args.instanceId
-                            ? {
-                                  ...instance,
-                                  x: args.x ?? instance.x,
-                                  y: args.y ?? instance.y,
-                                  width: args.width ?? instance.width,
-                                  height: args.height ?? instance.height,
-                              }
-                            : instance,
-                    ),
-                },
-            )
+        localStore.setQuery(
+            api.game.get,
+            { playerId: user._id },
+            {
+                ...currentValue,
+                instances: currentValue.instances.map(instance =>
+                    instance._id === args.instanceId
+                        ? {
+                              ...instance,
+                              x: args.x ?? instance.x,
+                              y: args.y ?? instance.y,
+                              width: args.width ?? instance.width,
+                              height: args.height ?? instance.height,
+                          }
+                        : instance,
+                ),
+            },
+        )
     })
 
     const [loadingInstances, setLoadingInstances] = useState<Array<Id<'instance'>>>([])

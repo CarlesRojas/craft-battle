@@ -1,6 +1,6 @@
 import WordCapsule from '@/component/WordCapsule'
-import { Doc, Id } from '@/db/_generated/dataModel'
-import { WordInstance } from '@/db/instance'
+import type { Doc, Id } from '@/db/_generated/dataModel'
+import type { WordInstance } from '@/db/instance'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'

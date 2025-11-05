@@ -5,6 +5,7 @@ import { Sound, useAudio } from '@/integration/AudioProvider'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useConvex, useQuery as useConvexQuery } from 'convex/react'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/mode')({
     component: SelectGamePage,
@@ -23,6 +24,7 @@ function SelectGamePage() {
     const convex = useConvex()
     const { play } = useAudio()
 
+    const [isLoading, setIsLoading] = useState(false)
     const activeClassicGame = useConvexQuery(api.game.get, { playerId: user._id })
 
     return (
@@ -32,7 +34,7 @@ function SelectGamePage() {
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
-                {activeClassicGame && (
+                {activeClassicGame && !isLoading && (
                     <div className="flex w-full flex-col items-center gap-4">
                         <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
 
@@ -60,6 +62,7 @@ function SelectGamePage() {
                     <ul className="grid w-full grid-rows-3 gap-4">
                         <Button
                             onClick={async () => {
+                                setIsLoading(true)
                                 play(Sound.CLICK)
                                 await convex.mutation(api.game.create, { playerId: user._id })
                                 router.navigate({ to: '/game' })
@@ -67,6 +70,7 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
+                            disabled={isLoading}
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
@@ -87,7 +91,7 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
-                            // disabled
+                            disabled={isLoading}
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">

@@ -1,5 +1,5 @@
 import { FunctionOnce } from '@/lib/functionOnce'
-import { LOCAL_STORAGE_PREFIX } from '@/lib/localStorage'
+import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
 import { createContext, use, useEffect, useState } from 'react'
 
 export type ResolvedTheme = 'dark' | 'light'
@@ -30,7 +30,7 @@ const isBrowser = typeof window !== 'undefined'
 export function ThemeProvider({
     children,
     defaultTheme = 'system',
-    storageKey = `${LOCAL_STORAGE_PREFIX}THEME`,
+    storageKey = `${LOCAL_STORAGE_PREFIX}_THEME`,
 }: ThemeProviderProps) {
     const [theme, setTheme] = useState<Theme>(
         () => (isBrowser ? (localStorage.getItem(storageKey) as Theme | null) : defaultTheme) || defaultTheme,

@@ -1,6 +1,6 @@
 import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
-import { createLocalStorage } from '@/lib/localStorage'
+import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import z from 'zod'
 
@@ -8,25 +8,23 @@ interface Props {
     convex: ConvexQueryClient
 }
 
-const usernameStorage = createLocalStorage(
-    'USERNAME',
-    z.object({ username: z.string(), key: z.string() }).optional(),
-    undefined,
-)
+const UserSchema = z.object({ username: z.string(), key: z.string() }).nullable()
 
 export const getUser = async ({ convex }: Props) => {
-    const storedUsername = usernameStorage.get()
+    const storedUser = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}_USER`)
+    const parsedUser = UserSchema.safeParse(storedUser ? JSON.parse(storedUser) : null)
+    if (!parsedUser.success) return null
 
     let user: User | null = null
 
-    if (storedUsername) {
-        user = await convex.convexClient.mutation(api.username.create, storedUsername)
-        if (!user) usernameStorage.remove()
+    if (parsedUser.data) {
+        user = await convex.convexClient.mutation(api.username.create, parsedUser.data)
+        if (!user) localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}_USER`)
     }
 
     return user
 }
 
 export const setUser = (user: User, key: string) => {
-    usernameStorage.set({ username: user.username, key })
+    localStorage.setItem(`${LOCAL_STORAGE_PREFIX}_USER`, JSON.stringify({ username: user.username, key }))
 }

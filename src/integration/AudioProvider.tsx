@@ -1,10 +1,9 @@
 import BubbleSound from '@/audio/bubble.webm'
 import ClickSound from '@/audio/click.webm'
-import ClearSound from '@/audio/delete.webm'
 import PingSound from '@/audio/ping.webm'
 import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
 import type { ReactNode } from 'react'
-import { createContext, useCallback, useContext, useRef } from 'react'
+import { createContext, useCallback, useContext } from 'react'
 import useSound from 'use-sound'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -29,22 +28,19 @@ interface Props {
 
 export function AudioProvider({ children }: Props) {
     const [muted, setMuted] = useLocalStorage(`${LOCAL_STORAGE_PREFIX}_MUTED`, false)
-    const mutedRef = useRef(false)
 
     const [playClick] = useSound(ClickSound, { soundEnabled: !muted })
-    const [playBubble] = useSound(BubbleSound, { volume: 0.3, soundEnabled: !muted })
-    const [playClear] = useSound(ClearSound, { volume: 0.7, soundEnabled: !muted })
-    const [playPing] = useSound(PingSound, { volume: 0.7, soundEnabled: !muted })
+    const [playBubble] = useSound(BubbleSound, { soundEnabled: !muted, volume: 0.3 })
+    const [playClear] = useSound('src/audio/delete.webm', { soundEnabled: !muted, volume: 0.7 })
+    const [playPing] = useSound(PingSound, { soundEnabled: !muted, volume: 0.7 })
 
     const toggleMute = useCallback(() => {
-        const nextMuted = !mutedRef.current
-        mutedRef.current = nextMuted
-        setMuted(nextMuted)
+        setMuted(prev => !prev)
     }, [])
 
     const play = useCallback(
         (sound: Sound) => {
-            if (mutedRef.current) return
+            if (muted) return
 
             const playSound: Record<Sound, () => void> = {
                 [Sound.CLICK]: () => playClick(),

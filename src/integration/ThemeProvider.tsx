@@ -1,5 +1,5 @@
 import { FunctionOnce } from '@/lib/functionOnce'
-import { LOCAL_STORAGE_PREFIX, isLocalStorageAvailable } from '@/lib/storage'
+import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
 import { createContext, use, useEffect, useState } from 'react'
 
 export type ResolvedTheme = 'dark' | 'light'
@@ -25,14 +25,15 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
+const isBrowser = typeof window !== 'undefined'
+
 export function ThemeProvider({
     children,
     defaultTheme = 'system',
     storageKey = `${LOCAL_STORAGE_PREFIX}_THEME`,
 }: ThemeProviderProps) {
-    const canStorage = isLocalStorageAvailable()
     const [theme, setTheme] = useState<Theme>(
-        () => (canStorage ? (localStorage.getItem(storageKey) as Theme | null) : defaultTheme) || defaultTheme,
+        () => (isBrowser ? (localStorage.getItem(storageKey) as Theme | null) : defaultTheme) || defaultTheme,
     )
     const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light')
 
@@ -64,7 +65,7 @@ export function ThemeProvider({
         theme,
         resolvedTheme,
         setTheme: (newTheme: Theme) => {
-            if (canStorage) localStorage.setItem(storageKey, newTheme)
+            localStorage.setItem(storageKey, newTheme)
             setTheme(newTheme)
         },
     }
@@ -73,7 +74,6 @@ export function ThemeProvider({
         <ThemeProviderContext value={value}>
             <FunctionOnce param={storageKey}>
                 {key => {
-                    if (!canStorage) return
                     const storageTheme: string | null = localStorage.getItem(key)
 
                     if (

@@ -33,9 +33,11 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
                 y: clamp(instance.y, rect.y + CANVAS_PADDING, rect.y + rect.height - instance.height - CANVAS_PADDING),
             })),
         )
-    }, 200)
+    }, 300)
 
     useEventListener('resize', onResize)
+
+    const clearInstancesDebounced = useDebounceCallback(clearInstances, 500, { leading: true })
 
     return (
         <div className="size-full" ref={innerRef}>
@@ -72,9 +74,9 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
                         className="absolute top-4 right-4"
                         onClick={() => {
                             play(Sound.CLEAR)
-                            clearInstances()
+                            clearInstancesDebounced()
                         }}
-                        disabled={instances.length === 0}
+                        disabled={instances.length === 0 || loadingInstances.length > 0}
                     >
                         <BrushCleaning className={cn('size-5', resolvedTheme === 'dark' && 'stroke-[2.5]')} />
                     </Button>

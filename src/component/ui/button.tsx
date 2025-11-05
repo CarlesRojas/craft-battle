@@ -56,7 +56,7 @@ function Button({
     const Comp = asChild ? Slot : 'button'
 
     return (
-        <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props}>
+        <Comp data-slot="button" type="button" className={cn(buttonVariants({ variant, size, className }))} {...props}>
             <div className={cn('size-fit', (size === 'icon' || size === 'smallIcon') && 'size-5')}>
                 <div className="target-tl pointer-events-none absolute -inset-1.5 z-10 hidden bg-black/70 group-hover:block group-focus-visible:block dark:bg-white/70" />
                 <div className="target-tr pointer-events-none absolute -inset-1.5 z-10 hidden bg-black/70 group-hover:block group-focus-visible:block dark:bg-white/70" />

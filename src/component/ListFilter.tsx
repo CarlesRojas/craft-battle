@@ -91,7 +91,6 @@ const ListFilter = ({ language }: Props) => {
                     children={field => (
                         <Field>
                             <Button
-                                type="button"
                                 size="icon"
                                 variant="input"
                                 name={field.name}

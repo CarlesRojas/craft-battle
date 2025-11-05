@@ -187,7 +187,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             _creationTime: new Date().getTime(),
         })
 
-        setLoadingInstances(prev => prev.filter(id => id !== word1._id))
+        setLoadingInstances(prev => prev.filter(currId => currId !== word1._id))
 
         return isNew
     }

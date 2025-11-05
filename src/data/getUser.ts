@@ -1,6 +1,6 @@
 import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
-import { isLocalStorageAvailable, LOCAL_STORAGE_PREFIX } from '@/lib/storage'
+import { LOCAL_STORAGE_PREFIX, isLocalStorageAvailable } from '@/lib/storage'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import z from 'zod'
 

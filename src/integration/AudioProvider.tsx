@@ -33,7 +33,7 @@ export function AudioProvider({ children }: Props) {
 
     const toggleMute = useCallback(() => {
         setMuted(prev => !prev)
-    }, [])
+    }, [setMuted])
 
     const play = useCallback(
         (sound: Sound) => {
@@ -48,7 +48,7 @@ export function AudioProvider({ children }: Props) {
 
             playSound[sound]()
         },
-        [playClick, playBubble, playClear, playPing],
+        [muted, playClick, playBubble, playClear, playPing],
     )
 
     return <AudioContext.Provider value={{ muted, toggleMute, play }}>{children}</AudioContext.Provider>

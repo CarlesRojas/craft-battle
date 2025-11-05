@@ -14,7 +14,8 @@ import z from 'zod'
 
 export const Route = createFileRoute('/')({
     component: CreateUsernamePage,
-    beforeLoad: async ({ context: { convex, language } }) => {
+    ssr: false,
+    beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
         if (user) throw redirect({ to: '/mode' })
 

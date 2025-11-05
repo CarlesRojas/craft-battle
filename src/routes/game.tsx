@@ -6,6 +6,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/game')({
     component: GamePage,
+    ssr: false,
     beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
         if (!user) throw redirect({ to: '/' })

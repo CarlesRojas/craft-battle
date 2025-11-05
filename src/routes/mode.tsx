@@ -9,6 +9,7 @@ import { useState } from 'react'
 
 export const Route = createFileRoute('/mode')({
     component: SelectGamePage,
+    ssr: false,
     beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
         if (!user) throw redirect({ to: '/' })

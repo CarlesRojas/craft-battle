@@ -43,6 +43,7 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
             const overlappingInstance = getOverlappingInstance(updatedInstance)
 
             if (first) {
+                play(Sound.CLICK)
                 setIsDragging(true)
                 if (!instanceRef.current) return
                 const wordRect = instanceRef.current.getBoundingClientRect()

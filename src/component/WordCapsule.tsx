@@ -1,6 +1,5 @@
 import { CANVAS_PADDING } from '@/component/Canvas'
 import type { Doc, Id } from '@/db/_generated/dataModel'
-import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -27,7 +26,6 @@ const WordCapsule = ({
     canvasRef,
 }: Props) => {
     const { updateSize } = useWordInstances()
-    const { play } = useAudio()
 
     const wordRef = useRef<HTMLDivElement>(null)
 
@@ -71,7 +69,6 @@ const WordCapsule = ({
                     'pointer-events-none animate-pulse border-sky-400 bg-sky-200 dark:border-sky-800 dark:bg-sky-950',
                 instanceId && instanceId.startsWith('temporal-id') && 'pointer-events-none',
             )}
-            onPointerDown={() => play(Sound.CLICK)}
             ref={wordRef}
         >
             <span className={cn(isLoading && 'opacity-0')}>{word.icon}</span>

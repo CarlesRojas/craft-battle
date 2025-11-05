@@ -35,7 +35,7 @@ const buttonVariants = cva(
                 default: 'h-10 min-w-28 px-4 py-2 has-[>svg]:px-3',
                 fit: 'h-fit min-w-28 p-4',
                 icon: 'size-10',
-                smallIcon: 'size-6',
+                smallIcon: 'size-7',
             },
         },
         defaultVariants: {

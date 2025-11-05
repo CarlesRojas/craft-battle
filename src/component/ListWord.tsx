@@ -49,6 +49,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
             const overlappingInstance = getOverlappingInstance(updatedInstance)
 
             if (first) {
+                play(Sound.CLICK)
                 isDragging.current = false
                 setActiveInstance(true)
 

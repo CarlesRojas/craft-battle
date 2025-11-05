@@ -1,6 +1,3 @@
-import BubbleSound from '@/audio/bubble.webm'
-import ClickSound from '@/audio/click.webm'
-import PingSound from '@/audio/ping.webm'
 import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
 import type { ReactNode } from 'react'
 import { createContext, useCallback, useContext } from 'react'
@@ -29,10 +26,10 @@ interface Props {
 export function AudioProvider({ children }: Props) {
     const [muted, setMuted] = useLocalStorage(`${LOCAL_STORAGE_PREFIX}_MUTED`, false)
 
-    const [playClick] = useSound(ClickSound, { soundEnabled: !muted })
-    const [playBubble] = useSound(BubbleSound, { soundEnabled: !muted, volume: 0.3 })
-    const [playClear] = useSound('src/audio/delete.mp3', { soundEnabled: !muted, volume: 0.7 })
-    const [playPing] = useSound(PingSound, { soundEnabled: !muted, volume: 0.7 })
+    const [playClick] = useSound('audio/click.webm', { soundEnabled: !muted })
+    const [playBubble] = useSound('audio/bubble.webm', { soundEnabled: !muted, volume: 0.3 })
+    const [playClear] = useSound('audio/delete.mp3', { soundEnabled: !muted, volume: 0.7 })
+    const [playPing] = useSound('audio/ping.webm', { soundEnabled: !muted, volume: 0.7 })
 
     const toggleMute = useCallback(() => {
         setMuted(prev => !prev)

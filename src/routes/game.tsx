@@ -4,14 +4,14 @@ import { api } from '@/db/_generated/api'
 import { WordListProvider } from '@/integration/WordListProvider'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/$language/game')({
+export const Route = createFileRoute('/game')({
     component: GamePage,
-    beforeLoad: async ({ context: { convex, language } }) => {
+    beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
-        if (!user) throw redirect({ to: '/$language', params: { language } })
+        if (!user) throw redirect({ to: '/' })
 
         const game = await convex.convexClient.query(api.game.get, { playerId: user._id })
-        if (!game) throw redirect({ to: '/$language', params: { language } })
+        if (!game) throw redirect({ to: '/' })
 
         return { user }
     },

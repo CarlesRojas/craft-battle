@@ -9,138 +9,122 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LanguageIndexRouteImport } from './routes/$language/index'
-import { Route as LanguageNewBingoRouteImport } from './routes/$language/new-bingo'
-import { Route as LanguageNewBattleRouteImport } from './routes/$language/new-battle'
-import { Route as LanguageModeRouteImport } from './routes/$language/mode'
-import { Route as LanguageGameRouteImport } from './routes/$language/game'
+import { Route as NewBingoRouteImport } from './routes/new-bingo'
+import { Route as NewBattleRouteImport } from './routes/new-battle'
+import { Route as ModeRouteImport } from './routes/mode'
+import { Route as GameRouteImport } from './routes/game'
+import { Route as IndexRouteImport } from './routes/index'
 
-const LanguageIndexRoute = LanguageIndexRouteImport.update({
-  id: '/$language/',
-  path: '/$language/',
+const NewBingoRoute = NewBingoRouteImport.update({
+  id: '/new-bingo',
+  path: '/new-bingo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageNewBingoRoute = LanguageNewBingoRouteImport.update({
-  id: '/$language/new-bingo',
-  path: '/$language/new-bingo',
+const NewBattleRoute = NewBattleRouteImport.update({
+  id: '/new-battle',
+  path: '/new-battle',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageNewBattleRoute = LanguageNewBattleRouteImport.update({
-  id: '/$language/new-battle',
-  path: '/$language/new-battle',
+const ModeRoute = ModeRouteImport.update({
+  id: '/mode',
+  path: '/mode',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageModeRoute = LanguageModeRouteImport.update({
-  id: '/$language/mode',
-  path: '/$language/mode',
+const GameRoute = GameRouteImport.update({
+  id: '/game',
+  path: '/game',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguageGameRoute = LanguageGameRouteImport.update({
-  id: '/$language/game',
-  path: '/$language/game',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/$language/game': typeof LanguageGameRoute
-  '/$language/mode': typeof LanguageModeRoute
-  '/$language/new-battle': typeof LanguageNewBattleRoute
-  '/$language/new-bingo': typeof LanguageNewBingoRoute
-  '/$language': typeof LanguageIndexRoute
+  '/': typeof IndexRoute
+  '/game': typeof GameRoute
+  '/mode': typeof ModeRoute
+  '/new-battle': typeof NewBattleRoute
+  '/new-bingo': typeof NewBingoRoute
 }
 export interface FileRoutesByTo {
-  '/$language/game': typeof LanguageGameRoute
-  '/$language/mode': typeof LanguageModeRoute
-  '/$language/new-battle': typeof LanguageNewBattleRoute
-  '/$language/new-bingo': typeof LanguageNewBingoRoute
-  '/$language': typeof LanguageIndexRoute
+  '/': typeof IndexRoute
+  '/game': typeof GameRoute
+  '/mode': typeof ModeRoute
+  '/new-battle': typeof NewBattleRoute
+  '/new-bingo': typeof NewBingoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/$language/game': typeof LanguageGameRoute
-  '/$language/mode': typeof LanguageModeRoute
-  '/$language/new-battle': typeof LanguageNewBattleRoute
-  '/$language/new-bingo': typeof LanguageNewBingoRoute
-  '/$language/': typeof LanguageIndexRoute
+  '/': typeof IndexRoute
+  '/game': typeof GameRoute
+  '/mode': typeof ModeRoute
+  '/new-battle': typeof NewBattleRoute
+  '/new-bingo': typeof NewBingoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/$language/game'
-    | '/$language/mode'
-    | '/$language/new-battle'
-    | '/$language/new-bingo'
-    | '/$language'
+  fullPaths: '/' | '/game' | '/mode' | '/new-battle' | '/new-bingo'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/$language/game'
-    | '/$language/mode'
-    | '/$language/new-battle'
-    | '/$language/new-bingo'
-    | '/$language'
-  id:
-    | '__root__'
-    | '/$language/game'
-    | '/$language/mode'
-    | '/$language/new-battle'
-    | '/$language/new-bingo'
-    | '/$language/'
+  to: '/' | '/game' | '/mode' | '/new-battle' | '/new-bingo'
+  id: '__root__' | '/' | '/game' | '/mode' | '/new-battle' | '/new-bingo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LanguageGameRoute: typeof LanguageGameRoute
-  LanguageModeRoute: typeof LanguageModeRoute
-  LanguageNewBattleRoute: typeof LanguageNewBattleRoute
-  LanguageNewBingoRoute: typeof LanguageNewBingoRoute
-  LanguageIndexRoute: typeof LanguageIndexRoute
+  IndexRoute: typeof IndexRoute
+  GameRoute: typeof GameRoute
+  ModeRoute: typeof ModeRoute
+  NewBattleRoute: typeof NewBattleRoute
+  NewBingoRoute: typeof NewBingoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$language/': {
-      id: '/$language/'
-      path: '/$language'
-      fullPath: '/$language'
-      preLoaderRoute: typeof LanguageIndexRouteImport
+    '/new-bingo': {
+      id: '/new-bingo'
+      path: '/new-bingo'
+      fullPath: '/new-bingo'
+      preLoaderRoute: typeof NewBingoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$language/new-bingo': {
-      id: '/$language/new-bingo'
-      path: '/$language/new-bingo'
-      fullPath: '/$language/new-bingo'
-      preLoaderRoute: typeof LanguageNewBingoRouteImport
+    '/new-battle': {
+      id: '/new-battle'
+      path: '/new-battle'
+      fullPath: '/new-battle'
+      preLoaderRoute: typeof NewBattleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$language/new-battle': {
-      id: '/$language/new-battle'
-      path: '/$language/new-battle'
-      fullPath: '/$language/new-battle'
-      preLoaderRoute: typeof LanguageNewBattleRouteImport
+    '/mode': {
+      id: '/mode'
+      path: '/mode'
+      fullPath: '/mode'
+      preLoaderRoute: typeof ModeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$language/mode': {
-      id: '/$language/mode'
-      path: '/$language/mode'
-      fullPath: '/$language/mode'
-      preLoaderRoute: typeof LanguageModeRouteImport
+    '/game': {
+      id: '/game'
+      path: '/game'
+      fullPath: '/game'
+      preLoaderRoute: typeof GameRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$language/game': {
-      id: '/$language/game'
-      path: '/$language/game'
-      fullPath: '/$language/game'
-      preLoaderRoute: typeof LanguageGameRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LanguageGameRoute: LanguageGameRoute,
-  LanguageModeRoute: LanguageModeRoute,
-  LanguageNewBattleRoute: LanguageNewBattleRoute,
-  LanguageNewBingoRoute: LanguageNewBingoRoute,
-  LanguageIndexRoute: LanguageIndexRoute,
+  IndexRoute: IndexRoute,
+  GameRoute: GameRoute,
+  ModeRoute: ModeRoute,
+  NewBattleRoute: NewBattleRoute,
+  NewBingoRoute: NewBingoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,11 +2,11 @@ import BingoNewGame from '@/component/BingoNewGame'
 import { getUser } from '@/data/getUser'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/$language/new-bingo')({
+export const Route = createFileRoute('/new-bingo')({
     component: NewBingoGamePage,
-    beforeLoad: async ({ context: { convex, language } }) => {
+    beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
-        if (!user) throw redirect({ to: '/$language', params: { language } })
+        if (!user) throw redirect({ to: '/' })
 
         return { user }
     },

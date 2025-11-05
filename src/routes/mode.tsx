@@ -1,15 +1,16 @@
 import { Button } from '@/component/ui/button'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
+import { Sound, useAudio } from '@/integration/AudioProvider'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useConvex } from 'convex/react'
 
-export const Route = createFileRoute('/$language/mode')({
+export const Route = createFileRoute('/mode')({
     component: SelectGamePage,
-    beforeLoad: async ({ context: { convex, language } }) => {
+    beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
-        if (!user) throw redirect({ to: '/$language', params: { language } })
+        if (!user) throw redirect({ to: '/' })
 
         return { user }
     },
@@ -20,6 +21,7 @@ function SelectGamePage() {
     const t = getTranslation(language)
     const router = useRouter()
     const convex = useConvex()
+    const { play } = useAudio()
 
     return (
         <main className="full-page relative flex items-center justify-center pt-8">
@@ -34,8 +36,9 @@ function SelectGamePage() {
                     <ul className="grid w-full grid-rows-3 gap-4">
                         <Button
                             onClick={async () => {
+                                play(Sound.CLICK)
                                 await convex.mutation(api.game.create, { playerId: user._id })
-                                router.navigate({ to: '/$language/game', params: { language } })
+                                router.navigate({ to: '/game' })
                             }}
                             size="fit"
                             variant="white"
@@ -53,7 +56,10 @@ function SelectGamePage() {
                         </Button>
 
                         <Button
-                            onClick={() => router.navigate({ to: '/$language/new-bingo', params: { language } })}
+                            onClick={() => {
+                                play(Sound.CLICK)
+                                router.navigate({ to: '/new-bingo' })
+                            }}
                             size="fit"
                             variant="white"
                             className="size-full items-start"
@@ -72,7 +78,10 @@ function SelectGamePage() {
                         </Button>
 
                         <Button
-                            onClick={() => router.navigate({ to: '/$language/new-battle', params: { language } })}
+                            onClick={() => {
+                                play(Sound.CLICK)
+                                router.navigate({ to: '/new-battle' })
+                            }}
                             size="fit"
                             variant="white"
                             className="size-full items-start"

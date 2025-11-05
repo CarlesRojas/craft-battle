@@ -19,7 +19,7 @@ type WordInstancesContextType = {
     replaceInstances: (instances: Array<WordInstance>) => void
     getOverlappingInstance: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
-    combine: (word1: WordInstance, word2: WordInstance) => void
+    combine: (word1: WordInstance, word2: WordInstance) => Promise<boolean>
     updateSize: (instance: Partial<WordInstance>) => void
 }
 
@@ -27,7 +27,7 @@ const WordInstancesContext = createContext<WordInstancesContextType | null>(null
 
 interface Props {
     children: ReactNode
-    onCombine: (result: CreateWord) => Promise<Id<'word'>>
+    onCombine: (result: CreateWord) => Promise<{ id: Id<'word'>; isNew: boolean }>
     user: User
 }
 
@@ -165,11 +165,15 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
 
         const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
 
-        const wordId = await onCombine({ text: result.result, icon: result.icon, explanation: result.explanation })
+        const { id, isNew } = await onCombine({
+            text: result.result,
+            icon: result.icon,
+            explanation: result.explanation,
+        })
 
         removeInstance(word1._id)
         addInstance({
-            wordId,
+            wordId: id,
             x: word1.x,
             y: word1.y,
             width: 0,
@@ -182,6 +186,8 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             playerId: user._id,
             _creationTime: new Date().getTime(),
         })
+
+        return isNew
     }
 
     const updateSize = (instance: Partial<WordInstance>) => {

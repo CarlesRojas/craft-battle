@@ -1,6 +1,7 @@
 import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { WordInstance } from '@/db/instance'
+import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -20,6 +21,7 @@ interface Props {
 const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggingOverCanvas }: Props) => {
     const { overlappedInstanceId, getOverlappingInstance, clearOverlapped, combine, removeInstance, updateSize } =
         useWordInstances()
+    const { play } = useAudio()
 
     const [isDragging, setIsDragging] = useState(false)
 
@@ -29,7 +31,7 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
     const [spring, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
     const bind = useDrag(
-        ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
+        async ({ down, offset: [ox, oy], xy: [x, y], first, last }) => {
             const updatedInstance: WordInstance = {
                 ...instance,
                 x: x - clickOffset.current.x,
@@ -71,9 +73,14 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
                 if (canvasArea.current) {
                     const canvasRect = canvasArea.current.getBoundingClientRect()
 
-                    if (!insideCanvas) removeInstance(instance._id)
-                    else if (overlappingInstance) combine(overlappingInstance, updatedInstance)
-                    else
+                    if (!insideCanvas) {
+                        play(Sound.CLEAR)
+                        removeInstance(instance._id)
+                    } else if (overlappingInstance) {
+                        play(Sound.BUBBLE)
+                        const isNew = await combine(overlappingInstance, updatedInstance)
+                        if (isNew) play(Sound.PING)
+                    } else
                         updateSize({
                             ...updatedInstance,
                             x: clamp(

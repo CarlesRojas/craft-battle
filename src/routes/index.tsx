@@ -12,11 +12,11 @@ import { User } from 'lucide-react'
 import { v4 as uuid } from 'uuid'
 import z from 'zod'
 
-export const Route = createFileRoute('/$language/')({
+export const Route = createFileRoute('/')({
     component: CreateUsernamePage,
     beforeLoad: async ({ context: { convex, language } }) => {
         const user = await getUser({ convex })
-        if (user) throw redirect({ to: '/$language/mode', params: { language } })
+        if (user) throw redirect({ to: '/mode' })
 
         return { user }
     },
@@ -54,7 +54,7 @@ function CreateUsernamePage() {
             if (!newUser) return
 
             setUser(newUser, key)
-            router.navigate({ to: '/$language/mode', params: { language } })
+            router.navigate({ to: '/mode' })
         },
     })
 

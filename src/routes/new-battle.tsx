@@ -1,11 +1,11 @@
 import { getUser } from '@/data/getUser'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/$language/new-battle')({
+export const Route = createFileRoute('/new-battle')({
     component: NewBattlePage,
-    beforeLoad: async ({ context: { convex, language } }) => {
+    beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
-        if (!user) throw redirect({ to: '/$language', params: { language } })
+        if (!user) throw redirect({ to: '/' })
 
         return { user }
     },

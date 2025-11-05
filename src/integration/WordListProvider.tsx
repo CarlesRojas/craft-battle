@@ -9,7 +9,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 type WordListContextType = {
     list: Array<Doc<'word'>>
-    addWord: (word: CreateWord) => Promise<Id<'word'>>
+    addWord: (word: CreateWord) => Promise<{ id: Id<'word'>; isNew: boolean }>
     applySearch: (query: string) => void
     applySort: (sort: Sort, order: Order) => void
 }
@@ -63,8 +63,8 @@ export function WordListProvider({ children, user }: Props) {
 
     const addWord = useCallback(
         async (word: CreateWord) => {
-            const wordId: Id<'word'> = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
-            return wordId
+            const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
+            return result
         },
         [game, addWordMutation, user],
     )

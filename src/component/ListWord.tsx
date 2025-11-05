@@ -2,6 +2,7 @@ import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { Doc, Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
+import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -21,6 +22,7 @@ interface Props {
 
 const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingOverCanvas }: Props) => {
     const { addInstance, getOverlappingInstance, clearOverlapped, combine } = useWordInstances()
+    const { play } = useAudio()
 
     const [activeInstance, setActiveInstance] = useState<boolean>(false)
     const wordRef = useRef<HTMLDivElement>(null)
@@ -33,7 +35,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
     const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
 
     const bind = useDrag(
-        ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
+        async ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
             const updatedInstance: WordInstance = {
                 ...word,
                 _id: `temporal-id-${uuid()}` as Id<'instance'>,
@@ -97,9 +99,12 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
                         ),
                     }
 
-                    if (overlappingInstance) combine(overlappingInstance, newInstance)
-                    else addInstance(newInstance)
-                }
+                    if (overlappingInstance) {
+                        play(Sound.BUBBLE)
+                        const isNew = await combine(overlappingInstance, newInstance)
+                        if (isNew) play(Sound.PING)
+                    } else addInstance(newInstance)
+                } else if (canvasArea.current && isDragging.current) play(Sound.CLEAR)
 
                 clearOverlapped()
                 setDraggingOverCanvas(false)

@@ -151,7 +151,7 @@ const Particles: React.FC<ParticlesProps> = ({
         const positions = new Float32Array(count * 3)
         const randoms = new Float32Array(count * 4)
         const colors = new Float32Array(count * 3)
-        const palette = particleColors && particleColors.length > 0 ? particleColors : defaultColors
+        const palette = particleColors.length > 0 ? particleColors : defaultColors
 
         for (let i = 0; i < count; i++) {
             let x: number, y: number, z: number, len: number

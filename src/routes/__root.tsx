@@ -1,7 +1,7 @@
 import Header from '@/component/Header'
 import Particles from '@/component/Particles'
-import { getLanguage, getLanguageFromPathname } from '@/data/language'
 import type { User } from '@/db/username'
+import { AudioProvider } from '@/integration/AudioProvider'
 import { ThemeProvider } from '@/integration/ThemeProvider'
 import { seo } from '@/lib/seo'
 import type { Language } from '@/locale/language'
@@ -19,7 +19,7 @@ import '@fontsource/montserrat/700.css'
 import '@fontsource/montserrat/800.css'
 import '@fontsource/montserrat/900.css'
 import type { QueryClient } from '@tanstack/react-query'
-import { HeadContent, Scripts, createRootRouteWithContext, redirect } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 
 interface MyRouterContext {
@@ -48,18 +48,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         ],
     }),
 
-    beforeLoad: async ({ location }) => {
-        const path = location.pathname
-        const pathnameLanguage = getLanguageFromPathname(path)
-
-        if (!pathnameLanguage) {
-            const language = await getLanguage()
-            throw redirect({ to: `/${language}${path}` as any })
-        }
-
-        return { language: pathnameLanguage }
-    },
-
     shellComponent: RootDocument,
     notFoundComponent: () => <div>Not Found</div>,
 })
@@ -82,23 +70,25 @@ function RootDocument({ children }: Props) {
             </head>
 
             <ThemeProvider>
-                <body className="font-montserrat size-full overflow-hidden bg-neutral-50 text-neutral-950 selection:bg-sky-700/60 dark:bg-neutral-950 dark:text-neutral-50">
-                    <Header language={language} />
+                <AudioProvider>
+                    <body className="font-montserrat size-full overflow-hidden bg-neutral-50 text-neutral-950 selection:bg-sky-700/60 dark:bg-neutral-950 dark:text-neutral-50">
+                        <Header language={language} />
 
-                    <Particles
-                        particleCount={300}
-                        particleSpread={20}
-                        speed={0.05}
-                        particleBaseSize={80}
-                        moveParticlesOnHover
-                        particleHoverFactor={0.3}
-                        className="absolute inset-0 -z-10 size-full dark:opacity-70"
-                    />
+                        <Particles
+                            particleCount={300}
+                            particleSpread={20}
+                            speed={0.05}
+                            particleBaseSize={80}
+                            moveParticlesOnHover
+                            particleHoverFactor={0.3}
+                            className="absolute inset-0 -z-10 size-full dark:opacity-70"
+                        />
 
-                    {children}
+                        {children}
 
-                    <Scripts />
-                </body>
+                        <Scripts />
+                    </body>
+                </AudioProvider>
             </ThemeProvider>
         </html>
     )

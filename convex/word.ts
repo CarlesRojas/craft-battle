@@ -19,10 +19,10 @@ export const add = mutation({
             .withIndex('word', q => q.eq('text', normalizedText))
             .collect()
 
-        if (words.length > 0) return words[0]._id
+        if (words.length > 0) return { id: words[0]._id, isNew: false }
 
         const wordId = await ctx.db.insert('word', { ...args, text: normalizedText })
-        return wordId
+        return { id: wordId, isNew: true }
     },
 })
 

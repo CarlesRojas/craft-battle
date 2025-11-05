@@ -1,5 +1,6 @@
 import CanvasWordInstance from '@/component/CanvasWordInstance'
 import { Button } from '@/component/ui/button'
+import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useTheme } from '@/integration/ThemeProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
@@ -19,6 +20,7 @@ export const CANVAS_PADDING = 12
 const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) => {
     const { instances, replaceInstances, loadingInstances, clearInstances } = useWordInstances()
     const { theme: resolvedTheme } = useTheme()
+    const { play } = useAudio()
 
     const onResize = useDebounceCallback(() => {
         const rect = innerRef.current?.getBoundingClientRect()
@@ -68,7 +70,10 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
                         size="smallIcon"
                         variant="ghost"
                         className="absolute top-4 right-4"
-                        onClick={() => clearInstances()}
+                        onClick={() => {
+                            play(Sound.CLEAR)
+                            clearInstances()
+                        }}
                         disabled={instances.length === 0}
                     >
                         <BrushCleaning className={cn('size-5', resolvedTheme === 'dark' && 'stroke-[2.5]')} />

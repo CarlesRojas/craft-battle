@@ -67,7 +67,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         )
     })
 
-    const clearInstancesutation = useConvexMutation(api.instance.removeAll).withOptimisticUpdate((localStore, args) => {
+    const clearInstancesutation = useConvexMutation(api.instance.removeAll).withOptimisticUpdate(localStore => {
         const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
         if (!currentValue) return
 

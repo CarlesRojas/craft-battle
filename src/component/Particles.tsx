@@ -1,4 +1,3 @@
-import { useTheme } from '@/integration/ThemeProvider'
 import { cn } from '@/lib/cn'
 import { Camera, Geometry, Mesh, Program, Renderer } from 'ogl'
 import React, { useEffect, useRef } from 'react'
@@ -111,8 +110,7 @@ const Particles: React.FC<ParticlesProps> = ({
     disableRotation = false,
     className,
 }) => {
-    const { resolvedTheme } = useTheme()
-    const particleColors = resolvedTheme === 'dark' ? defaultColors : defaultColors.map(_ => '#000000')
+    const particleColors = ['#696969']
 
     const containerRef = useRef<HTMLDivElement>(null)
     const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })

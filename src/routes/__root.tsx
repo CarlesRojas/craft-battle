@@ -92,7 +92,7 @@ function RootDocument({ children }: Props) {
                         particleBaseSize={80}
                         moveParticlesOnHover
                         particleHoverFactor={0.3}
-                        className="absolute inset-0 -z-10 size-full opacity-70 dark:opacity-40"
+                        className="absolute inset-0 -z-10 size-full dark:opacity-70"
                     />
 
                     {children}

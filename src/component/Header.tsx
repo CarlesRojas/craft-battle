@@ -19,13 +19,15 @@ export default function Header({ language }: Props) {
                 <p className="font-goldman text-xl opacity-80">{t.meta.appName}</p>
             </Link>
 
-            <Button
-                size="smallIcon"
-                variant="ghost"
-                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-            >
-                {resolvedTheme === 'dark' ? <Sun className="size-5" /> : <Moon className="size-5" />}
-            </Button>
+            <div className="flex h-full items-center gap-4">
+                <Button
+                    size="smallIcon"
+                    variant="ghost"
+                    onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                >
+                    {resolvedTheme === 'dark' ? <Sun className="size-5 stroke-[2.5]" /> : <Moon className="size-5" />}
+                </Button>
+            </div>
         </header>
     )
 }

@@ -15,6 +15,7 @@ type WordInstancesContextType = {
     loadingInstances: Array<Id<'instance'>>
     addInstance: (instance: WordInstance) => void
     removeInstance: (instanceId: Id<'instance'>) => void
+    clearInstances: () => void
     replaceInstances: (instances: Array<WordInstance>) => void
     getOverlappingInstance: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
@@ -64,6 +65,13 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
                 instances: currentValue.instances.filter(instance => instance._id !== args.instanceId),
             },
         )
+    })
+
+    const clearInstancesutation = useConvexMutation(api.instance.removeAll).withOptimisticUpdate((localStore, args) => {
+        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        if (!currentValue) return
+
+        localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: [] })
     })
 
     const replaceAllMutation = useConvexMutation(api.instance.replaceAll).withOptimisticUpdate((localStore, args) => {
@@ -118,6 +126,10 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     const removeInstance = (instanceId: Id<'instance'>) => {
         if (instanceId.startsWith('temporal-id')) return
         removeInstanceMutation({ instanceId })
+    }
+
+    const clearInstances = () => {
+        clearInstancesutation({ instances: instances.map(instance => instance._id) })
     }
 
     const replaceInstances = (newInstances: Array<WordInstance>) => {
@@ -192,6 +204,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
                 overlappedInstanceId,
                 addInstance,
                 removeInstance,
+                clearInstances,
                 replaceInstances,
                 getOverlappingInstance,
                 clearOverlapped,

@@ -1,7 +1,10 @@
 import CanvasWordInstance from '@/component/CanvasWordInstance'
+import { Button } from '@/component/ui/button'
+import { useTheme } from '@/integration/ThemeProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
+import { BrushCleaning } from 'lucide-react'
 import type { RefObject } from 'react'
 import { useDebounceCallback, useEventListener } from 'usehooks-ts'
 
@@ -14,7 +17,8 @@ interface Props {
 export const CANVAS_PADDING = 12
 
 const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) => {
-    const { instances, replaceInstances, loadingInstances } = useWordInstances()
+    const { instances, replaceInstances, loadingInstances, clearInstances } = useWordInstances()
+    const { theme: resolvedTheme } = useTheme()
 
     const onResize = useDebounceCallback(() => {
         const rect = innerRef.current?.getBoundingClientRect()
@@ -33,11 +37,43 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
 
     return (
         <div className="size-full" ref={innerRef}>
-            <div className={cn('pointer-events-none relative hidden size-full', draggingOverCanvas && 'block')}>
-                <div className="target-tl pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
-                <div className="target-tr pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
-                <div className="target-bl pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
-                <div className="target-br pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
+            <div className="relative size-full">
+                <div
+                    className={cn(
+                        'target-tl pointer-events-none absolute inset-1.5 hidden bg-black/70 dark:bg-white/70',
+                        draggingOverCanvas && 'block',
+                    )}
+                />
+                <div
+                    className={cn(
+                        'target-tr pointer-events-none absolute inset-1.5 hidden bg-black/70 dark:bg-white/70',
+                        draggingOverCanvas && 'block',
+                    )}
+                />
+                <div
+                    className={cn(
+                        'target-bl pointer-events-none absolute inset-1.5 hidden bg-black/70 dark:bg-white/70',
+                        draggingOverCanvas && 'block',
+                    )}
+                />
+                <div
+                    className={cn(
+                        'target-br pointer-events-none absolute inset-1.5 hidden bg-black/70 dark:bg-white/70',
+                        draggingOverCanvas && 'block',
+                    )}
+                />
+
+                <div className="relative size-full">
+                    <Button
+                        size="smallIcon"
+                        variant="ghost"
+                        className="absolute top-4 right-4"
+                        onClick={() => clearInstances()}
+                        disabled={instances.length === 0}
+                    >
+                        <BrushCleaning className={cn('size-5', resolvedTheme === 'dark' && 'stroke-[2.5]')} />
+                    </Button>
+                </div>
             </div>
 
             {instances.map(instance => (

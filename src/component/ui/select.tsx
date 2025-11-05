@@ -58,6 +58,7 @@ function SelectContent({
         <SelectPrimitive.Portal>
             <SelectPrimitive.Content
                 data-slot="select-content"
+                onCloseAutoFocus={e => e.preventDefault()}
                 className={cn(
                     'text-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto border border-neutral-400 bg-neutral-200',
                     'dark:border-neutral-600 dark:bg-neutral-800',

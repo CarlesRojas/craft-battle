@@ -1,3 +1,4 @@
+import { DEFAULT_ORDER, DEFAULT_SORT, Order, Sort } from '@/const/sort'
 import { api } from '@/db/_generated/api'
 import type { Doc, Id } from '@/db/_generated/dataModel'
 import type { User } from '@/db/username'
@@ -6,16 +7,11 @@ import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'co
 import type { ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-export type Order = 'asc' | 'desc'
-export type Sort = 'discovered' | 'name'
-
 type WordListContextType = {
     list: Array<Doc<'word'>>
     addWord: (word: CreateWord) => Promise<Id<'word'>>
     applySearch: (query: string) => void
-    clearSearch: () => void
     applySort: (sort: Sort, order: Order) => void
-    resetSort: () => void
 }
 
 const WordListContext = createContext<WordListContextType | null>(null)
@@ -28,22 +24,24 @@ interface FilterAndSortProps {
 }
 
 const filterAndSortList = ({ listToFilter, query, sort, order }: FilterAndSortProps) => {
-    const result = [...listToFilter]
+    let result = [...listToFilter]
 
-    if (query) result.filter(word => word.text.toLowerCase().includes(query.toLowerCase()))
+    if (query) {
+        const queryWords = query.toLowerCase().split(' ')
+        result = result.filter(word => {
+            return queryWords.every(queryWord => word.text.toLowerCase().includes(queryWord))
+        })
+    }
 
     result.sort((a, b) => {
-        if (sort === 'discovered') return a._creationTime - b._creationTime
+        if (sort === Sort.DISCOVERED) return a._creationTime - b._creationTime
         else return a.text.localeCompare(b.text)
     })
 
-    if (order === 'desc') result.reverse()
+    if (order === Order.DESC) result.reverse()
 
     return result
 }
-
-const DEFAULT_SORT = 'discovered'
-const DEFAULT_ORDER = 'asc'
 
 interface Props {
     children: ReactNode
@@ -75,18 +73,9 @@ export function WordListProvider({ children, user }: Props) {
         setQuery(newQuery)
     }, [])
 
-    const clearSearch = useCallback(() => {
-        setQuery('')
-    }, [])
-
     const applySort = useCallback((newSort: Sort, newOrder: Order) => {
         setSort(newSort)
         setOrder(newOrder)
-    }, [])
-
-    const resetSort = useCallback(() => {
-        setSort(DEFAULT_SORT)
-        setOrder(DEFAULT_ORDER)
     }, [])
 
     return (
@@ -95,9 +84,7 @@ export function WordListProvider({ children, user }: Props) {
                 list: filteredList,
                 addWord,
                 applySearch,
-                clearSearch,
                 applySort,
-                resetSort,
             }}
         >
             {children}

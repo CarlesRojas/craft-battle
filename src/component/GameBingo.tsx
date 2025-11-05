@@ -3,13 +3,15 @@ import List from '@/component/List'
 import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
+import type { Language } from '@/locale/language'
 import { useRef, useState } from 'react'
 
 interface GameProps {
     user: User
+    language: Language
 }
 
-const Game = ({ user }: GameProps) => {
+const GameBingo = ({ user, language }: GameProps) => {
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
@@ -19,7 +21,7 @@ const Game = ({ user }: GameProps) => {
 
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
-    const { list, addWord } = useWordList()
+    const { addWord } = useWordList()
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user}>
@@ -42,10 +44,11 @@ const Game = ({ user }: GameProps) => {
                     listArea={listArea}
                     canvasArea={canvasArea}
                     setDraggingOverCanvas={setDraggingOverCanvas}
+                    language={language}
                 />
             </div>
         </WordInstancesProvider>
     )
 }
 
-export default Game
+export default GameBingo

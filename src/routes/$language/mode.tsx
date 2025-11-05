@@ -2,7 +2,7 @@ import { Button } from '@/component/ui/button'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { getTranslation } from '@/locale/getTranslation'
-import { Link, createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useConvex } from 'convex/react'
 
 export const Route = createFileRoute('/$language/mode')({
@@ -39,7 +39,7 @@ function SelectGamePage() {
                             }}
                             size="fit"
                             variant="white"
-                            className="size-full"
+                            className="size-full items-start"
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
@@ -52,33 +52,39 @@ function SelectGamePage() {
                             </div>
                         </Button>
 
-                        <Link to="/$language/new-bingo">
-                            <Button size="fit" variant="white" className="size-full" asChild>
-                                <div className="flex flex-col justify-start">
-                                    <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
-                                        {t.mode.bingo.title}
-                                    </h3>
+                        <Button
+                            onClick={() => router.navigate({ to: '/$language/new-bingo', params: { language } })}
+                            size="fit"
+                            variant="white"
+                            className="size-full items-start"
+                        >
+                            <div className="flex flex-col justify-start">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                    {t.mode.bingo.title}
+                                </h3>
 
-                                    <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                        {t.mode.bingo.description}
-                                    </p>
-                                </div>
-                            </Button>
-                        </Link>
+                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
+                                    {t.mode.bingo.description}
+                                </p>
+                            </div>
+                        </Button>
 
-                        <Link to="/$language/new-battle">
-                            <Button size="fit" variant="white" className="size-full" asChild>
-                                <div className="flex flex-col justify-start">
-                                    <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
-                                        {t.mode.battle.title}
-                                    </h3>
+                        <Button
+                            onClick={() => router.navigate({ to: '/$language/new-battle', params: { language } })}
+                            size="fit"
+                            variant="white"
+                            className="size-full items-start"
+                        >
+                            <div className="flex flex-col justify-start">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                    {t.mode.battle.title}
+                                </h3>
 
-                                    <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                        {t.mode.battle.description}
-                                    </p>
-                                </div>
-                            </Button>
-                        </Link>
+                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
+                                    {t.mode.battle.description}
+                                </p>
+                            </div>
+                        </Button>
                     </ul>
                 </div>
             </div>

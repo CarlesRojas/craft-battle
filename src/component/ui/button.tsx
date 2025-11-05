@@ -12,6 +12,7 @@ const buttonVariants = cva(
                 default:
                     'border border-sky-900 bg-sky-900/40 text-white hover:bg-sky-900/60 focus-visible:bg-sky-900/60',
                 white: 'border border-neutral-800 bg-neutral-800/40 text-white hover:bg-neutral-800/60 focus-visible:bg-neutral-800/60',
+                input: 'border border-neutral-600 bg-neutral-700/50 hover:bg-neutral-700/70 focus-visible:bg-neutral-700/70',
                 constructive:
                     'border border-green-900 bg-green-900/40 text-white hover:bg-green-900/60 focus-visible:bg-green-900/60',
                 destructive:
@@ -42,11 +43,11 @@ function Button({
 
     return (
         <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props}>
-            <div>
-                <div className="target-tl pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-hover:block group-focus-visible:block" />
-                <div className="target-tr pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-hover:block group-focus-visible:block" />
-                <div className="target-bl pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-hover:block group-focus-visible:block" />
-                <div className="target-br pointer-events-none absolute -inset-1.5 hidden bg-white/70 group-hover:block group-focus-visible:block" />
+            <div className={cn('size-fit', size === 'icon' && 'size-5')}>
+                <div className="target-tl pointer-events-none absolute -inset-1.5 z-10 hidden bg-white/70 group-hover:block group-focus-visible:block" />
+                <div className="target-tr pointer-events-none absolute -inset-1.5 z-10 hidden bg-white/70 group-hover:block group-focus-visible:block" />
+                <div className="target-bl pointer-events-none absolute -inset-1.5 z-10 hidden bg-white/70 group-hover:block group-focus-visible:block" />
+                <div className="target-br pointer-events-none absolute -inset-1.5 z-10 hidden bg-white/70 group-hover:block group-focus-visible:block" />
 
                 <div className="z-10 inline-flex size-full items-center justify-center gap-2">{children}</div>
             </div>

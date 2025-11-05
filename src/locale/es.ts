@@ -52,6 +52,10 @@ export const es: LanguageObject = {
         },
     },
 
+    game: {
+        search: 'Buscar',
+    },
+
     meta: {
         appName: 'Craft Battle',
         description: 'Crea palabras de ataque y defensa para luchar online contra otros jugadores',
@@ -87,6 +91,16 @@ export const es: LanguageObject = {
         language: {
             en: 'English',
             es: 'Español',
+        },
+
+        sort: {
+            DISCOVERED: 'Descubierto',
+            NAME: 'Nombre',
+        },
+
+        order: {
+            ASC: 'Ascendente',
+            DESC: 'Descendente',
         },
     },
 }

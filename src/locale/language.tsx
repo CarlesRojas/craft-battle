@@ -1,3 +1,4 @@
+import { Order, Sort } from '@/const/sort'
 import { z } from 'zod'
 
 export enum Language {
@@ -59,6 +60,10 @@ export const LanguageObjectSchema = z.object({
         }),
     }),
 
+    game: z.object({
+        search: z.string(),
+    }),
+
     meta: z.object({
         appName: z.string(),
         description: z.string(),
@@ -92,6 +97,8 @@ export const LanguageObjectSchema = z.object({
 
     enum: z.object({
         language: z.object(Object.fromEntries(Object.values(Language).map(item => [item, z.string()]))),
+        sort: z.object(Object.fromEntries(Object.values(Sort).map(item => [item, z.string()]))),
+        order: z.object(Object.fromEntries(Object.values(Order).map(item => [item, z.string()]))),
     }),
 })
 export type LanguageObject = z.infer<typeof LanguageObjectSchema>

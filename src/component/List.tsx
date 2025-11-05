@@ -1,6 +1,8 @@
+import ListFilter from '@/component/ListFilter'
 import { default as ListWord } from '@/component/ListWord'
 import { useWordList } from '@/integration/WordListProvider'
-import { RefObject } from 'react'
+import type { Language } from '@/locale/language'
+import type { RefObject } from 'react'
 
 interface Props {
     scrollAreaMobile: RefObject<HTMLDivElement | null>
@@ -8,15 +10,26 @@ interface Props {
     listArea: RefObject<HTMLDivElement | null>
     canvasArea: RefObject<HTMLDivElement | null>
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
+    language: Language
 }
 
-const List = ({ scrollAreaMobile, scrollAreaDesktop, listArea, canvasArea, setDraggingOverCanvas }: Props) => {
+const List = ({
+    scrollAreaMobile,
+    scrollAreaDesktop,
+    listArea,
+    canvasArea,
+    setDraggingOverCanvas,
+    language,
+}: Props) => {
     const { list } = useWordList()
 
     return (
-        <div ref={listArea} className="relative h-fit w-full md:h-full md:w-[unset] md:max-w-96 md:min-w-96">
+        <div
+            ref={listArea}
+            className="relative h-fit w-full border-l border-neutral-500/30 md:h-full md:w-[unset] md:max-w-96 md:min-w-96"
+        >
             <div
-                className="h-[calc(100%-3rem) hidden max-h-[calc(100%-3rem)] min-h-[calc(100%-3rem)] w-full overflow-y-auto border-l border-neutral-500/30 p-3 md:flex"
+                className="h-[calc(100%-4rem) hidden max-h-[calc(100%-4rem)] min-h-[calc(100%-4rem)] w-full overflow-y-auto p-3 md:flex"
                 ref={scrollAreaDesktop}
             >
                 <div className="flex h-fit w-full flex-wrap gap-3 overflow-y-auto" ref={scrollAreaDesktop}>
@@ -33,7 +46,7 @@ const List = ({ scrollAreaMobile, scrollAreaDesktop, listArea, canvasArea, setDr
             </div>
 
             <div
-                className="grid h-55 max-h-55 min-h-55 w-full grid-rows-4 gap-3 overflow-x-auto border-t border-neutral-500/30 p-3 md:hidden"
+                className="grid h-52 max-h-52 min-h-52 w-full grid-rows-4 gap-3 overflow-x-auto border-t border-neutral-500/30 p-3 pb-0 md:hidden"
                 ref={scrollAreaMobile}
             >
                 {Array.from({ length: 4 }, (_, mod) => (
@@ -55,7 +68,9 @@ const List = ({ scrollAreaMobile, scrollAreaDesktop, listArea, canvasArea, setDr
                 ))}
             </div>
 
-            <div className="h-12 max-h-12 min-h-12 w-full bg-orange-500/10"></div>
+            <div className="relative h-16 max-h-16 min-h-16 w-full">
+                <ListFilter language={language} />
+            </div>
         </div>
     )
 }

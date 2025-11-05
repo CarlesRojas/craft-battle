@@ -3,13 +3,15 @@ import List from '@/component/List'
 import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
+import type { Language } from '@/locale/language'
 import { useRef, useState } from 'react'
 
 interface Props {
     user: User
+    language: Language
 }
 
-const Game = ({ user }: Props) => {
+const Game = ({ user, language }: Props) => {
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
@@ -18,7 +20,7 @@ const Game = ({ user }: Props) => {
 
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
-    const { list, addWord } = useWordList()
+    const { addWord } = useWordList()
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user}>
@@ -39,6 +41,7 @@ const Game = ({ user }: Props) => {
                     listArea={listArea}
                     canvasArea={canvasArea}
                     setDraggingOverCanvas={setDraggingOverCanvas}
+                    language={language}
                 />
             </div>
         </WordInstancesProvider>

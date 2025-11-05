@@ -5,7 +5,8 @@ import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { Loader } from 'lucide-react'
-import { RefObject, useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface Props {
     word: Doc<'word'>
@@ -61,7 +62,7 @@ const WordCapsule = ({
                 canvasRect.y + canvasRect.height - wordRect.height - CANVAS_PADDING,
             ),
         })
-    }, [instanceId, updateSize, isNewCombination])
+    }, [instanceId, updateSize, isNewCombination, canvasRef])
 
     return (
         <animated.div

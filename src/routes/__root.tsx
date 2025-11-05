@@ -2,6 +2,7 @@ import Header from '@/component/Header'
 import Particles from '@/component/Particles'
 import { getLanguage, getLanguageFromPathname } from '@/data/language'
 import type { User } from '@/db/username'
+import { ThemeProvider } from '@/integration/ThemeProvider'
 import { seo } from '@/lib/seo'
 import type { Language } from '@/locale/language'
 import appCss from '@/style.css?url'
@@ -80,24 +81,25 @@ function RootDocument({ children }: Props) {
                 <HeadContent />
             </head>
 
-            <body className="font-montserrat size-full overflow-hidden bg-neutral-950 text-neutral-50 selection:bg-sky-700/60">
-                <Header language={language} />
+            <ThemeProvider>
+                <body className="font-montserrat size-full overflow-hidden bg-neutral-50 text-neutral-950 selection:bg-sky-700/60 dark:bg-neutral-950 dark:text-neutral-50">
+                    <Header language={language} />
 
-                <Particles
-                    particleColors={['#ffffff']}
-                    particleCount={300}
-                    particleSpread={20}
-                    speed={0.05}
-                    particleBaseSize={70}
-                    moveParticlesOnHover
-                    particleHoverFactor={0.3}
-                    className="absolute inset-0 -z-10 size-full opacity-40"
-                />
+                    <Particles
+                        particleCount={300}
+                        particleSpread={20}
+                        speed={0.05}
+                        particleBaseSize={80}
+                        moveParticlesOnHover
+                        particleHoverFactor={0.3}
+                        className="absolute inset-0 -z-10 size-full opacity-70 dark:opacity-40"
+                    />
 
-                {children}
+                    {children}
 
-                <Scripts />
-            </body>
+                    <Scripts />
+                </body>
+            </ThemeProvider>
         </html>
     )
 }

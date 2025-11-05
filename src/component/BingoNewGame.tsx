@@ -8,6 +8,7 @@ import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
 import { useForm } from '@tanstack/react-form'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
+import { User as UserIcon } from 'lucide-react'
 import { useState } from 'react'
 import z from 'zod'
 
@@ -51,7 +52,7 @@ const BingoNewGame = ({ language, user }: Props) => {
 
     return (
         <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
-            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
+            <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                 {t.common.welcomeUser.replace('{{USER}}', user.username)}
             </h1>
 
@@ -93,6 +94,8 @@ const BingoNewGame = ({ language, user }: Props) => {
                                             onChange={e => field.handleChange(e.target.value)}
                                             placeholder={t.home.searchPlaceholder}
                                             autoComplete="off"
+                                            icon={<UserIcon className="size-5" />}
+                                            onClear={field.state.value ? () => field.handleChange('') : undefined}
                                         />
 
                                         {isInvalid && (
@@ -121,7 +124,7 @@ const BingoNewGame = ({ language, user }: Props) => {
                             {opponents.map(opponent => (
                                 <li
                                     key={opponent._id}
-                                    className="flex w-full items-center justify-between gap-4 border border-neutral-800 bg-neutral-800/50 p-2"
+                                    className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50"
                                 >
                                     <span className="pl-2 leading-tight font-medium opacity-80">
                                         {opponent.username}
@@ -152,7 +155,7 @@ const BingoNewGame = ({ language, user }: Props) => {
                             sentInvites.map(invite => (
                                 <li
                                     key={invite._id}
-                                    className="@container w-full border border-neutral-800 bg-neutral-800/50 p-2"
+                                    className="@container w-full border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50"
                                 >
                                     <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
                                         {invite.receiver && (
@@ -176,7 +179,7 @@ const BingoNewGame = ({ language, user }: Props) => {
                             receivedInvites.map(invite => (
                                 <li
                                     key={invite._id}
-                                    className="@container w-full border border-neutral-800 bg-neutral-800/50 p-2"
+                                    className="@container w-full border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50"
                                 >
                                     <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
                                         {invite.receiver && (

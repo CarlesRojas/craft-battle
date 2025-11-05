@@ -26,7 +26,7 @@ const List = ({
     return (
         <div
             ref={listArea}
-            className="relative h-fit w-full border-l border-neutral-500/30 md:h-full md:w-[unset] md:max-w-96 md:min-w-96"
+            className="relative h-fit w-full border-l border-neutral-500/50 md:h-full md:w-[unset] md:max-w-96 md:min-w-96 dark:border-neutral-500/30"
         >
             <div
                 className="h-[calc(100%-4rem) hidden max-h-[calc(100%-4rem)] min-h-[calc(100%-4rem)] w-full overflow-y-auto p-3 md:flex"
@@ -46,7 +46,7 @@ const List = ({
             </div>
 
             <div
-                className="grid h-52 max-h-52 min-h-52 w-full grid-rows-4 gap-3 overflow-x-auto border-t border-neutral-500/30 p-3 pb-0 md:hidden"
+                className="grid h-52 max-h-52 min-h-52 w-full grid-rows-4 gap-3 overflow-x-auto border-t border-neutral-500/50 p-3 pb-0 md:hidden dark:border-neutral-500/30"
                 ref={scrollAreaMobile}
             >
                 {Array.from({ length: 4 }, (_, mod) => (

@@ -8,6 +8,7 @@ import { getTranslation } from '@/locale/getTranslation'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useConvex } from 'convex/react'
+import { User } from 'lucide-react'
 import { v4 as uuid } from 'uuid'
 import z from 'zod'
 
@@ -60,7 +61,7 @@ function CreateUsernamePage() {
     return (
         <main className="full-page relative flex items-center justify-center pt-8">
             <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
-                <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
+                <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                     {t.createUsername.welcome}
                 </h1>
 
@@ -93,6 +94,8 @@ function CreateUsernamePage() {
                                             onChange={e => field.handleChange(e.target.value)}
                                             aria-invalid={isInvalid}
                                             autoComplete="off"
+                                            icon={<User className="size-5" />}
+                                            onClear={field.state.value ? () => field.handleChange('') : undefined}
                                         />
 
                                         {isInvalid && (

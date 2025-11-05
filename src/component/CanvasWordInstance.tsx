@@ -118,7 +118,11 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
             <WordCapsule
                 instanceId={instance._id}
                 word={{ ...instance, _id: instance.wordId }}
-                className={overlappedInstanceId === instance._id ? 'border-sky-800 bg-sky-950' : ''}
+                className={
+                    overlappedInstanceId === instance._id
+                        ? 'border-sky-400 bg-sky-200 dark:border-sky-800 dark:bg-sky-950'
+                        : ''
+                }
                 isLoading={isLoading}
                 isNewCombination={instance.width === 0 && instance.height === 0}
                 canvasRef={canvasArea}

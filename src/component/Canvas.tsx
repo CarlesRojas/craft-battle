@@ -34,10 +34,10 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
     return (
         <div className="size-full" ref={innerRef}>
             <div className={cn('pointer-events-none relative hidden size-full', draggingOverCanvas && 'block')}>
-                <div className="target-tl pointer-events-none absolute inset-1.5 bg-white" />
-                <div className="target-tr pointer-events-none absolute inset-1.5 bg-white" />
-                <div className="target-bl pointer-events-none absolute inset-1.5 bg-white" />
-                <div className="target-br pointer-events-none absolute inset-1.5 bg-white" />
+                <div className="target-tl pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
+                <div className="target-tr pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
+                <div className="target-bl pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
+                <div className="target-br pointer-events-none absolute inset-1.5 bg-black/70 dark:bg-white/70" />
             </div>
 
             {instances.map(instance => (

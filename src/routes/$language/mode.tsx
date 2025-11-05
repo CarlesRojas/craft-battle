@@ -24,7 +24,7 @@ function SelectGamePage() {
     return (
         <main className="full-page relative flex items-center justify-center pt-8">
             <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
-                <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-500">
+                <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
@@ -42,7 +42,7 @@ function SelectGamePage() {
                             className="size-full items-start"
                         >
                             <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
                                     {t.mode.classic.title}
                                 </h3>
 
@@ -59,7 +59,7 @@ function SelectGamePage() {
                             className="size-full items-start"
                         >
                             <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
                                     {t.mode.bingo.title}
                                 </h3>
 
@@ -76,7 +76,7 @@ function SelectGamePage() {
                             className="size-full items-start"
                         >
                             <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-500">
+                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
                                     {t.mode.battle.title}
                                 </h3>
 

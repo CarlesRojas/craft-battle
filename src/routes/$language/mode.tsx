@@ -57,10 +57,12 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
+                            disabled
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.bingo.title}
+                                    {t.mode.bingo.title}{' '}
+                                    <span className="text-black dark:text-white">- {t.mode.comingSoon}</span>
                                 </h3>
 
                                 <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
@@ -74,10 +76,12 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
+                            disabled
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.battle.title}
+                                    {t.mode.battle.title}{' '}
+                                    <span className="text-black dark:text-white">- {t.mode.comingSoon}</span>
                                 </h3>
 
                                 <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">

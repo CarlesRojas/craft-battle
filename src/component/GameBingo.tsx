@@ -25,8 +25,8 @@ const GameBingo = ({ user, language }: GameProps) => {
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user}>
-            <div className="flex size-full flex-col items-center justify-center md:flex-row" ref={dropArea}>
-                <div className="w-full grow md:h-full md:w-[unset]">
+            <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
+                <div className="w-full grow lg:h-full lg:w-[unset]">
                     <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
 
                     <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">

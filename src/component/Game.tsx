@@ -24,8 +24,8 @@ const Game = ({ user, language }: Props) => {
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user}>
-            <div className="flex size-full flex-col items-center justify-center md:flex-row" ref={dropArea}>
-                <div className="w-full grow md:h-full md:w-[unset]">
+            <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
+                <div className="w-full grow lg:h-full lg:w-[unset]">
                     <div className="size-full max-h-full min-h-full">
                         <Canvas
                             innerRef={canvasArea}

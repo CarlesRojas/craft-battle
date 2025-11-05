@@ -31,7 +31,7 @@ export function AudioProvider({ children }: Props) {
 
     const [playClick] = useSound(ClickSound, { soundEnabled: !muted })
     const [playBubble] = useSound(BubbleSound, { soundEnabled: !muted, volume: 0.3 })
-    const [playClear] = useSound('src/audio/delete.webm', { soundEnabled: !muted, volume: 0.7 })
+    const [playClear] = useSound('src/audio/delete.mp3', { soundEnabled: !muted, volume: 0.7 })
     const [playPing] = useSound(PingSound, { soundEnabled: !muted, volume: 0.7 })
 
     const toggleMute = useCallback(() => {

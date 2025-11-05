@@ -1,13 +1,12 @@
-import { createLocalStorage } from '@/lib/localStorage'
-import type { ReactNode } from 'react'
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import useSound from 'use-sound'
-import z from 'zod'
-
 import BubbleSound from '@/audio/bubble.webm'
 import ClickSound from '@/audio/click.webm'
 import ClearSound from '@/audio/delete.webm'
 import PingSound from '@/audio/ping.webm'
+import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
+import type { ReactNode } from 'react'
+import { createContext, useCallback, useContext, useRef } from 'react'
+import useSound from 'use-sound'
+import { useLocalStorage } from 'usehooks-ts'
 
 export enum Sound {
     CLICK = 'CLICK',
@@ -15,8 +14,6 @@ export enum Sound {
     CLEAR = 'CLEAR',
     PING = 'PING',
 }
-
-const audioStorage = createLocalStorage('AUDIO', z.object({ muted: z.boolean() }).optional(), undefined)
 
 type AudioContextType = {
     muted: boolean
@@ -31,7 +28,7 @@ interface Props {
 }
 
 export function AudioProvider({ children }: Props) {
-    const [muted, setMuted] = useState(false)
+    const [muted, setMuted] = useLocalStorage(`${LOCAL_STORAGE_PREFIX}_MUTED`, false)
     const mutedRef = useRef(false)
 
     const [playClick] = useSound(ClickSound, { soundEnabled: !muted })
@@ -39,17 +36,10 @@ export function AudioProvider({ children }: Props) {
     const [playClear] = useSound(ClearSound, { volume: 0.7, soundEnabled: !muted })
     const [playPing] = useSound(PingSound, { volume: 0.7, soundEnabled: !muted })
 
-    useEffect(() => {
-        const audio = audioStorage.get() ?? { muted: false }
-        setMuted(audio.muted)
-        mutedRef.current = audio.muted
-    }, [])
-
     const toggleMute = useCallback(() => {
         const nextMuted = !mutedRef.current
         mutedRef.current = nextMuted
         setMuted(nextMuted)
-        audioStorage.set({ muted: nextMuted })
     }, [])
 
     const play = useCallback(

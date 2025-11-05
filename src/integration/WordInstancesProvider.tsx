@@ -6,7 +6,7 @@ import type { CreateWord } from '@/db/word'
 import { useCombineWords } from '@/hook/useCombineWords'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 type WordInstancesContextType = {
@@ -33,7 +33,7 @@ interface Props {
 
 export function WordInstancesProvider({ children, onCombine, user }: Props) {
     const game = useConvexQuery(api.game.get, { playerId: user._id })
-    const instances = useMemo(() => game?.instances ?? [], [game])
+    const instances = game?.instances ?? []
     const combineWords = useCombineWords()
 
     const addInstanceMutation = useConvexMutation(api.instance.add).withOptimisticUpdate((localStore, args) => {

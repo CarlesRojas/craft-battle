@@ -11,7 +11,11 @@ const config = defineConfig({
         tailwindcss(),
         tanstackStart({ spa: { enabled: true } }),
         nitro(),
-        viteReact(),
+        viteReact({
+            babel: {
+                plugins: ['babel-plugin-react-compiler'],
+            },
+        }),
     ],
 })
 

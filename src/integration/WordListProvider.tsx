@@ -5,7 +5,7 @@ import type { User } from '@/db/username'
 import type { CreateWord } from '@/db/word'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 type WordListContextType = {
     list: Array<Doc<'word'>>
@@ -56,27 +56,19 @@ export function WordListProvider({ children, user }: Props) {
     const [sort, setSort] = useState<Sort>(DEFAULT_SORT)
     const [order, setOrder] = useState<Order>(DEFAULT_ORDER)
 
-    const filteredList = useMemo(
-        () => (game ? filterAndSortList({ listToFilter: game.words, query, sort, order }) : []),
-        [game, query, sort, order],
-    )
+    const filteredList = game ? filterAndSortList({ listToFilter: game.words, query, sort, order }) : []
 
-    const addWord = useCallback(
-        async (word: CreateWord) => {
-            const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
-            return result
-        },
-        [game, addWordMutation, user],
-    )
+    const addWord = async (word: CreateWord) => {
+        const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
+        return result
+    }
 
-    const applySearch = useCallback((newQuery: string) => {
-        setQuery(newQuery)
-    }, [])
+    const applySearch = (newQuery: string) => setQuery(newQuery)
 
-    const applySort = useCallback((newSort: Sort, newOrder: Order) => {
+    const applySort = (newSort: Sort, newOrder: Order) => {
         setSort(newSort)
         setOrder(newOrder)
-    }, [])
+    }
 
     return (
         <WordListContext.Provider

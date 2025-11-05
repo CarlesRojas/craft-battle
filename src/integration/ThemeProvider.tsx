@@ -1,5 +1,5 @@
 import { FunctionOnce } from '@/lib/functionOnce'
-import { createContext, use, useEffect, useMemo, useState } from 'react'
+import { createContext, use, useEffect, useState } from 'react'
 
 export type ResolvedTheme = 'dark' | 'light'
 export type Theme = ResolvedTheme | 'system'
@@ -56,17 +56,14 @@ export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 
         return () => mediaQuery.removeEventListener('change', updateTheme)
     }, [theme])
 
-    const value = useMemo(
-        () => ({
-            theme,
-            resolvedTheme,
-            setTheme: (newTheme: Theme) => {
-                localStorage.setItem(storageKey, newTheme)
-                setTheme(newTheme)
-            },
-        }),
-        [theme, resolvedTheme, storageKey],
-    )
+    const value = {
+        theme,
+        resolvedTheme,
+        setTheme: (newTheme: Theme) => {
+            localStorage.setItem(storageKey, newTheme)
+            setTheme(newTheme)
+        },
+    }
 
     return (
         <ThemeProviderContext value={value}>

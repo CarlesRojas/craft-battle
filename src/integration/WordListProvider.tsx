@@ -5,7 +5,7 @@ import type { User } from '@/db/username'
 import type { CreateWord } from '@/db/word'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState } from 'react'
 
 type WordListContextType = {
     list: Array<Doc<'word'>>
@@ -58,18 +58,22 @@ export function WordListProvider({ children, user }: Props) {
 
     const filteredList = game ? filterAndSortList({ listToFilter: game.words, query, sort, order }) : []
 
-    const addWord = async (word: CreateWord) => {
-        const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
-        return result
-    }
+    const addWord = useCallback(
+        async (word: CreateWord) => {
+            const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
+            return result
+        },
+        [game, addWordMutation, user],
+    )
 
-    const applySearch = (newQuery: string) => setQuery(newQuery)
+    const applySearch = useCallback((newQuery: string) => {
+        setQuery(newQuery)
+    }, [])
 
-    const applySort = (newSort: Sort, newOrder: Order) => {
+    const applySort = useCallback((newSort: Sort, newOrder: Order) => {
         setSort(newSort)
         setOrder(newOrder)
-    }
-
+    }, [])
     return (
         <WordListContext.Provider
             value={{

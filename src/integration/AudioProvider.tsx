@@ -1,6 +1,6 @@
 import { createLocalStorage } from '@/lib/localStorage'
 import type { ReactNode } from 'react'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import useSound from 'use-sound'
 import z from 'zod'
 
@@ -45,25 +45,28 @@ export function AudioProvider({ children }: Props) {
         mutedRef.current = audio.muted
     }, [])
 
-    const toggleMute = () => {
+    const toggleMute = useCallback(() => {
         const nextMuted = !mutedRef.current
         mutedRef.current = nextMuted
         setMuted(nextMuted)
         audioStorage.set({ muted: nextMuted })
-    }
+    }, [])
 
-    const play = (sound: Sound) => {
-        if (mutedRef.current) return
+    const play = useCallback(
+        (sound: Sound) => {
+            if (mutedRef.current) return
 
-        const playSound: Record<Sound, () => void> = {
-            [Sound.CLICK]: () => playClick(),
-            [Sound.BUBBLE]: () => playBubble(),
-            [Sound.CLEAR]: () => playClear(),
-            [Sound.PING]: () => playPing(),
-        }
+            const playSound: Record<Sound, () => void> = {
+                [Sound.CLICK]: () => playClick(),
+                [Sound.BUBBLE]: () => playBubble(),
+                [Sound.CLEAR]: () => playClear(),
+                [Sound.PING]: () => playPing(),
+            }
 
-        playSound[sound]()
-    }
+            playSound[sound]()
+        },
+        [playClick, playBubble, playClear, playPing],
+    )
 
     return <AudioContext.Provider value={{ muted, toggleMute, play }}>{children}</AudioContext.Provider>
 }

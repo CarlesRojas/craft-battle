@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 
-const LOCAL_STORAGE_PREFIX = 'CRAFT_BATTLE_'
+export const LOCAL_STORAGE_PREFIX = 'CRAFT_BATTLE_'
 
 const getLocalStorage = () => (typeof window !== 'undefined' ? window.localStorage : null)
 

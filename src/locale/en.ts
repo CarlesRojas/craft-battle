@@ -11,7 +11,11 @@ export const en: LanguageObject = {
     },
 
     mode: {
-        choose: 'Choose a mode',
+        activeGames: 'Active Games',
+        classicGame: 'Classic Game',
+        continue: 'Continue',
+
+        choose: 'Start a new game',
         comingSoon: 'Coming soon',
 
         classic: {
@@ -88,7 +92,6 @@ export const en: LanguageObject = {
     enum: {
         language: {
             en: 'English',
-            es: 'Español',
         },
 
         sort: {

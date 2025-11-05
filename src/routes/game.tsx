@@ -21,7 +21,7 @@ function GamePage() {
     const { user, language } = Route.useRouteContext()
 
     return (
-        <main className="full-page">
+        <main className="full-page touch-none overflow-hidden">
             <WordListProvider user={user}>
                 <Game user={user} language={language} />
             </WordListProvider>

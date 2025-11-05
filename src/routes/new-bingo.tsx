@@ -16,7 +16,7 @@ function NewBingoGamePage() {
     const { user, language } = Route.useRouteContext()
 
     return (
-        <main className="full-page relative flex items-center justify-center pt-8">
+        <main className="full-page relative flex items-center justify-center overflow-y-auto pt-8">
             <BingoNewGame language={language} user={user} />
         </main>
     )

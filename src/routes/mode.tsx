@@ -4,7 +4,7 @@ import { api } from '@/db/_generated/api'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
-import { useConvex } from 'convex/react'
+import { useConvex, useQuery as useConvexQuery } from 'convex/react'
 
 export const Route = createFileRoute('/mode')({
     component: SelectGamePage,
@@ -23,12 +23,36 @@ function SelectGamePage() {
     const convex = useConvex()
     const { play } = useAudio()
 
+    const activeClassicGame = useConvexQuery(api.game.get, { playerId: user._id })
+
     return (
-        <main className="full-page relative flex items-center justify-center pt-8">
-            <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
+        <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
+            <div className="flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6">
                 <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
+
+                {activeClassicGame && (
+                    <div className="flex w-full flex-col items-center gap-4">
+                        <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
+
+                        <ul className="flex w-full flex-col gap-4">
+                            <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
+                                <span className="pl-2 leading-tight font-medium opacity-80">{t.mode.classicGame}</span>
+
+                                <Button
+                                    variant="constructive"
+                                    onClick={() => {
+                                        play(Sound.CLICK)
+                                        router.navigate({ to: '/game' })
+                                    }}
+                                >
+                                    {t.mode.continue}
+                                </Button>
+                            </li>
+                        </ul>
+                    </div>
+                )}
 
                 <div className="flex w-full flex-col items-center gap-4">
                     <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.choose}</h2>
@@ -63,7 +87,7 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
-                            disabled
+                            // disabled
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">

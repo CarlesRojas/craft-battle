@@ -51,7 +51,7 @@ const BingoNewGame = ({ language, user }: Props) => {
     })
 
     return (
-        <div className="flex w-full max-w-lg flex-col items-center gap-12 place-self-start overscroll-y-auto px-3 py-6">
+        <div className="flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6">
             <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                 {t.common.welcomeUser.replace('{{USER}}', user.username)}
             </h1>

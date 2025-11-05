@@ -3,7 +3,6 @@ import { z } from 'zod'
 
 export enum Language {
     EN = 'en',
-    ES = 'es',
 }
 export const DEFAULT_LANGUAGE = Language.EN
 export const LANGUAGES = Object.values(Language)
@@ -21,6 +20,10 @@ export const LanguageObjectSchema = z.object({
     }),
 
     mode: z.object({
+        activeGames: z.string(),
+        classicGame: z.string(),
+        continue: z.string(),
+
         choose: z.string(),
         comingSoon: z.string(),
 

@@ -1,3 +1,4 @@
+import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { WordInstance } from '@/db/instance'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
@@ -77,13 +78,13 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
                             ...updatedInstance,
                             x: clamp(
                                 x - clickOffset.current.x,
-                                canvasRect.x,
-                                canvasRect.x + canvasRect.width - clickOffset.current.width,
+                                canvasRect.x + CANVAS_PADDING,
+                                canvasRect.x + canvasRect.width - clickOffset.current.width - CANVAS_PADDING,
                             ),
                             y: clamp(
                                 y - clickOffset.current.y,
-                                canvasRect.y,
-                                canvasRect.y + canvasRect.height - clickOffset.current.height,
+                                canvasRect.y + CANVAS_PADDING,
+                                canvasRect.y + canvasRect.height - clickOffset.current.height - CANVAS_PADDING,
                             ),
                         })
                 }
@@ -120,6 +121,7 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
                 className={overlappedInstanceId === instance._id ? 'border-sky-800 bg-sky-950' : ''}
                 isLoading={isLoading}
                 isNewCombination={instance.width === 0 && instance.height === 0}
+                canvasRef={canvasArea}
             />
         </animated.div>
     )

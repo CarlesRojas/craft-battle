@@ -1,3 +1,4 @@
+import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { Doc, Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
@@ -86,13 +87,13 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
                         ...updatedInstance,
                         x: clamp(
                             x - clickOffset.current.x,
-                            canvasRect.x,
-                            canvasRect.x + canvasRect.width - clickOffset.current.width,
+                            canvasRect.x + CANVAS_PADDING,
+                            canvasRect.x + canvasRect.width - clickOffset.current.width - CANVAS_PADDING,
                         ),
                         y: clamp(
                             y - clickOffset.current.y,
-                            canvasRect.y,
-                            canvasRect.y + canvasRect.height - clickOffset.current.height,
+                            canvasRect.y + CANVAS_PADDING,
+                            canvasRect.y + canvasRect.height - clickOffset.current.height - CANVAS_PADDING,
                         ),
                     }
 

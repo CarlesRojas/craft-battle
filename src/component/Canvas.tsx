@@ -11,6 +11,8 @@ interface Props {
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
+export const CANVAS_PADDING = 12
+
 const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) => {
     const { instances, replaceInstances, loadingInstances } = useWordInstances()
 
@@ -21,8 +23,8 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
         replaceInstances(
             instances.map(instance => ({
                 ...instance,
-                x: clamp(instance.x, rect.x, rect.x + rect.width - instance.width),
-                y: clamp(instance.y, rect.y, rect.y + rect.height - instance.height),
+                x: clamp(instance.x, rect.x + CANVAS_PADDING, rect.x + rect.width - instance.width - CANVAS_PADDING),
+                y: clamp(instance.y, rect.y + CANVAS_PADDING, rect.y + rect.height - instance.height - CANVAS_PADDING),
             })),
         )
     }, 200)

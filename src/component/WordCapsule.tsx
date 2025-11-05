@@ -1,9 +1,11 @@
+import { CANVAS_PADDING } from '@/component/Canvas'
 import type { Doc, Id } from '@/db/_generated/dataModel'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
+import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { Loader } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 
 interface Props {
     word: Doc<'word'>
@@ -11,9 +13,17 @@ interface Props {
     isLoading?: boolean
     className?: string
     isNewCombination?: boolean
+    canvasRef?: RefObject<HTMLDivElement | null>
 }
 
-const WordCapsule = ({ word, instanceId, className, isLoading = false, isNewCombination = false }: Props) => {
+const WordCapsule = ({
+    word,
+    instanceId,
+    className,
+    isLoading = false,
+    isNewCombination = false,
+    canvasRef,
+}: Props) => {
     const { updateSize } = useWordInstances()
 
     const props = useSpring({
@@ -24,12 +34,33 @@ const WordCapsule = ({ word, instanceId, className, isLoading = false, isNewComb
     const wordRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (isNewCombination && wordRef.current) console.log(instanceId)
-        if (isNewCombination && wordRef.current && instanceId && !instanceId.startsWith('temporal-id')) {
-            const rect = wordRef.current.getBoundingClientRect()
+        if (
+            !isNewCombination ||
+            !wordRef.current ||
+            !canvasRef?.current ||
+            !instanceId ||
+            instanceId.startsWith('temporal-id')
+        )
+            return
 
-            updateSize({ _id: instanceId, width: rect.width, height: rect.height })
-        }
+        const wordRect = wordRef.current.getBoundingClientRect()
+        const canvasRect = canvasRef.current.getBoundingClientRect()
+
+        updateSize({
+            _id: instanceId,
+            width: wordRect.width,
+            height: wordRect.height,
+            x: clamp(
+                wordRect.x,
+                canvasRect.x + CANVAS_PADDING,
+                canvasRect.x + canvasRect.width - wordRect.width - CANVAS_PADDING,
+            ),
+            y: clamp(
+                wordRect.y,
+                canvasRect.y + CANVAS_PADDING,
+                canvasRect.y + canvasRect.height - wordRect.height - CANVAS_PADDING,
+            ),
+        })
     }, [instanceId, updateSize, isNewCombination])
 
     return (

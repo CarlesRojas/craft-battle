@@ -56,7 +56,6 @@ export const replaceAll = mutation({
                 icon: v.string(),
                 playerId: v.id('user'),
                 text: v.string(),
-                normalizedText: v.string(),
                 gameId: v.union(v.id('game'), v.id('bingoGame')),
                 _creationTime: v.number(),
             }),

@@ -52,7 +52,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
                         ...args,
                         _creationTime: 0,
                         _id: `temporal-id-${uuid()}` as Id<'instance'>,
-                        normalizedText: normalize(args.text, true),
+                        text: normalize(args.text, true, true),
                     },
                 ],
             },
@@ -139,7 +139,9 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     }
 
     const replaceInstances = (newInstances: Array<WordInstance>) => {
-        replaceAllMutation({ instances: newInstances.filter(instance => !instance._id.startsWith('temporal-id')) })
+        replaceAllMutation({
+            instances: newInstances.filter(instance => !instance._id.startsWith('temporal-id')),
+        })
     }
 
     const getOverlappingInstance = (instanceToCheck: WordInstance) => {
@@ -172,9 +174,8 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
 
         const { id, isNew } = await onCombine({
-            text: result.result,
+            text: normalize(result.result, true, true),
             icon: result.icon,
-            normalizedText: normalize(result.result, true),
         })
 
         removeInstance(word1._id)
@@ -185,12 +186,11 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             width: 0,
             height: 0,
             icon: result.icon,
-            text: result.result,
+            text: normalize(result.result, true, true),
             gameId: game!.game._id,
             _id: `temporal-id-${uuid()}` as Id<'instance'>,
             playerId: user._id,
             _creationTime: new Date().getTime(),
-            normalizedText: normalize(result.result, true),
         })
 
         setLoadingInstances(prev => prev.filter(currId => currId !== word1._id))

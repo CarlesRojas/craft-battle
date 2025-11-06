@@ -18,6 +18,7 @@ export function useCombineWords() {
     return useMutation({
         mutationFn: async ({ word1, word2 }: Mutation) => {
             const combination = await convex.query(api.combination.get, { word1, word2 })
+            console.log(combination)
             if (combination) return combination
 
             const newCombination = await combineWordsFn({ data: { word1, word2 } })

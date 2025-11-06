@@ -8,23 +8,21 @@ export const add = mutation({
         playerId: v.id('user'),
         gameId: v.id('game'),
         text: v.string(),
-        normalizedText: v.string(),
         icon: v.string(),
     },
     handler: async (ctx, args) => {
-        const normalizedText = normalize(args.text, true)
+        const normalizedText = normalize(args.text, true, true)
 
         const words = await ctx.db
             .query('word')
-            .withIndex('normalizedText', q => q.eq('normalizedText', normalizedText))
+            .withIndex('text', q => q.eq('text', normalizedText))
             .collect()
 
         if (words.length > 0) return { id: words[0]._id, isNew: false }
 
         const wordId = await ctx.db.insert('word', {
             ...args,
-            text: args.text,
-            normalizedText,
+            text: normalizedText,
         })
 
         return { id: wordId, isNew: true }

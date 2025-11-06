@@ -3,10 +3,10 @@ import type { Doc } from './_generated/dataModel'
 import { mutation, query } from './_generated/server'
 
 const DEFAULT_WORDS: Array<Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' | 'playerId'>> = [
-    { text: 'water', icon: '💧' },
-    { text: 'fire', icon: '🔥' },
-    { text: 'wind', icon: '💨' },
-    { text: 'earth', icon: '🌍' },
+    { text: 'Water', icon: '💧', normalizedText: 'water' },
+    { text: 'Fire', icon: '🔥', normalizedText: 'fire' },
+    { text: 'Wind', icon: '💨', normalizedText: 'wind' },
+    { text: 'Earth', icon: '🌍', normalizedText: 'earth' },
 ]
 
 export const create = mutation({

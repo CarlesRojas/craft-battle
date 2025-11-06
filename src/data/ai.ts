@@ -1,16 +1,10 @@
-import { normalize } from '@/lib/normalize'
+import { getFirstEmoji, normalize } from '@/lib/normalize'
 import { openai } from '@ai-sdk/openai'
 import { createServerFn } from '@tanstack/react-start'
 import { generateObject } from 'ai'
 import z from 'zod'
 
 export const MODEL = 'gpt-4o-mini-2024-07-18' as const
-
-const getFirstEmoji = (str: string) => {
-    const emojiRegex = /\p{Emoji}/u
-    const match = str.match(emojiRegex)
-    return match ? match[0] : ''
-}
 
 export const combineWords = createServerFn({ method: 'POST' })
     .inputValidator(

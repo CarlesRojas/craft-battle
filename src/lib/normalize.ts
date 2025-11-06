@@ -15,3 +15,9 @@ export const isAlphanumeric = (str: string, withSpaces = false) =>
         .replace(/[\u0300-\u036f]/g, '')
         .replace(withSpaces ? /[^a-zA-Z0-9-_ ]/gi : /[^a-zA-Z0-9-_]/gi, '')
         .trim()
+
+export const getFirstEmoji = (str: string) => {
+    const emojiRegex = /\p{Emoji}/u
+    const match = str.match(emojiRegex)
+    return match ? match[0] : ''
+}

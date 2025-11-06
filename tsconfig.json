@@ -8,6 +8,8 @@
         "public/service-worker.js"
     ],
 
+    "exclude": ["script/**"],
+
     "compilerOptions": {
         "target": "ES2022",
         "jsx": "react-jsx",

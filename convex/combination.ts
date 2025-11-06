@@ -22,25 +22,30 @@ export const create = mutation({
         word2: v.string(),
         result: v.string(),
         icon: v.string(),
+        depth: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
         const sortedWords = [args.word1, args.word2].sort()
 
-        const word1Combination = await ctx.db
-            .query('combination')
-            .withIndex('result', q => q.eq('result', sortedWords[0]))
-            .first()
+        let newDepth = args.depth ?? 0
 
-        const word2Combination = await ctx.db
-            .query('combination')
-            .withIndex('result', q => q.eq('result', sortedWords[1]))
-            .first()
+        if (args.depth === undefined) {
+            const word1Combination = await ctx.db
+                .query('combination')
+                .withIndex('result', q => q.eq('result', sortedWords[0]))
+                .first()
 
-        const depth = Math.max(word1Combination?.depth ?? 0, word2Combination?.depth ?? 0) + 1
+            const word2Combination = await ctx.db
+                .query('combination')
+                .withIndex('result', q => q.eq('result', sortedWords[1]))
+                .first()
+
+            newDepth = Math.max(word1Combination?.depth ?? 0, word2Combination?.depth ?? 0) + 1
+        }
 
         return await ctx.db.insert('combination', {
             ...args,
-            depth,
+            depth: newDepth,
             word1: sortedWords[0],
             word2: sortedWords[1],
         })

@@ -14,7 +14,8 @@ type WordInstancesContextType = {
     instances: Array<WordInstance>
     overlappedInstanceId: string | null
     loadingInstances: Array<Id<'instance'>>
-    addInstance: (instance: WordInstance) => void
+    newInstances: Array<Id<'instance'>>
+    addInstance: (instance: WordInstance, isNew?: boolean) => Promise<void>
     removeInstance: (instanceId: Id<'instance'>) => void
     clearInstances: () => void
     replaceInstances: (instances: Array<WordInstance>) => void
@@ -22,6 +23,7 @@ type WordInstancesContextType = {
     clearOverlapped: () => void
     combine: (word1: WordInstance, word2: WordInstance) => Promise<boolean>
     updateSize: (instance: Partial<WordInstance>) => void
+    removeNewInstance: (instanceId: Id<'instance'>) => void
 }
 
 const WordInstancesContext = createContext<WordInstancesContextType | null>(null)
@@ -112,10 +114,11 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     })
 
     const [loadingInstances, setLoadingInstances] = useState<Array<Id<'instance'>>>([])
+    const [newInstances, setNewInstances] = useState<Array<Id<'instance'>>>([])
     const [overlappedInstanceId, setOverlappedInstanceId] = useState<string | null>(null)
 
-    const addInstance = (instance: WordInstance) => {
-        addInstanceMutation({
+    const addInstance = async (instance: WordInstance, isNew = false) => {
+        const createdIncidenceId = await addInstanceMutation({
             wordId: instance.wordId,
             x: instance.x,
             y: instance.y,
@@ -127,6 +130,8 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             gameId: instance.gameId,
             _creationTime: instance._creationTime,
         })
+
+        if (isNew && createdIncidenceId) setNewInstances(prev => [...prev, createdIncidenceId])
     }
 
     const removeInstance = (instanceId: Id<'instance'>) => {
@@ -138,9 +143,9 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         clearInstancesutation({ instances: instances.map(instance => instance._id) })
     }
 
-    const replaceInstances = (newInstances: Array<WordInstance>) => {
+    const replaceInstances = (replacedInstances: Array<WordInstance>) => {
         replaceAllMutation({
-            instances: newInstances.filter(instance => !instance._id.startsWith('temporal-id')),
+            instances: replacedInstances.filter(instance => !instance._id.startsWith('temporal-id')),
         })
     }
 
@@ -179,19 +184,22 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         })
 
         removeInstance(word1._id)
-        addInstance({
-            wordId: id,
-            x: word1.x,
-            y: word1.y,
-            width: 0,
-            height: 0,
-            icon: result.icon,
-            text: normalize(result.result, true, true),
-            gameId: game!.game._id,
-            _id: `temporal-id-${uuid()}` as Id<'instance'>,
-            playerId: user._id,
-            _creationTime: new Date().getTime(),
-        })
+        addInstance(
+            {
+                wordId: id,
+                x: word1.x,
+                y: word1.y,
+                width: 0,
+                height: 0,
+                icon: result.icon,
+                text: normalize(result.result, true, true),
+                gameId: game!.game._id,
+                _id: `temporal-id-${uuid()}` as Id<'instance'>,
+                playerId: user._id,
+                _creationTime: new Date().getTime(),
+            },
+            isNew,
+        )
 
         setLoadingInstances(prev => prev.filter(currId => currId !== word1._id))
 
@@ -210,12 +218,17 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         })
     }
 
+    const removeNewInstance = (instanceId: Id<'instance'>) => {
+        setNewInstances(prev => prev.filter(currId => currId !== instanceId))
+    }
+
     return (
         <WordInstancesContext.Provider
             value={{
                 instances,
                 loadingInstances,
                 overlappedInstanceId,
+                newInstances,
                 addInstance,
                 removeInstance,
                 clearInstances,
@@ -224,6 +237,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
                 clearOverlapped,
                 combine,
                 updateSize,
+                removeNewInstance,
             }}
         >
             {children}

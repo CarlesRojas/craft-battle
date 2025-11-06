@@ -9,7 +9,7 @@
         "test": "",
         "lint": "eslint",
         "format": "prettier",
-        "check": "prettier --write . && eslint --fix && tsc --noEmit"
+        "check": "tsc --noEmit && eslint --fix && prettier --write ."
     },
     "dependencies": {
         "@ai-sdk/openai": "^2.0.59",

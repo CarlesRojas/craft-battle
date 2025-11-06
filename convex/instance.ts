@@ -20,7 +20,7 @@ export const add = mutation({
         const word = await ctx.db.get(wordId)
         if (!word) return
 
-        await ctx.db.insert('instance', { wordId, x, y, width, height })
+        return await ctx.db.insert('instance', { wordId, x, y, width, height })
     },
 })
 

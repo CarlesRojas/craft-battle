@@ -1,5 +1,6 @@
 import { CANVAS_PADDING } from '@/component/Canvas'
 import type { Doc, Id } from '@/db/_generated/dataModel'
+import { useAutoResetState } from '@/hook/useAutoResetState'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
@@ -25,9 +26,11 @@ const WordCapsule = ({
     isNewCombination = false,
     canvasRef,
 }: Props) => {
-    const { updateSize } = useWordInstances()
+    const { updateSize, newInstances, removeNewInstance } = useWordInstances()
 
     const wordRef = useRef<HTMLDivElement>(null)
+
+    const [isNew, setIsNew] = useAutoResetState(false, 2000)
 
     useEffect(() => {
         if (
@@ -59,21 +62,46 @@ const WordCapsule = ({
         })
     }, [instanceId, updateSize, isNewCombination, canvasRef])
 
+    useEffect(() => {
+        if (!instanceId || instanceId.startsWith('temporal-id') || !newInstances.includes(instanceId)) return
+
+        setIsNew(true)
+        removeNewInstance(instanceId)
+    }, [instanceId, newInstances, removeNewInstance, setIsNew])
+
     return (
         <animated.div
             className={cn(
-                'relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 border border-neutral-300 bg-neutral-200 p-2 px-3 hover:bg-neutral-300',
-                'dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800',
+                'group relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 p-2 px-3',
                 className,
-                isLoading &&
-                    'pointer-events-none animate-pulse border-sky-400 bg-sky-200 dark:border-sky-800 dark:bg-sky-950',
+                isLoading && 'pointer-events-none animate-pulse',
                 instanceId && instanceId.startsWith('temporal-id') && 'pointer-events-none',
             )}
             ref={wordRef}
         >
+            <img
+                src={'/asset/shine.webp'}
+                alt="shine"
+                className={cn(
+                    'pointer-events-none absolute top-1/2 left-1/2 -z-20 size-32 max-h-32 min-h-32 max-w-32 min-w-32 -translate-x-1/2 -translate-y-1/2 rotate-0 opacity-0 invert-50 dark:invert-0',
+                    isNew && 'animate-new',
+                )}
+            />
+
+            <div
+                className={cn(
+                    'absolute inset-0 -z-10 border border-neutral-300 bg-neutral-200 group-hover:bg-neutral-300',
+                    'dark:border-neutral-800 dark:bg-neutral-900 dark:group-hover:bg-neutral-800',
+                    isLoading &&
+                        'pointer-events-none animate-pulse border-sky-400 bg-sky-200 dark:border-sky-800 dark:bg-sky-950',
+                )}
+            />
+
             <span className={cn(isLoading && 'opacity-0')}>{word.icon}</span>
 
-            <span className={cn('font-medium capitalize', isLoading && 'opacity-0')}>{word.text}</span>
+            <span className={cn('font-medium whitespace-nowrap capitalize', isLoading && 'opacity-0')}>
+                {word.text}
+            </span>
 
             {isLoading && (
                 <Loader className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 animate-spin stroke-3 text-black dark:text-white" />

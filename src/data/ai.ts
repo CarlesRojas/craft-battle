@@ -24,7 +24,6 @@ export const combineWords = createServerFn({ method: 'POST' })
             model: openai(MODEL),
             schema: z.object({
                 result: z.string().describe('The combined word that makes conceptual sense'),
-                explanation: z.string().describe('A brief one-sentence explanation of how the two words combine'),
                 icon: z.string().describe('A single emoji that represents the new word'),
             }),
             maxOutputTokens: 2000,
@@ -50,34 +49,12 @@ export const combineWords = createServerFn({ method: 'POST' })
                     Avoid abstract or general results like “terrain”, “energy”, or “substance”.
                     Do not make really big leaps if a smaller one is possible. Example 'water' + 'water' → 'lake' not 'ocean'.
                 - Provide a single emoji that best represents the new word, assigned to the “icon” field.
-                - Provide a short, one-sentence explanation of the combination logic, assigned to the “explanation” field.
-                - Do NOT include the emoji or explanation in the “result” field.
+                - Do NOT include the emoji in the “result” field.
 
                 Prioritization (aim for a conceptual jump):
                 - Prefer an emergent outcome that plausibly RESULTS FROM combining or interacting the two inputs (cause → effect, material → product, agent → outcome).
                 - If no clear emergent outcome exists, choose a concrete, widely known intersection concept shared by both.
                 - Avoid generic categories or trivial overlaps when a specific emergent outcome exists.
-
-                Heuristics for emergent results (apply in order). If the result is an abstract concept, try to apply the next heuristic:
-                1) Material + Process/Force ⇒ Product/Byproduct
-                - sand + heat → glass
-                - milk + bacteria → yogurt
-                - earth + fire → lava
-                2) Resource + Agent ⇒ Outcome
-                - earth + water → plant
-                - idea + effort → project
-                - fire + wind → smoke
-                3) Energy/Stimulus + Matter ⇒ State/Transformation
-                - water + cold → ice
-                - iron + oxygen → rust
-                4) Tool/Method + Domain ⇒ Practice/Artifact
-                - numbers + proof → mathematics
-                - pixels + motion → animation
-                5) Constraint + Agent ⇒ Behavior/Strategy
-                - rules + play → game
-                - scarcity + choice → economics
-
-                Tiebreakers:
                 - Pick a single, common English NOUN (not a phrase).
                 - Prefer the most specific and unambiguous term (e.g., “glass” over “solid” for sand + heat).
                 - Avoid hypernyms of either input unless no emergent outcome exists.
@@ -93,7 +70,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "steam",
                     "icon": "💨",
-                    "explanation": "When water is combined with fire, it transforms into steam."
                 }
 
                 Input: "earth" + "water"
@@ -101,7 +77,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "plant",
                     "icon": "🌱",
-                    "explanation": "When you water earth, a plant may grow."
                 }
 
                 Input: "earth" + "wind"
@@ -109,7 +84,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "dust",
                     "icon": "🌫️",
-                    "explanation": "When you wind earth, it may produce dust."
                 }
 
                 Input: "sand" + "heat"
@@ -117,7 +91,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "glass",
                     "icon": "🪟",
-                    "explanation": "Heating sand transforms it into glass."
                 }
 
                 Input: "iron" + "oxygen"
@@ -125,7 +98,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "rust",
                     "icon": "🧱",
-                    "explanation": "Oxygen reacts with iron to form rust."
                 }
 
                 Input: "time" + "money"
@@ -133,7 +105,6 @@ export const combineWords = createServerFn({ method: 'POST' })
                 {
                     "result": "investment",
                     "icon": "📈",
-                    "explanation": "Committing money over time with the goal of growth is investment."
                 }
 
                 Word 1: "${word1}"
@@ -145,7 +116,6 @@ export const combineWords = createServerFn({ method: 'POST' })
             word1,
             word2,
             result: normalize(object.result, true),
-            explanation: object.explanation,
             icon: getFirstEmoji(object.icon),
         }
     })
@@ -162,7 +132,6 @@ export const fightWords = createServerFn({ method: 'POST' })
             model: openai(MODEL),
             schema: z.object({
                 damageDealt: z.number().min(0).max(10).describe('The amount of damage dealt to the defense word'),
-                explanation: z.string().describe('A brief explanation of why the attack was effective or not'),
             }),
             maxOutputTokens: 2000,
             prompt: `Evaluate a battle between two words where "${attackWord}" is attacking and "${defenseWord}" is defending.

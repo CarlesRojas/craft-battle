@@ -168,7 +168,6 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         const { id, isNew } = await onCombine({
             text: result.result,
             icon: result.icon,
-            explanation: result.explanation,
         })
 
         removeInstance(word1._id)
@@ -180,7 +179,6 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             height: 0,
             icon: result.icon,
             text: result.result,
-            explanation: result.explanation,
             gameId: game!.game._id,
             _id: `temporal-id-${uuid()}` as Id<'instance'>,
             playerId: user._id,

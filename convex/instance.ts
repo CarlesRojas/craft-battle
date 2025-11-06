@@ -11,7 +11,6 @@ export const add = mutation({
         height: v.number(),
 
         icon: v.string(),
-        explanation: v.optional(v.string()),
         playerId: v.id('user'),
         text: v.string(),
         gameId: v.union(v.id('game'), v.id('bingoGame')),
@@ -55,7 +54,6 @@ export const replaceAll = mutation({
 
                 wordId: v.id('word'),
                 icon: v.string(),
-                explanation: v.optional(v.string()),
                 playerId: v.id('user'),
                 text: v.string(),
                 gameId: v.union(v.id('game'), v.id('bingoGame')),

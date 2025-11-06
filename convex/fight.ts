@@ -19,7 +19,6 @@ export const create = mutation({
         attackWord: v.string(),
         defenseWord: v.string(),
         damageDealt: v.number(),
-        explanation: v.string(),
     },
     handler: async (ctx, args) => {
         return await ctx.db.insert('fight', args)

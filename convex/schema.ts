@@ -5,16 +5,17 @@ export default defineSchema({
     combination: defineTable({
         word1: v.string(),
         word2: v.string(),
+        depth: v.number(),
         result: v.string(),
-        explanation: v.string(),
         icon: v.string(),
-    }).index('words', ['word1', 'word2']),
+    })
+        .index('words', ['word1', 'word2'])
+        .index('result', ['result']),
 
     fight: defineTable({
         attackWord: v.string(),
         defenseWord: v.string(),
         damageDealt: v.number(),
-        explanation: v.string(),
     }).index('words', ['attackWord', 'defenseWord']),
 
     user: defineTable({
@@ -47,7 +48,6 @@ export default defineSchema({
     word: defineTable({
         text: v.string(),
         icon: v.string(),
-        explanation: v.optional(v.string()),
 
         gameId: v.union(v.id('game'), v.id('bingoGame')),
         playerId: v.id('user'),

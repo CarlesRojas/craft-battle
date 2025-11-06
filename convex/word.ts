@@ -9,7 +9,6 @@ export const add = mutation({
         gameId: v.id('game'),
         text: v.string(),
         icon: v.string(),
-        explanation: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const normalizedText = normalize(args.text, true)

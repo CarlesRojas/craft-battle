@@ -9,10 +9,7 @@
         "test": "",
         "lint": "eslint",
         "format": "prettier",
-        "check": "prettier --write . && eslint --fix",
-        "parse": "tsx src/script/seed.ts",
-        "seed": "npx convex import --table combination src/script/seed.csv",
-        "seed-prod": "npx convex import --prod --table combination src/script/seed.csv"
+        "check": "prettier --write . && eslint --fix"
     },
     "dependencies": {
         "@ai-sdk/openai": "^2.0.59",
@@ -62,11 +59,9 @@
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",
         "@vitejs/plugin-react": "^5.0.4",
-        "dotenv": "^17.2.3",
         "eslint-plugin-react-hooks": "^7.0.1",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.7.1",
-        "tsx": "^4.20.6",
         "typescript": "^5.7.2",
         "vite": "^7.1.7"
     }

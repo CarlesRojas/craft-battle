@@ -8,6 +8,7 @@ export const add = mutation({
         playerId: v.id('user'),
         gameId: v.id('game'),
         text: v.string(),
+        normalizedText: v.string(),
         icon: v.string(),
     },
     handler: async (ctx, args) => {

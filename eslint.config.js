@@ -13,7 +13,7 @@ export default [
             'eslint.config.js',
             'prettier.config.js',
             'public/service-worker.js',
-            'script/**'
+            'script/**',
         ],
     },
     ...tanstackConfig,

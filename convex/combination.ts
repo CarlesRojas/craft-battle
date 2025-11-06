@@ -56,7 +56,7 @@ export const create = mutation({
             newDepth = Math.max(minWord1Depth, minWord2Depth) + 1
         }
 
-        return await ctx.db.insert('combination', {
+        const combinationId = await ctx.db.insert('combination', {
             ...args,
             depth: newDepth,
             word1: sortedWords[0],
@@ -66,5 +66,7 @@ export const create = mutation({
             word2Normalized,
             resultNormalized: normalize(args.result, true),
         })
+
+        return (await ctx.db.get(combinationId))!
     },
 })

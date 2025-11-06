@@ -13,7 +13,5 @@ export const Route = createFileRoute('/new-battle')({
 })
 
 function NewBattlePage() {
-    const { user } = Route.useRouteContext()
-
     return <main className="full-page relative flex items-center justify-center pt-8">New Battle</main>
 }

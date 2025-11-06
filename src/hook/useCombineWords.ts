@@ -21,9 +21,7 @@ export function useCombineWords() {
             if (combination) return combination
 
             const newCombination = await combineWordsFn({ data: { word1, word2 } })
-            await createCombination({ ...newCombination })
-
-            return newCombination
+            return await createCombination({ ...newCombination })
         },
     })
 }

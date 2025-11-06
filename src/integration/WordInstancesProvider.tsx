@@ -4,6 +4,7 @@ import type { WordInstance } from '@/db/instance'
 import type { User } from '@/db/username'
 import type { CreateWord } from '@/db/word'
 import { useCombineWords } from '@/hook/useCombineWords'
+import { normalize } from '@/lib/normalize'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState } from 'react'
@@ -47,7 +48,12 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
                 ...currentValue,
                 instances: [
                     ...currentValue.instances,
-                    { ...args, _creationTime: 0, _id: `temporal-id-${uuid()}` as Id<'instance'> },
+                    {
+                        ...args,
+                        _creationTime: 0,
+                        _id: `temporal-id-${uuid()}` as Id<'instance'>,
+                        normalizedText: normalize(args.text, true),
+                    },
                 ],
             },
         )
@@ -168,6 +174,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
         const { id, isNew } = await onCombine({
             text: result.result,
             icon: result.icon,
+            normalizedText: normalize(result.result, true),
         })
 
         removeInstance(word1._id)
@@ -183,6 +190,7 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
             _id: `temporal-id-${uuid()}` as Id<'instance'>,
             playerId: user._id,
             _creationTime: new Date().getTime(),
+            normalizedText: normalize(result.result, true),
         })
 
         setLoadingInstances(prev => prev.filter(currId => currId !== word1._id))

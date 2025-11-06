@@ -20,7 +20,7 @@ export const add = mutation({
         const word = await ctx.db.get(wordId)
         if (!word) return
 
-        const instanceId = await ctx.db.insert('instance', { wordId, x, y, width, height })
+        await ctx.db.insert('instance', { wordId, x, y, width, height })
     },
 })
 
@@ -56,6 +56,7 @@ export const replaceAll = mutation({
                 icon: v.string(),
                 playerId: v.id('user'),
                 text: v.string(),
+                normalizedText: v.string(),
                 gameId: v.union(v.id('game'), v.id('bingoGame')),
                 _creationTime: v.number(),
             }),

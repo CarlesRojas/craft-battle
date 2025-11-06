@@ -5,12 +5,17 @@ export default defineSchema({
     combination: defineTable({
         word1: v.string(),
         word2: v.string(),
-        depth: v.number(),
         result: v.string(),
+
+        word1Normalized: v.string(),
+        word2Normalized: v.string(),
+        resultNormalized: v.string(),
+
+        depth: v.number(),
         icon: v.string(),
     })
-        .index('words', ['word1', 'word2'])
-        .index('result', ['result']),
+        .index('words', ['word1Normalized', 'word2Normalized'])
+        .index('result', ['resultNormalized']),
 
     fight: defineTable({
         attackWord: v.string(),
@@ -47,13 +52,14 @@ export default defineSchema({
 
     word: defineTable({
         text: v.string(),
+        normalizedText: v.string(),
         icon: v.string(),
 
         gameId: v.union(v.id('game'), v.id('bingoGame')),
         playerId: v.id('user'),
     })
         .index('player', ['gameId', 'playerId'])
-        .index('word', ['text']),
+        .index('normalizedText', ['normalizedText']),
 
     instance: defineTable({
         wordId: v.id('word'),

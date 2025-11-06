@@ -1,4 +1,4 @@
-import { getFirstEmoji, normalize } from '@/lib/normalize'
+import { getFirstEmoji } from '@/lib/normalize'
 import { openai } from '@ai-sdk/openai'
 import { createServerFn } from '@tanstack/react-start'
 import { generateObject } from 'ai'
@@ -109,7 +109,7 @@ export const combineWords = createServerFn({ method: 'POST' })
         return {
             word1,
             word2,
-            result: normalize(object.result, true),
+            result: object.result,
             icon: getFirstEmoji(object.icon),
         }
     })

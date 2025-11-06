@@ -15,12 +15,17 @@ export const add = mutation({
 
         const words = await ctx.db
             .query('word')
-            .withIndex('word', q => q.eq('text', normalizedText))
+            .withIndex('normalizedText', q => q.eq('normalizedText', normalizedText))
             .collect()
 
         if (words.length > 0) return { id: words[0]._id, isNew: false }
 
-        const wordId = await ctx.db.insert('word', { ...args, text: normalizedText })
+        const wordId = await ctx.db.insert('word', {
+            ...args,
+            text: args.text,
+            normalizedText,
+        })
+
         return { id: wordId, isNew: true }
     },
 })

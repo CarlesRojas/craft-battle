@@ -32,7 +32,7 @@ const List = ({
                 className="h-[calc(100%-4rem) hidden max-h-[calc(100%-4rem)] min-h-[calc(100%-4rem)] w-full overflow-y-auto p-3 lg:flex"
                 ref={scrollAreaDesktop}
             >
-                <div className="flex h-fit w-full flex-wrap gap-3 overflow-y-auto" ref={scrollAreaDesktop}>
+                <div className="flex h-fit w-full flex-wrap gap-3" ref={scrollAreaDesktop}>
                     {list.map(word => (
                         <ListWord
                             key={word._id}
@@ -46,7 +46,7 @@ const List = ({
             </div>
 
             <div
-                className="grid h-52 max-h-52 min-h-52 w-full grid-rows-4 gap-3 overflow-x-auto border-t border-neutral-500/50 p-3 pb-0 lg:hidden dark:border-neutral-500/30"
+                className="grid h-52 max-h-52 min-h-52 w-full grid-rows-4 gap-3 overflow-x-auto overflow-y-hidden border-t border-neutral-500/50 p-3 pb-0 lg:hidden dark:border-neutral-500/30"
                 ref={scrollAreaMobile}
             >
                 {Array.from({ length: 4 }, (_, mod) => (

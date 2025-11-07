@@ -16,9 +16,13 @@ export const add = mutation({
         gameId: v.union(v.id('game'), v.id('bingoGame')),
         _creationTime: v.number(),
     },
-    handler: async (ctx, { wordId, x, y, width, height }) => {
+    handler: async (ctx, { wordId, x, y, width, height, text }) => {
         const word = await ctx.db.get(wordId)
-        if (!word) return
+
+        if (!word) {
+            console.error(`Word not found ${wordId} for instance ${text}`)
+            return
+        }
 
         return await ctx.db.insert('instance', { wordId, x, y, width, height })
     },
@@ -30,6 +34,35 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         await ctx.db.delete(args.instanceId)
+    },
+})
+
+export const replace = mutation({
+    args: {
+        instanceId: v.id('instance'),
+
+        wordId: v.id('word'),
+        x: v.number(),
+        y: v.number(),
+        width: v.number(),
+        height: v.number(),
+
+        icon: v.string(),
+        playerId: v.id('user'),
+        text: v.string(),
+        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        _creationTime: v.number(),
+    },
+    handler: async (ctx, { instanceId, wordId, x, y, width, height, text }) => {
+        const word = await ctx.db.get(wordId)
+
+        if (!word) {
+            console.error(`Word not found ${wordId} for instance ${text}`)
+            return
+        }
+
+        await ctx.db.delete(instanceId)
+        return await ctx.db.insert('instance', { wordId, x, y, width, height })
     },
 })
 

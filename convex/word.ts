@@ -15,7 +15,7 @@ export const add = mutation({
 
         const words = await ctx.db
             .query('word')
-            .withIndex('text', q => q.eq('text', normalizedText))
+            .withIndex('playerWord', q => q.eq('text', normalizedText).eq('playerId', args.playerId))
             .collect()
 
         if (words.length > 0) return { id: words[0]._id, isNew: false }

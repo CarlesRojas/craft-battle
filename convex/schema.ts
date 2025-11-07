@@ -54,7 +54,7 @@ export default defineSchema({
         playerId: v.id('user'),
     })
         .index('player', ['gameId', 'playerId'])
-        .index('text', ['text']),
+        .index('playerWord', ['text', 'playerId']),
 
     instance: defineTable({
         wordId: v.id('word'),

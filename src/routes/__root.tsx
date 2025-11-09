@@ -33,8 +33,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     head: () => ({
         meta: [
             { charSet: 'utf-8' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
             { name: 'theme-color', content: '#0a0a0a' },
+            { name: 'apple-mobile-web-app-capable', content: 'yes' },
+            { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
             ...seo({
                 title: 'Craft Battle',
                 description: `Craft attack and defense words to battle online against other players.`,
@@ -42,7 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         ],
         links: [
             { rel: 'stylesheet', href: appCss },
-            { rel: 'apple-touch-icon', sizes: '180x180', href: '/logo_180.png' },
+            { rel: 'apple-touch-icon', sizes: '180x180', href: '/appleIcon180.png' },
             { rel: 'icon', href: '/favicon.ico' },
             { rel: 'manifest', href: '/manifest.json' },
         ],

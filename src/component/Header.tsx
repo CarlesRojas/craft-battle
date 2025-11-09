@@ -22,7 +22,7 @@ export default function Header({ language }: Props) {
             </Link>
 
             <div className="flex h-full items-center gap-4">
-                <Button size="smallIcon" variant="ghost" onClick={toggleMute} suppressHydrationWarning>
+                <Button size="smallIcon" variant="ghost" onClick={toggleMute}>
                     {muted ? <VolumeOff className="size-5" /> : <Volume2 className="size-5" />}
                 </Button>
 

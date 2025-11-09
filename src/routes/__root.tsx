@@ -34,7 +34,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         meta: [
             { charSet: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { name: 'theme-color', content: '#010a0a' }, // TODO Change theme
+            { name: 'theme-color', content: '#0a0a0a' },
             ...seo({
                 title: 'Craft Battle',
                 description: `Craft attack and defense words to battle online against other players.`,
@@ -48,6 +48,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         ],
     }),
 
+    ssr: false,
     shellComponent: RootDocument,
     notFoundComponent: () => <div>Not Found</div>,
 })

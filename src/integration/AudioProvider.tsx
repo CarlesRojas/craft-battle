@@ -27,9 +27,9 @@ export function AudioProvider({ children }: Props) {
     const [muted, setMuted] = useLocalStorage(`${LOCAL_STORAGE_PREFIX}_MUTED`, false)
 
     const [playClick] = useSound('audio/click.webm', { soundEnabled: !muted })
-    const [playBubble] = useSound('audio/bubble.webm', { soundEnabled: !muted, volume: 0.3 })
+    const [playBubble] = useSound('audio/bubble.webm', { soundEnabled: !muted, volume: 0.2 })
     const [playClear] = useSound('audio/delete.webm', { soundEnabled: !muted, volume: 0.7 })
-    const [playPing] = useSound('audio/ping.webm', { soundEnabled: !muted, volume: 0.7 })
+    const [playPing] = useSound('audio/ping.webm', { soundEnabled: !muted, volume: 0.3 })
 
     const toggleMute = useCallback(() => {
         setMuted(prev => !prev)

@@ -61,6 +61,11 @@ export function ThemeProvider({
         return () => mediaQuery.removeEventListener('change', updateTheme)
     }, [theme])
 
+    useEffect(() => {
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+        if (metaThemeColor) metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#0a0a0a' : '#fafafa')
+    }, [resolvedTheme])
+
     const value = {
         theme,
         resolvedTheme,

@@ -4,7 +4,7 @@ import { Button } from '@/component/ui/button'
 import { useWordList } from '@/integration/WordListProvider'
 import type { Language } from '@/locale/language'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { useRef, type RefObject } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 import { useDebounceCallback, useEventListener } from 'usehooks-ts'
 
 interface Props {
@@ -26,7 +26,14 @@ const List = ({
 }: Props) => {
     const { list } = useWordList()
 
-    const currentStepIndex = useRef(0)
+    const [currentStepIndex, setCurrentStepIndex] = useState(0)
+
+    useEffect(() => {
+        if (!scrollAreaMobile.current) return
+
+        const steps = getSteps()
+        scrollAreaMobile.current.scrollTo({ top: steps[currentStepIndex], behavior: 'smooth' })
+    }, [currentStepIndex])
 
     const getSteps = () => {
         if (!scrollAreaMobile.current || !scrollAreaMobile.current.scrollHeight) return []
@@ -37,11 +44,8 @@ const List = ({
     const scrollUp = () => {
         if (!scrollAreaMobile.current) return
 
-        const steps = getSteps()
-        if (currentStepIndex.current <= 0) return
-        currentStepIndex.current = currentStepIndex.current - 1
-
-        scrollAreaMobile.current.scrollTo({ top: steps[currentStepIndex.current], behavior: 'smooth' })
+        if (currentStepIndex <= 0) return
+        setCurrentStepIndex(prev => prev - 1)
     }
     const scrollUpDebounced = useDebounceCallback(scrollUp, 300, { leading: true, maxWait: 300 })
 
@@ -49,18 +53,16 @@ const List = ({
         if (!scrollAreaMobile.current) return
 
         const steps = getSteps()
-        if (currentStepIndex.current >= steps.length - 1) return
-        currentStepIndex.current = currentStepIndex.current + 1
-
-        scrollAreaMobile.current.scrollTo({ top: steps[currentStepIndex.current], behavior: 'smooth' })
+        if (currentStepIndex >= steps.length - 1) return
+        setCurrentStepIndex(prev => prev + 1)
     }
     const scrollDownDebounced = useDebounceCallback(scrollDown, 300, { leading: true, maxWait: 300 })
 
     const onResize = useDebounceCallback(() => {
         if (!scrollAreaMobile.current) return
 
-        currentStepIndex.current = 0
-        scrollAreaMobile.current.scrollTo({ top: 0, behavior: 'instant' })
+        const steps = getSteps()
+        setCurrentStepIndex(prev => Math.min(prev, steps.length - 1))
     }, 300)
 
     useEventListener('resize', onResize)
@@ -104,11 +106,16 @@ const List = ({
                 </div>
 
                 <div className="flex h-52 max-h-52 min-h-52 w-13 max-w-13 min-w-13 flex-col items-center justify-center gap-3 py-3 pr-3">
-                    <Button size="icon" variant="ghost" onClick={scrollUpDebounced}>
+                    <Button size="icon" variant="ghost" onClick={scrollUpDebounced} disabled={currentStepIndex <= 0}>
                         <ArrowUp className="size-5" />
                     </Button>
 
-                    <Button size="icon" variant="ghost" onClick={scrollDownDebounced}>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={scrollDownDebounced}
+                        disabled={currentStepIndex >= getSteps().length - 1}
+                    >
                         <ArrowDown className="size-5" />
                     </Button>
                 </div>

@@ -37,7 +37,7 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
 
     useEventListener('resize', onResize)
 
-    const clearInstancesDebounced = useDebounceCallback(clearInstances, 500, { leading: true })
+    const clearInstancesDebounced = useDebounceCallback(clearInstances, 500, { leading: true, maxWait: 500 })
 
     return (
         <div className="size-full" ref={innerRef}>

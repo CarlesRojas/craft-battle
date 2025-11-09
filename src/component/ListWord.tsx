@@ -16,11 +16,10 @@ interface Props {
     word: Doc<'word'>
     canvasArea: RefObject<HTMLDivElement | null>
     scrollArea: RefObject<HTMLDivElement | null>
-    isMobile?: boolean
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
 }
 
-const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingOverCanvas }: Props) => {
+const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas }: Props) => {
     const { addInstance, getOverlappingInstance, clearOverlapped, combine } = useWordInstances()
     const { play } = useAudio()
 
@@ -31,8 +30,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
 
     const [spring, api] = useSpring(() => ({ x: 0, y: 0, reset: true }))
 
-    const scrollTop = isMobile ? 0 : (scrollArea.current?.scrollTop ?? 0)
-    const scrollLeft = isMobile ? (scrollArea.current?.scrollLeft ?? 0) : 0
+    const scrollTop = scrollArea.current?.scrollTop ?? 0
 
     const bind = useDrag(
         async ({ down, offset: [ox, oy], xy: [x, y], first, last, movement: [mx, my] }) => {
@@ -121,7 +119,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
         <div
             {...bind()}
             ref={wordRef}
-            className={cn('h-fit', isMobile && 'touch-pan-x', !isMobile && 'cursor-grab touch-none')}
+            className={cn('h-fit cursor-grab touch-none')}
             onClick={() => {
                 const canvasRect = canvasArea.current?.getBoundingClientRect()
 
@@ -143,7 +141,7 @@ const ListWord = ({ word, canvasArea, scrollArea, isMobile = false, setDraggingO
         >
             {activeInstance && (
                 <animated.div
-                    style={{ x: spring.x.to(value => value - scrollLeft), y: spring.y.to(value => value - scrollTop) }}
+                    style={{ x: spring.x, y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
                     <WordCapsule word={word} className="bg-neutral-300 dark:bg-neutral-800" />

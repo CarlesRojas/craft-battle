@@ -4,7 +4,8 @@ import { Button } from '@/component/ui/button'
 import { useWordList } from '@/integration/WordListProvider'
 import type { Language } from '@/locale/language'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { useEffect, useState, type RefObject } from 'react'
+import type { RefObject } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDebounceCallback, useEventListener } from 'usehooks-ts'
 
 interface Props {
@@ -28,18 +29,22 @@ const List = ({
 
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
-    useEffect(() => {
+    const getSteps = useCallback(() => {
+        if (!scrollAreaMobile.current || !scrollAreaMobile.current.scrollHeight) return []
+
+        return Array.from({ length: Math.floor(scrollAreaMobile.current.scrollHeight / 208) }, (_, i) => i * 208)
+    }, [scrollAreaMobile])
+
+    const scrollToCurrentStep = useCallback(() => {
         if (!scrollAreaMobile.current) return
 
         const steps = getSteps()
         scrollAreaMobile.current.scrollTo({ top: steps[currentStepIndex], behavior: 'smooth' })
-    }, [currentStepIndex])
+    }, [scrollAreaMobile, currentStepIndex, getSteps])
 
-    const getSteps = () => {
-        if (!scrollAreaMobile.current || !scrollAreaMobile.current.scrollHeight) return []
-
-        return Array.from({ length: Math.floor(scrollAreaMobile.current.scrollHeight / 208) }, (_, i) => i * 208)
-    }
+    useEffect(() => {
+        scrollToCurrentStep()
+    }, [scrollToCurrentStep])
 
     const scrollUp = () => {
         if (!scrollAreaMobile.current) return
@@ -63,6 +68,11 @@ const List = ({
 
         const steps = getSteps()
         setCurrentStepIndex(prev => Math.min(prev, steps.length - 1))
+
+        scrollAreaMobile.current.scrollTo({
+            top: steps[Math.min(currentStepIndex, steps.length - 1)],
+            behavior: 'smooth',
+        })
     }, 300)
 
     useEventListener('resize', onResize)
@@ -91,7 +101,7 @@ const List = ({
 
             <div className="flex h-52 max-h-52 min-h-52 w-full pb-0 lg:hidden">
                 <div
-                    className="flex h-52 max-h-52 min-h-52 w-[calc(100%-3.25rem)] max-w-[calc(100%-3.25rem)] min-w-[calc(100%-3.25rem)] flex-wrap gap-3 overflow-hidden p-3 !pb-42"
+                    className="flex h-52 max-h-52 min-h-52 w-[calc(100%-3.25rem)] max-w-[calc(100%-3.25rem)] min-w-[calc(100%-3.25rem)] flex-wrap gap-3 overflow-hidden p-3 pb-42!"
                     ref={scrollAreaMobile}
                 >
                     {list.map(word => (

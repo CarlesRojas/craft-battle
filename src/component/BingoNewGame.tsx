@@ -32,6 +32,7 @@ const BingoNewGame = ({ language, user }: Props) => {
     const createGame = useConvexMutation(api.gameBingo.create)
 
     const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
+    console.log(activeBingoGame)
     const receivedInvites = useConvexQuery(api.inviteBingo.getReceived, { receiverId: user._id })
     const sentInvites = useConvexQuery(api.inviteBingo.getSent, { senderId: user._id })
     const hasInvites = (receivedInvites && receivedInvites.length > 0) || (sentInvites && sentInvites.length > 0)

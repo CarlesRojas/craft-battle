@@ -45,7 +45,8 @@ export default defineSchema({
     })
         .index('words', ['word1', 'word2'])
         .index('result', ['result'])
-        .index('depth', ['depth']),
+        .index('depth', ['depth'])
+        .index('random_depth', ['depth', 'random']),
 
     // CLASSIC
     // ##############################################################
@@ -62,6 +63,7 @@ export default defineSchema({
         player2Id: v.id('user'),
         objectives: v.array(v.string()),
         inviteId: v.id('inviteBingo'),
+        difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
     })
         .index('player1', ['player1Id'])
         .index('player2', ['player2Id']),

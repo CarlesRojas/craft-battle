@@ -18,8 +18,8 @@ function RouteComponent() {
             setMessage('Backfilling random values...')
 
             const startTime = Date.now()
-            const total = 33_357
-            const batchSize = 200
+            const total = 667
+            const batchSize = 10000
             let iteration = 0
             let isDone = false
             let continueCursor: string | null = null

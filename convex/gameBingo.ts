@@ -85,17 +85,19 @@ export const create = mutation({
             _ => Math.floor(Math.random() * (maxDepth - minDepth + 1)) + minDepth,
         )
 
-        const objectivesGroups = await Promise.all(
+        const objectives = await Promise.all(
             objectiveDepths.map(async depth =>
                 ctx.db
                     .query('combination')
-                    .withIndex('depth', q => q.eq('depth', depth))
-                    .collect(),
+                    .withIndex('random_depth', q => q.eq('depth', depth).gte('random', Math.random()))
+                    .first(),
             ),
         )
-        const objectives = objectivesGroups.map(group => group[Math.floor(Math.random() * group.length)])
 
-        const gameId = await ctx.db.insert('bingoGame', { ...args, objectives: objectives.map(obj => obj.result) })
+        const gameId = await ctx.db.insert('bingoGame', {
+            ...args,
+            objectives: objectives.filter(obj => !!obj).map(obj => obj.result),
+        })
 
         await Promise.all(
             DEFAULT_WORDS.map(async word => await ctx.db.insert('word', { ...word, playerId: args.player1Id, gameId })),

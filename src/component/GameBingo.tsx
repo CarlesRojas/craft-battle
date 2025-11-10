@@ -6,12 +6,12 @@ import { useWordList } from '@/integration/WordListProvider'
 import type { Language } from '@/locale/language'
 import { useRef, useState } from 'react'
 
-interface GameProps {
+interface Props {
     user: User
     language: Language
 }
 
-const GameBingo = ({ user, language }: GameProps) => {
+const GameBingo = ({ user, language }: Props) => {
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)

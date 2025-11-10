@@ -73,7 +73,6 @@ const WordCapsule = ({
         <animated.div
             className={cn(
                 'group relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 p-2 px-3',
-                className,
                 isLoading && 'pointer-events-none animate-pulse',
                 instanceId && instanceId.startsWith('temporal-id') && 'pointer-events-none',
             )}
@@ -90,8 +89,9 @@ const WordCapsule = ({
 
             <div
                 className={cn(
-                    'absolute inset-0 -z-10 border border-neutral-300 bg-neutral-200 group-hover:bg-neutral-300',
-                    'dark:border-neutral-800 dark:bg-neutral-900 dark:group-hover:bg-neutral-800',
+                    'bg-neutral-150 absolute inset-0 -z-10 border border-neutral-400 group-hover:bg-neutral-200',
+                    'dark:border-neutral-700 dark:bg-neutral-900 dark:group-hover:bg-neutral-800',
+                    className,
                     isLoading &&
                         'pointer-events-none animate-pulse border-sky-400 bg-sky-200 dark:border-sky-800 dark:bg-sky-950',
                 )}

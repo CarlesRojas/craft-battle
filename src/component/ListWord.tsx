@@ -144,7 +144,7 @@ const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas }: Props
                     style={{ x: spring.x, y: spring.y.to(value => value - scrollTop) }}
                     className="absolute z-20"
                 >
-                    <WordCapsule word={word} className="bg-neutral-300 dark:bg-neutral-800" />
+                    <WordCapsule word={word} className="bg-neutral-200 dark:bg-neutral-800" />
                 </animated.div>
             )}
 

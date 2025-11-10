@@ -6,6 +6,7 @@
 @theme {
     --font-goldman: 'Goldman', system-ui;
     --font-montserrat: 'Montserrat', sans-serif;
+    --color-neutral-150: #ededed;
 
     --animate-new: new 2s ease-in-out 0s 1 normal forwards;
     @keyframes new {

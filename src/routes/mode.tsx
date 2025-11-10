@@ -92,7 +92,7 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
-                            disabled
+                            disabled={isLoading}
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">

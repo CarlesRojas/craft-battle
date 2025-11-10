@@ -1,4 +1,5 @@
 import { Order, Sort } from '@/const/sort'
+import { BingoDifficulty } from '@/data/bingo'
 import { z } from 'zod'
 
 export enum Language {
@@ -43,7 +44,7 @@ export const LanguageObjectSchema = z.object({
         }),
     }),
 
-    home: z.object({
+    bingo: z.object({
         findMatch: z.string(),
         findRandomOpponent: z.string(),
         searchFriend: z.string(),
@@ -51,6 +52,13 @@ export const LanguageObjectSchema = z.object({
         searchOpponent: z.string(),
         noResults: z.string(),
         or: z.string(),
+
+        difficulty: z.object({
+            select: z.string(),
+            easy: z.string(),
+            medium: z.string(),
+            hard: z.string(),
+        }),
 
         invite: z.object({
             title: z.string(),
@@ -102,6 +110,7 @@ export const LanguageObjectSchema = z.object({
         language: z.object(Object.fromEntries(Object.values(Language).map(item => [item, z.string()]))),
         sort: z.object(Object.fromEntries(Object.values(Sort).map(item => [item, z.string()]))),
         order: z.object(Object.fromEntries(Object.values(Order).map(item => [item, z.string()]))),
+        difficulty: z.object(Object.fromEntries(Object.values(BingoDifficulty).map(item => [item, z.string()]))),
     }),
 })
 export type LanguageObject = z.infer<typeof LanguageObjectSchema>

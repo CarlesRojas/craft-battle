@@ -11,8 +11,9 @@
 import type * as combination from "../combination.js";
 import type * as fight from "../fight.js";
 import type * as game from "../game.js";
+import type * as gameBingo from "../gameBingo.js";
 import type * as instance from "../instance.js";
-import type * as invite from "../invite.js";
+import type * as inviteBingo from "../inviteBingo.js";
 import type * as username from "../username.js";
 import type * as word from "../word.js";
 
@@ -22,31 +23,40 @@ import type {
   FunctionReference,
 } from "convex/server";
 
+declare const fullApi: ApiFromModules<{
+  combination: typeof combination;
+  fight: typeof fight;
+  game: typeof game;
+  gameBingo: typeof gameBingo;
+  instance: typeof instance;
+  inviteBingo: typeof inviteBingo;
+  username: typeof username;
+  word: typeof word;
+}>;
+
 /**
- * A utility for referencing Convex functions in your app's API.
+ * A utility for referencing Convex functions in your app's public API.
  *
  * Usage:
  * ```js
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-declare const fullApi: ApiFromModules<{
-  combination: typeof combination;
-  fight: typeof fight;
-  game: typeof game;
-  instance: typeof instance;
-  invite: typeof invite;
-  username: typeof username;
-  word: typeof word;
-}>;
-declare const fullApiWithMounts: typeof fullApi;
-
 export declare const api: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "public">
 >;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
 export declare const internal: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "internal">
 >;
 

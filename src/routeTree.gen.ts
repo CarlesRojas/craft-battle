@@ -14,6 +14,7 @@ import { Route as NewBattleRouteImport } from './routes/new-battle'
 import { Route as ModeRouteImport } from './routes/mode'
 import { Route as GameBingoRouteImport } from './routes/game-bingo'
 import { Route as GameRouteImport } from './routes/game'
+import { Route as DeleteRouteImport } from './routes/delete'
 import { Route as IndexRouteImport } from './routes/index'
 
 const NewBingoRoute = NewBingoRouteImport.update({
@@ -41,6 +42,11 @@ const GameRoute = GameRouteImport.update({
   path: '/game',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeleteRoute = DeleteRouteImport.update({
+  id: '/delete',
+  path: '/delete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,6 +55,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/delete': typeof DeleteRoute
   '/game': typeof GameRoute
   '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/delete': typeof DeleteRoute
   '/game': typeof GameRoute
   '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/delete': typeof DeleteRoute
   '/game': typeof GameRoute
   '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
@@ -76,16 +85,25 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/delete'
     | '/game'
     | '/game-bingo'
     | '/mode'
     | '/new-battle'
     | '/new-bingo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/game' | '/game-bingo' | '/mode' | '/new-battle' | '/new-bingo'
+  to:
+    | '/'
+    | '/delete'
+    | '/game'
+    | '/game-bingo'
+    | '/mode'
+    | '/new-battle'
+    | '/new-bingo'
   id:
     | '__root__'
     | '/'
+    | '/delete'
     | '/game'
     | '/game-bingo'
     | '/mode'
@@ -95,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeleteRoute: typeof DeleteRoute
   GameRoute: typeof GameRoute
   GameBingoRoute: typeof GameBingoRoute
   ModeRoute: typeof ModeRoute
@@ -139,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/delete': {
+      id: '/delete'
+      path: '/delete'
+      fullPath: '/delete'
+      preLoaderRoute: typeof DeleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -151,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeleteRoute: DeleteRoute,
   GameRoute: GameRoute,
   GameBingoRoute: GameBingoRoute,
   ModeRoute: ModeRoute,

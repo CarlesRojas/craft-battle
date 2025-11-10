@@ -2,22 +2,8 @@ import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
 export default defineSchema({
-    combination: defineTable({
-        word1: v.string(),
-        word2: v.string(),
-        result: v.string(),
-
-        depth: v.number(),
-        icon: v.string(),
-    })
-        .index('words', ['word1', 'word2'])
-        .index('result', ['result']),
-
-    fight: defineTable({
-        attackWord: v.string(),
-        defenseWord: v.string(),
-        damageDealt: v.number(),
-    }).index('words', ['attackWord', 'defenseWord']),
+    // USER
+    // ##############################################################
 
     user: defineTable({
         username: v.string(),
@@ -27,24 +13,8 @@ export default defineSchema({
         .index('username', ['normalizedUsername'])
         .searchIndex('user', { searchField: 'normalizedUsername' }),
 
-    invite: defineTable({
-        senderId: v.id('user'),
-        receiverId: v.id('user'),
-    })
-        .index('sender', ['senderId'])
-        .index('receiver', ['receiverId']),
-
-    game: defineTable({
-        playerId: v.id('user'),
-    }).index('player', ['playerId']),
-
-    bingoGame: defineTable({
-        player1Id: v.id('user'),
-        player2Id: v.id('user'),
-        objectives: v.array(v.string()),
-    })
-        .index('player1', ['player1Id'])
-        .index('player2', ['player2Id']),
+    // WORD
+    // ##############################################################
 
     word: defineTable({
         text: v.string(),
@@ -63,4 +33,54 @@ export default defineSchema({
         width: v.number(),
         height: v.number(),
     }).index('word', ['wordId']),
+
+    combination: defineTable({
+        word1: v.string(),
+        word2: v.string(),
+        result: v.string(),
+
+        depth: v.number(),
+        icon: v.string(),
+        random: v.optional(v.number()),
+    })
+        .index('words', ['word1', 'word2'])
+        .index('result', ['result'])
+        .index('depth', ['depth']),
+
+    // CLASSIC
+    // ##############################################################
+
+    game: defineTable({
+        playerId: v.id('user'),
+    }).index('player', ['playerId']),
+
+    // BINGO
+    // ##############################################################
+
+    bingoGame: defineTable({
+        player1Id: v.id('user'),
+        player2Id: v.id('user'),
+        objectives: v.array(v.string()),
+        inviteId: v.id('inviteBingo'),
+    })
+        .index('player1', ['player1Id'])
+        .index('player2', ['player2Id']),
+
+    inviteBingo: defineTable({
+        senderId: v.id('user'),
+        receiverId: v.id('user'),
+        difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
+    })
+        .index('sender', ['senderId'])
+        .index('receiver', ['receiverId'])
+        .index('users', ['senderId', 'receiverId']),
+
+    // BATTLE
+    // ##############################################################
+
+    fight: defineTable({
+        attackWord: v.string(),
+        defenseWord: v.string(),
+        damageDealt: v.number(),
+    }).index('words', ['attackWord', 'defenseWord']),
 })

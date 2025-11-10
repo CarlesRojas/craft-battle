@@ -34,7 +34,7 @@ export const en: LanguageObject = {
         },
     },
 
-    home: {
+    bingo: {
         findMatch: 'Find a match',
         findRandomOpponent: 'Find a random opponent',
         searchFriend: 'Search for friends',
@@ -43,11 +43,18 @@ export const en: LanguageObject = {
         noResults: 'No results found',
         or: 'or',
 
+        difficulty: {
+            select: 'Select difficulty',
+            easy: 'Easy',
+            medium: 'Medium',
+            hard: 'Hard',
+        },
+
         invite: {
             title: 'Invites',
             send: 'Send invite',
-            sent: 'You have invited {{USER}} to a battle.',
-            content: 'User {{USER}} has invited you to a battle!',
+            sent: 'You have invited {{USER}} to a bingo game. ({{DIFFICULTY}})',
+            content: '{{USER}} has invited you to a bingo game! ({{DIFFICULTY}})',
             accept: 'Accept',
             reject: 'Reject',
             revoke: 'Revoke',
@@ -102,6 +109,12 @@ export const en: LanguageObject = {
         order: {
             ASC: 'Ascending',
             DESC: 'Descending',
+        },
+
+        difficulty: {
+            EASY: 'Easy',
+            MEDIUM: 'Medium',
+            HARD: 'Hard',
         },
     },
 }

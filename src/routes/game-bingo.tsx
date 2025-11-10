@@ -1,4 +1,4 @@
-import Game from '@/component/Game'
+import GameBingo from '@/component/GameBingo'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { WordListProvider } from '@/integration/WordListProvider'
@@ -24,7 +24,7 @@ function GameBingoPage() {
     return (
         <main className="full-page touch-none overflow-hidden">
             <WordListProvider user={user}>
-                <Game user={user} language={language} />
+                <GameBingo user={user} language={language} />
             </WordListProvider>
         </main>
     )

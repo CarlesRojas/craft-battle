@@ -7,7 +7,7 @@ export const getSent = query({
     },
     handler: async (ctx, { senderId }) => {
         const invites = await ctx.db
-            .query('invite')
+            .query('inviteBingo')
             .withIndex('sender', q => q.eq('senderId', senderId))
             .collect()
 
@@ -27,7 +27,7 @@ export const getReceived = query({
     },
     handler: async (ctx, { receiverId }) => {
         const invites = await ctx.db
-            .query('invite')
+            .query('inviteBingo')
             .withIndex('receiver', q => q.eq('receiverId', receiverId))
             .collect()
 
@@ -45,49 +45,49 @@ export const create = mutation({
     args: {
         senderId: v.id('user'),
         receiverId: v.id('user'),
+        difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert('invite', args)
+        const existingInvites = await ctx.db
+            .query('inviteBingo')
+            .withIndex('users', q => q.eq('senderId', args.senderId).eq('receiverId', args.receiverId))
+            .collect()
+        if (existingInvites.length > 0) await Promise.all(existingInvites.map(invite => ctx.db.delete(invite._id)))
+
+        const reverseInvites = await ctx.db
+            .query('inviteBingo')
+            .withIndex('users', q => q.eq('senderId', args.receiverId).eq('receiverId', args.senderId))
+            .collect()
+        if (reverseInvites.length > 0) await Promise.all(reverseInvites.map(invite => ctx.db.delete(invite._id)))
+
+        return await ctx.db.insert('inviteBingo', args)
     },
 })
 
 export const remove = mutation({
     args: {
-        inviteId: v.id('invite'),
+        inviteId: v.id('inviteBingo'),
     },
     handler: async (ctx, { inviteId }) => {
         return await ctx.db.delete(inviteId)
     },
 })
 
-export const accept = mutation({
+export const deleteFromPlayer = mutation({
     args: {
-        senderId: v.id('user'),
-        receiverId: v.id('user'),
+        playerId: v.id('user'),
     },
-    handler: async (ctx, { senderId, receiverId }) => {
+    handler: async (ctx, { playerId }) => {
         const senderSentInvites = await ctx.db
-            .query('invite')
-            .withIndex('sender', q => q.eq('senderId', senderId))
+            .query('inviteBingo')
+            .withIndex('sender', q => q.eq('senderId', playerId))
             .collect()
 
         const senderReceivedInvites = await ctx.db
-            .query('invite')
-            .withIndex('receiver', q => q.eq('receiverId', senderId))
+            .query('inviteBingo')
+            .withIndex('receiver', q => q.eq('receiverId', playerId))
             .collect()
 
         await Promise.all([...senderSentInvites, ...senderReceivedInvites].map(invite => ctx.db.delete(invite._id)))
-
-        const recieverSentInvites = await ctx.db
-            .query('invite')
-            .withIndex('sender', q => q.eq('senderId', receiverId))
-            .collect()
-
-        const recieverReceivedInvites = await ctx.db
-            .query('invite')
-            .withIndex('receiver', q => q.eq('receiverId', receiverId))
-            .collect()
-
-        await Promise.all([...recieverSentInvites, ...recieverReceivedInvites].map(invite => ctx.db.delete(invite._id)))
     },
 })

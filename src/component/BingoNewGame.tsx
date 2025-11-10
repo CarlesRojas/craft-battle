@@ -1,15 +1,18 @@
 import { Button } from '@/component/ui/button'
 import { Field, FieldError, FieldGroup } from '@/component/ui/field'
 import { Input } from '@/component/ui/input'
+import { BingoDifficulty } from '@/data/bingo'
 import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
+import { Sound, useAudio } from '@/integration/AudioProvider'
 import { isAlphanumeric } from '@/lib/normalize'
 import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
 import { useForm } from '@tanstack/react-form'
+import { useRouter } from '@tanstack/react-router'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import { User as UserIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import z from 'zod'
 
 interface Props {
@@ -19,18 +22,38 @@ interface Props {
 
 const BingoNewGame = ({ language, user }: Props) => {
     const t = getTranslation(language)
+    const { play } = useAudio()
+    const router = useRouter()
 
     const searchOpponent = useConvexMutation(api.username.search)
-    const createInvite = useConvexMutation(api.invite.create)
-    const removeInvite = useConvexMutation(api.invite.remove)
-    const acceptInvite = useConvexMutation(api.invite.accept)
+    const createInvite = useConvexMutation(api.inviteBingo.create)
+    const removeInvite = useConvexMutation(api.inviteBingo.remove)
+    const deleteInvitesFromPlayer = useConvexMutation(api.inviteBingo.deleteFromPlayer)
+    const createGame = useConvexMutation(api.gameBingo.create)
 
-    const receivedInvites = useConvexQuery(api.invite.getReceived, { receiverId: user._id })
-    const sentInvites = useConvexQuery(api.invite.getSent, { senderId: user._id })
+    const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
+    const receivedInvites = useConvexQuery(api.inviteBingo.getReceived, { receiverId: user._id })
+    const sentInvites = useConvexQuery(api.inviteBingo.getSent, { senderId: user._id })
     const hasInvites = (receivedInvites && receivedInvites.length > 0) || (sentInvites && sentInvites.length > 0)
 
     const [opponents, setOpponents] = useState<Array<User>>([])
     const [hasSearched, setHasSearched] = useState(false)
+    const [difficulty, setDifficulty] = useState(BingoDifficulty.EASY)
+
+    const navigateToGame = useCallback(async () => {
+        await deleteInvitesFromPlayer({ playerId: user._id })
+        router.navigate({ to: '/game-bingo' })
+    }, [deleteInvitesFromPlayer, router, user])
+
+    useEffect(() => {
+        if (!activeBingoGame) return
+
+        const gameIsFromReceivedInvite =
+            receivedInvites?.some(invite => invite._id === activeBingoGame.game.inviteId) || false
+        const gameIsFromSentInvite = sentInvites?.some(invite => invite._id === activeBingoGame.game.inviteId) || false
+
+        if (gameIsFromReceivedInvite || gameIsFromSentInvite) navigateToGame()
+    }, [navigateToGame, activeBingoGame, receivedInvites, sentInvites])
 
     const formSchema = z.object({
         opponent: z
@@ -57,7 +80,37 @@ const BingoNewGame = ({ language, user }: Props) => {
             </h1>
 
             <div className="flex w-full flex-col items-center gap-4">
-                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.findMatch}</h2>
+                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.bingo.difficulty.select}</h2>
+
+                <div className="grid w-full grid-cols-3 flex-col items-center gap-4">
+                    <Button
+                        onClick={() => setDifficulty(BingoDifficulty.EASY)}
+                        className="w-full"
+                        variant={difficulty === BingoDifficulty.EASY ? 'constructive' : 'white'}
+                    >
+                        {t.bingo.difficulty.easy}
+                    </Button>
+
+                    <Button
+                        onClick={() => setDifficulty(BingoDifficulty.MEDIUM)}
+                        className="w-full"
+                        variant={difficulty === BingoDifficulty.MEDIUM ? 'default' : 'white'}
+                    >
+                        {t.bingo.difficulty.medium}
+                    </Button>
+
+                    <Button
+                        onClick={() => setDifficulty(BingoDifficulty.HARD)}
+                        className="w-full"
+                        variant={difficulty === BingoDifficulty.HARD ? 'destructive' : 'white'}
+                    >
+                        {t.bingo.difficulty.hard}
+                    </Button>
+                </div>
+            </div>
+
+            <div className="flex w-full flex-col items-center gap-4">
+                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.bingo.findMatch}</h2>
 
                 <Button
                     onClick={() => {
@@ -66,12 +119,12 @@ const BingoNewGame = ({ language, user }: Props) => {
                     }}
                     className="w-full"
                 >
-                    {t.home.findRandomOpponent}
+                    {t.bingo.findRandomOpponent}
                 </Button>
             </div>
 
             <div className="flex w-full flex-col items-center gap-4">
-                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.searchFriend}</h2>
+                <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.bingo.searchFriend}</h2>
 
                 <form
                     onSubmit={e => {
@@ -92,7 +145,7 @@ const BingoNewGame = ({ language, user }: Props) => {
                                             name={field.name}
                                             value={field.state.value}
                                             onChange={e => field.handleChange(e.target.value)}
-                                            placeholder={t.home.searchPlaceholder}
+                                            placeholder={t.bingo.searchPlaceholder}
                                             autoComplete="off"
                                             icon={<UserIcon className="size-5" />}
                                             onClear={field.state.value ? () => field.handleChange('') : undefined}
@@ -112,13 +165,13 @@ const BingoNewGame = ({ language, user }: Props) => {
                     </FieldGroup>
 
                     <Button type="submit" className="w-fit">
-                        {t.home.searchOpponent}
+                        {t.bingo.searchOpponent}
                     </Button>
                 </form>
 
                 {hasSearched &&
                     (opponents.length === 0 ? (
-                        <p className="w-full text-left text-sm tracking-wide opacity-50">{t.home.noResults}</p>
+                        <p className="w-full text-left text-sm tracking-wide opacity-50">{t.bingo.noResults}</p>
                     ) : (
                         <ul className="flex w-full flex-col gap-2">
                             {opponents.map(opponent => (
@@ -135,10 +188,10 @@ const BingoNewGame = ({ language, user }: Props) => {
                                             form.reset()
                                             setOpponents([])
                                             setHasSearched(false)
-                                            createInvite({ senderId: user._id, receiverId: opponent._id })
+                                            createInvite({ senderId: user._id, receiverId: opponent._id, difficulty })
                                         }}
                                     >
-                                        {t.home.invite.send}
+                                        {t.bingo.invite.send}
                                     </Button>
                                 </li>
                             ))}
@@ -148,7 +201,7 @@ const BingoNewGame = ({ language, user }: Props) => {
 
             {hasInvites && (
                 <div className="flex w-full flex-col items-center gap-4">
-                    <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.home.invite.title}</h2>
+                    <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.bingo.invite.title}</h2>
 
                     <ul className="flex w-full flex-col gap-2">
                         {sentInvites &&
@@ -160,7 +213,9 @@ const BingoNewGame = ({ language, user }: Props) => {
                                     <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
                                         {invite.receiver && (
                                             <span className="pl-2 leading-tight font-medium opacity-80">
-                                                {t.home.invite.sent.replace('{{USER}}', invite.receiver.username)}
+                                                {t.bingo.invite.sent
+                                                    .replace('{{USER}}', invite.receiver.username)
+                                                    .replace('{{DIFFICULTY}}', t.enum.difficulty[invite.difficulty])}
                                             </span>
                                         )}
 
@@ -169,7 +224,7 @@ const BingoNewGame = ({ language, user }: Props) => {
                                             variant="destructive"
                                             className="w-fit place-self-end"
                                         >
-                                            {t.home.invite.revoke}
+                                            {t.bingo.invite.revoke}
                                         </Button>
                                     </div>
                                 </li>
@@ -184,26 +239,33 @@ const BingoNewGame = ({ language, user }: Props) => {
                                     <div className="flex flex-col justify-between gap-4 @md:flex-row @md:items-center">
                                         {invite.receiver && (
                                             <span className="leading-tight font-medium opacity-80 @md:pl-2">
-                                                {t.home.invite.content.replace('{{USER}}', invite.receiver.username)}
+                                                {t.bingo.invite.content
+                                                    .replace('{{USER}}', invite.receiver.username)
+                                                    .replace('{{DIFFICULTY}}', t.enum.difficulty[invite.difficulty])}
                                             </span>
                                         )}
 
                                         <div className="flex items-center gap-3 place-self-end @md:place-self-auto">
                                             <Button
-                                                onClick={() => {
-                                                    acceptInvite(invite)
-                                                    // TODO: Start game
+                                                onClick={async () => {
+                                                    play(Sound.CLICK)
+                                                    await createGame({
+                                                        player1Id: invite.senderId,
+                                                        player2Id: invite.receiverId,
+                                                        difficulty: invite.difficulty,
+                                                        inviteId: invite._id,
+                                                    })
                                                 }}
                                                 variant="constructive"
                                             >
-                                                {t.home.invite.accept}
+                                                {t.bingo.invite.accept}
                                             </Button>
 
                                             <Button
                                                 onClick={() => removeInvite({ inviteId: invite._id })}
                                                 variant="destructive"
                                             >
-                                                {t.home.invite.reject}
+                                                {t.bingo.invite.reject}
                                             </Button>
                                         </div>
                                     </div>

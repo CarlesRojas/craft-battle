@@ -1,6 +1,6 @@
 import { cn } from '@/lib/cn'
 import { Camera, Geometry, Mesh, Program, Renderer } from 'ogl'
-import React, { useEffect, useRef } from 'react'
+import { FC, useEffect, useRef } from 'react'
 
 interface ParticlesProps {
     particleCount?: number
@@ -97,7 +97,7 @@ const fragment = /* glsl */ `
   }
 `
 
-const Particles: React.FC<ParticlesProps> = ({
+const Particles: FC<ParticlesProps> = ({
     particleCount = 200,
     particleSpread = 10,
     speed = 0.1,

@@ -1,5 +1,6 @@
 import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
+import { Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
@@ -7,8 +8,9 @@ import { clamp } from '@/lib/clamp'
 import { cn } from '@/lib/cn'
 import { animated, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import type { RefObject } from 'react'
+import type { MouseEvent, RefObject } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 
 interface Props {
     instance: WordInstance
@@ -19,8 +21,15 @@ interface Props {
 }
 
 const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggingOverCanvas }: Props) => {
-    const { overlappedInstanceId, getOverlappingInstance, clearOverlapped, combine, removeInstance, updateSize } =
-        useWordInstances()
+    const {
+        overlappedInstanceId,
+        getOverlappingInstance,
+        clearOverlapped,
+        combine,
+        removeInstance,
+        updateSize,
+        addInstance,
+    } = useWordInstances()
     const { play } = useAudio()
 
     const [isDragging, setIsDragging] = useState(false)
@@ -112,11 +121,51 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
         api.set({ x: 0, y: 0 })
     }, [instance.x, instance.y, api])
 
+    const onRightClick = (e: MouseEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        const canvasRect = canvasArea.current?.getBoundingClientRect()
+
+        if (canvasRect && instanceRef.current) {
+            play(Sound.CLICK)
+            const wordRect = instanceRef.current.getBoundingClientRect()
+
+            addInstance({
+                ...instance,
+                wordId: instance.wordId,
+                x: clamp(
+                    wordRect.x + 6,
+                    canvasRect.x + CANVAS_PADDING,
+                    canvasRect.x + canvasRect.width - CANVAS_PADDING,
+                ),
+                y: clamp(
+                    wordRect.y + 6,
+                    canvasRect.y + CANVAS_PADDING,
+                    canvasRect.y + canvasRect.height - CANVAS_PADDING,
+                ),
+
+                width: wordRect.width,
+                height: wordRect.height,
+                _id: `temporal-id-${uuid()}` as Id<'instance'>,
+            })
+        }
+    }
+
+    const onMiddleClick = (e: MouseEvent<HTMLDivElement>) => {
+        if (e.button === 1) {
+            e.preventDefault()
+
+            play(Sound.CLEAR)
+            removeInstance(instance._id)
+        }
+    }
+
     return (
         <animated.div
             {...bind()}
             ref={instanceRef}
             style={{ ...spring }}
+            onContextMenu={onRightClick}
+            onMouseDown={onMiddleClick}
             className={cn(
                 'absolute z-10 cursor-grab touch-none',
                 isDragging && 'z-30',

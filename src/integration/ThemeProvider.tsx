@@ -1,12 +1,12 @@
 import { FunctionOnce } from '@/lib/functionOnce'
 import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
-import { createContext, use, useEffect, useState } from 'react'
+import { createContext, ReactNode, use, useEffect, useState } from 'react'
 
 export type ResolvedTheme = 'dark' | 'light'
 export type Theme = ResolvedTheme | 'system'
 
 interface ThemeProviderProps {
-    children: React.ReactNode
+    children: ReactNode
     defaultTheme?: Theme
     storageKey?: string
 }

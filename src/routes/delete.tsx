@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 export const Route = createFileRoute('/delete')({
     component: RouteComponent,
+    ssr: false,
 })
 
 function RouteComponent() {

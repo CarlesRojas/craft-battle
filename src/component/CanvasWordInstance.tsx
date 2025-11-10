@@ -1,6 +1,6 @@
 import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
-import { Id } from '@/db/_generated/dataModel'
+import type { Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'

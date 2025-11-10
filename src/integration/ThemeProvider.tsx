@@ -1,6 +1,7 @@
 import { FunctionOnce } from '@/lib/functionOnce'
 import { LOCAL_STORAGE_PREFIX } from '@/lib/storage'
-import { createContext, ReactNode, use, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import { createContext, use, useEffect, useState } from 'react'
 
 export type ResolvedTheme = 'dark' | 'light'
 export type Theme = ResolvedTheme | 'system'

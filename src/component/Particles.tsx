@@ -1,6 +1,7 @@
 import { cn } from '@/lib/cn'
 import { Camera, Geometry, Mesh, Program, Renderer } from 'ogl'
-import { FC, useEffect, useRef } from 'react'
+import type { FC } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface ParticlesProps {
     particleCount?: number

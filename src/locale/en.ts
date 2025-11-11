@@ -44,6 +44,9 @@ export const en: LanguageObject = {
         searchOpponent: 'Search',
         noResults: 'No results found',
         or: 'or',
+        objectives: 'First to get 3 wins!',
+        you: 'You',
+        opponent: 'Opponent',
 
         difficulty: {
             select: 'Select difficulty',

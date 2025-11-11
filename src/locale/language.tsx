@@ -54,6 +54,9 @@ export const LanguageObjectSchema = z.object({
         searchOpponent: z.string(),
         noResults: z.string(),
         or: z.string(),
+        objectives: z.string(),
+        you: z.string(),
+        opponent: z.string(),
 
         difficulty: z.object({
             select: z.string(),

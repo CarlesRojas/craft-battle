@@ -1,5 +1,6 @@
 import { v } from 'convex/values'
 import type { BingoDifficulty } from '../src/data/bingo'
+import { asyncReduce } from '../src/lib/asyncReduce'
 import type { Doc } from './_generated/dataModel'
 import { mutation, query } from './_generated/server'
 
@@ -47,6 +48,11 @@ export const create = mutation({
 
         for (const existingGame of games) {
             if (existingGame) {
+                const existingObjectives = await ctx.db
+                    .query('objective')
+                    .withIndex('game', q => q.eq('gameId', existingGame._id))
+                    .collect()
+
                 const existingGameWords = (
                     await Promise.all([
                         ctx.db
@@ -71,6 +77,8 @@ export const create = mutation({
                     )
                 ).flat()
 
+                await Promise.all(existingObjectives.map(async objective => await ctx.db.delete(objective._id)))
+
                 await Promise.all(existingGameWordInstances.map(async instance => await ctx.db.delete(instance._id)))
 
                 await Promise.all(existingGameWords.map(async word => await ctx.db.delete(word._id)))
@@ -85,23 +93,65 @@ export const create = mutation({
             _ => Math.floor(Math.random() * (maxDepth - minDepth + 1)) + minDepth,
         )
 
-        const objectives = await Promise.all(
-            objectiveDepths.map(async depth =>
-                ctx.db
-                    .query('combination')
-                    .withIndex('random_depth', q => q.eq('depth', depth).gte('random', Math.random()))
-                    .first(),
-            ),
+        let objectives = await Promise.all(
+            objectiveDepths.map(async depth => {
+                let word: Doc<'combination'> | null = null
+
+                while (!word) {
+                    word = await ctx.db
+                        .query('combination')
+                        .withIndex('random_depth', q => q.eq('depth', depth).gte('random', Math.random()))
+                        .first()
+                }
+
+                return word
+            }),
         )
 
-        const gameId = await ctx.db.insert('bingo', {
-            ...args,
-            objectives: objectives.filter(obj => !!obj).map(obj => obj.result),
-        })
+        objectives = await asyncReduce(
+            objectives,
+            async (acc: Array<Doc<'combination'>>, current, index) => {
+                const isDuplicate = acc.some(obj => obj.result === current.result)
+
+                let currentWord = current
+                if (isDuplicate) {
+                    let newWord: Doc<'combination'> | null = null
+                    const depth = objectiveDepths[index]
+
+                    while (!newWord) {
+                        newWord = await ctx.db
+                            .query('combination')
+                            .withIndex('random_depth', q => q.eq('depth', depth).gte('random', Math.random()))
+                            .first()
+                    }
+
+                    currentWord = newWord
+                }
+
+                acc.push(currentWord)
+                return acc
+            },
+            [],
+        )
+
+        const gameId = await ctx.db.insert('bingo', args)
+
+        await Promise.all(
+            objectives.map(obj =>
+                ctx.db.insert('objective', {
+                    gameId,
+                    text: obj.result,
+                    icon: obj.icon,
+                    completed: false,
+                    playerId: undefined,
+                }),
+            ),
+        )
 
         await Promise.all(
             DEFAULT_WORDS.map(async word => await ctx.db.insert('word', { ...word, playerId: args.player1Id, gameId })),
         )
+
         await Promise.all(
             DEFAULT_WORDS.map(async word => await ctx.db.insert('word', { ...word, playerId: args.player2Id, gameId })),
         )
@@ -132,6 +182,11 @@ export const get = query({
 
         if (!game || !opponent) return null
 
+        const objectives = await ctx.db
+            .query('objective')
+            .withIndex('game', q => q.eq('gameId', game._id))
+            .collect()
+
         const words = await ctx.db
             .query('word')
             .withIndex('player', q => q.eq('gameId', game._id).eq('playerId', args.playerId))
@@ -148,6 +203,6 @@ export const get = query({
             ),
         )
 
-        return { game, words, instances: instances.flat(), opponent }
+        return { game, words, instances: instances.flat(), objectives, opponent }
     },
 })

@@ -1,10 +1,14 @@
 import { default as Canvas } from '@/component/Canvas'
 import List from '@/component/List'
+import Marquee from '@/component/Marquee'
 import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
+import { cn } from '@/lib/cn'
+import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
+import { useQuery as useConvexQuery } from 'convex/react'
 import { useRef, useState } from 'react'
 
 interface Props {
@@ -13,6 +17,8 @@ interface Props {
 }
 
 const BingoGame = ({ user, language }: Props) => {
+    const t = getTranslation(language)
+
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
@@ -23,16 +29,87 @@ const BingoGame = ({ user, language }: Props) => {
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
     const { addWord } = useWordList()
+    const game = useConvexQuery(api.bingo.get, { playerId: user._id })
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.bingo.get}>
             <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
                 <div className="w-full grow lg:h-full lg:w-[unset]">
-                    <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}>
-                        {/* TODO add objective words for the bingo */}
+                    <div
+                        className={cn(
+                            'id mx-auto flex h-fit w-full flex-col items-center gap-3 border-b border-neutral-500/50 p-3 lg:grid-cols-3 dark:border-neutral-500/30',
+                            'h-[233px] max-h-[233px] min-h-[233px]',
+                            'sm:h-[209px] sm:max-h-[209px] sm:min-h-[209px]',
+                            'lg:h-[157px] lg:max-h-[157px] lg:min-h-[157px]',
+                        )}
+                        ref={selectArea}
+                    >
+                        <div className="flex h-fit w-full max-w-3xl flex-col justify-between sm:flex-row sm:items-center sm:gap-3">
+                            <h2 className="font-goldman w-full text-xl tracking-wide whitespace-nowrap text-sky-600 opacity-80 dark:text-sky-500">
+                                {t.bingo.objectives}
+                            </h2>
+
+                            <div className="flex h-fit w-fit items-center gap-4">
+                                <div className="flex w-fit items-center justify-center gap-2">
+                                    <span className="font-medium whitespace-nowrap capitalize">{t.bingo.you}:</span>
+
+                                    <div
+                                        className={cn(
+                                            'size-4 max-h-4 min-h-4 max-w-4 min-w-4 rounded-full border',
+                                            'border-green-600 bg-green-400/40',
+                                            'dark:border-green-900 dark:bg-green-900/40',
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="flex w-fit items-center justify-center gap-2">
+                                    <span className="font-medium whitespace-nowrap capitalize">
+                                        {t.bingo.opponent}:
+                                    </span>
+
+                                    <div
+                                        className={cn(
+                                            'size-4 max-h-4 min-h-4 max-w-4 min-w-4 rounded-full border',
+                                            'border-red-600 bg-red-400/40',
+                                            'dark:border-red-900 dark:bg-red-900/40',
+                                        )}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid w-full max-w-3xl grid-cols-2 gap-3 lg:grid-cols-3">
+                            {game?.objectives.map(objective => (
+                                <div
+                                    key={objective._id}
+                                    className={cn(
+                                        'relative h-10 max-h-10 min-h-10 border py-2',
+                                        'bg-neutral-150 border-neutral-400 group-hover:bg-neutral-200',
+                                        'dark:border-neutral-700 dark:bg-neutral-900 dark:group-hover:bg-neutral-800',
+                                    )}
+                                >
+                                    <Marquee>
+                                        <div className="flex size-full items-center justify-center gap-2">
+                                            <span>{objective.icon}</span>
+
+                                            <span className="font-medium whitespace-nowrap capitalize">
+                                                {objective.text}
+                                            </span>
+                                        </div>
+                                    </Marquee>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">
+                    <div
+                        className={cn(
+                            'w-full',
+                            'h-[calc(100%-233px)] max-h-[calc(100%-233px)] min-h-[calc(100%-233px)]',
+                            'sm:h-[calc(100%-209px)] sm:max-h-[calc(100%-209px)] sm:min-h-[calc(100%-209px)]',
+                            'lg:h-[calc(100%-157px)] lg:max-h-[calc(100%-157px)] lg:min-h-[calc(100%-157px)]',
+                        )}
+                    >
                         <Canvas
                             innerRef={canvasArea}
                             draggingOverCanvas={draggingOverCanvas}

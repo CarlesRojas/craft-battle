@@ -61,12 +61,19 @@ export default defineSchema({
     bingo: defineTable({
         player1Id: v.id('user'),
         player2Id: v.id('user'),
-        objectives: v.array(v.string()),
         inviteId: v.id('inviteBingo'),
         difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
     })
         .index('player1', ['player1Id'])
         .index('player2', ['player2Id']),
+
+    objective: defineTable({
+        gameId: v.id('bingo'),
+        text: v.string(),
+        icon: v.string(),
+        completed: v.boolean(),
+        playerId: v.optional(v.id('user')),
+    }).index('game', ['gameId']),
 
     inviteBingo: defineTable({
         senderId: v.id('user'),

@@ -62,6 +62,9 @@ export function WordListProvider({ children, user, getGameQuery }: Props) {
     const addWord = useCallback(
         async (word: CreateWord) => {
             const result = await addWordMutation({ ...word, playerId: user._id, gameId: game!.game._id })
+
+            // TODO: If it is bingo, check if the word is an objective and if the game is over
+
             return result
         },
         [game, addWordMutation, user],

@@ -72,7 +72,7 @@ const WordCapsule = ({
     return (
         <animated.div
             className={cn(
-                'group relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 p-2 px-3',
+                'group relative flex h-10 max-h-10 min-h-10 w-fit items-center justify-center gap-2 px-3 py-2',
                 isLoading && 'pointer-events-none animate-pulse',
                 instanceId && instanceId.startsWith('temporal-id') && 'pointer-events-none',
             )}

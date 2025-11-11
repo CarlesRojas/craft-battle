@@ -41,7 +41,7 @@ export default defineSchema({
 
         depth: v.number(),
         icon: v.string(),
-        random: v.optional(v.number()),
+        random: v.number(),
     })
         .index('words', ['word1', 'word2'])
         .index('result', ['result'])

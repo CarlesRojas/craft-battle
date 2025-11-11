@@ -56,8 +56,8 @@ const BingoGame = ({ user, language }: Props) => {
                                     <div
                                         className={cn(
                                             'size-4 max-h-4 min-h-4 max-w-4 min-w-4 rounded-full border',
-                                            'border-green-600 bg-green-400/40',
-                                            'dark:border-green-900 dark:bg-green-900/40',
+                                            'border-green-600/60 bg-green-400/10',
+                                            'dark:border-green-900/80 dark:bg-green-900/20',
                                         )}
                                     />
                                 </div>
@@ -70,8 +70,8 @@ const BingoGame = ({ user, language }: Props) => {
                                     <div
                                         className={cn(
                                             'size-4 max-h-4 min-h-4 max-w-4 min-w-4 rounded-full border',
-                                            'border-red-600 bg-red-400/40',
-                                            'dark:border-red-900 dark:bg-red-900/40',
+                                            'border-red-600/40 bg-red-400/10',
+                                            'dark:border-red-900/80 dark:bg-red-900/20',
                                         )}
                                     />
                                 </div>
@@ -84,8 +84,21 @@ const BingoGame = ({ user, language }: Props) => {
                                     key={objective._id}
                                     className={cn(
                                         'relative h-10 max-h-10 min-h-10 border py-2',
-                                        'bg-neutral-150 border-neutral-400 group-hover:bg-neutral-200',
-                                        'dark:border-neutral-700 dark:bg-neutral-900 dark:group-hover:bg-neutral-800',
+                                        // 'border-sky-500/80 bg-sky-500/10',
+                                        // 'dark:border-sky-900/80 dark:bg-sky-900/20',
+                                        'bg-neutral-150 border-neutral-400/50',
+                                        'dark:border-neutral-700/50 dark:bg-neutral-900',
+
+                                        objective.playerId === user._id && 'border-green-600/60 bg-green-400/10',
+                                        objective.playerId === user._id &&
+                                            'dark:border-green-900/80 dark:bg-green-900/20',
+
+                                        objective.playerId &&
+                                            objective.playerId !== user._id &&
+                                            'border-red-600/40 bg-red-400/10',
+                                        objective.playerId &&
+                                            objective.playerId !== user._id &&
+                                            'dark:border-red-900/80 dark:bg-red-900/20',
                                     )}
                                 >
                                     <Marquee>

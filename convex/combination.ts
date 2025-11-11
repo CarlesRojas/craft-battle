@@ -1,4 +1,3 @@
-import { paginationOptsValidator } from 'convex/server'
 import { v } from 'convex/values'
 import { normalize } from '../src/lib/normalize'
 import { mutation, query } from './_generated/server'
@@ -73,21 +72,5 @@ export const create = mutation({
         })
 
         return (await ctx.db.get(combinationId))!
-    },
-})
-
-export const backfillRand = mutation({
-    args: { paginationOpts: paginationOptsValidator },
-    handler: async (ctx, args) => {
-        const results = await ctx.db.query('combination').order('desc').paginate(args.paginationOpts)
-
-        await Promise.all(
-            results.page.map(async doc => {
-                if (doc.random === undefined) await ctx.db.patch(doc._id, { random: Math.random() })
-                else Promise.resolve()
-            }),
-        )
-
-        return { isDone: results.isDone, continueCursor: results.continueCursor }
     },
 })

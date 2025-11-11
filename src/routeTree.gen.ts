@@ -9,42 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as NewBingoRouteImport } from './routes/new-bingo'
-import { Route as NewBattleRouteImport } from './routes/new-battle'
 import { Route as ModeRouteImport } from './routes/mode'
-import { Route as GameBingoRouteImport } from './routes/game-bingo'
-import { Route as GameRouteImport } from './routes/game'
-import { Route as DeleteRouteImport } from './routes/delete'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlayClassicRouteImport } from './routes/play/classic'
+import { Route as PlayBingoRouteImport } from './routes/play/bingo'
+import { Route as NewBingoRouteImport } from './routes/new/bingo'
+import { Route as NewBattleRouteImport } from './routes/new/battle'
 
-const NewBingoRoute = NewBingoRouteImport.update({
-  id: '/new-bingo',
-  path: '/new-bingo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewBattleRoute = NewBattleRouteImport.update({
-  id: '/new-battle',
-  path: '/new-battle',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ModeRoute = ModeRouteImport.update({
   id: '/mode',
   path: '/mode',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GameBingoRoute = GameBingoRouteImport.update({
-  id: '/game-bingo',
-  path: '/game-bingo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GameRoute = GameRouteImport.update({
-  id: '/game',
-  path: '/game',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeleteRoute = DeleteRouteImport.update({
-  id: '/delete',
-  path: '/delete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -52,117 +26,95 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayClassicRoute = PlayClassicRouteImport.update({
+  id: '/play/classic',
+  path: '/play/classic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayBingoRoute = PlayBingoRouteImport.update({
+  id: '/play/bingo',
+  path: '/play/bingo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewBingoRoute = NewBingoRouteImport.update({
+  id: '/new/bingo',
+  path: '/new/bingo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewBattleRoute = NewBattleRouteImport.update({
+  id: '/new/battle',
+  path: '/new/battle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/delete': typeof DeleteRoute
-  '/game': typeof GameRoute
-  '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
-  '/new-battle': typeof NewBattleRoute
-  '/new-bingo': typeof NewBingoRoute
+  '/new/battle': typeof NewBattleRoute
+  '/new/bingo': typeof NewBingoRoute
+  '/play/bingo': typeof PlayBingoRoute
+  '/play/classic': typeof PlayClassicRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/delete': typeof DeleteRoute
-  '/game': typeof GameRoute
-  '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
-  '/new-battle': typeof NewBattleRoute
-  '/new-bingo': typeof NewBingoRoute
+  '/new/battle': typeof NewBattleRoute
+  '/new/bingo': typeof NewBingoRoute
+  '/play/bingo': typeof PlayBingoRoute
+  '/play/classic': typeof PlayClassicRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/delete': typeof DeleteRoute
-  '/game': typeof GameRoute
-  '/game-bingo': typeof GameBingoRoute
   '/mode': typeof ModeRoute
-  '/new-battle': typeof NewBattleRoute
-  '/new-bingo': typeof NewBingoRoute
+  '/new/battle': typeof NewBattleRoute
+  '/new/bingo': typeof NewBingoRoute
+  '/play/bingo': typeof PlayBingoRoute
+  '/play/classic': typeof PlayClassicRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/delete'
-    | '/game'
-    | '/game-bingo'
     | '/mode'
-    | '/new-battle'
-    | '/new-bingo'
+    | '/new/battle'
+    | '/new/bingo'
+    | '/play/bingo'
+    | '/play/classic'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/delete'
-    | '/game'
-    | '/game-bingo'
     | '/mode'
-    | '/new-battle'
-    | '/new-bingo'
+    | '/new/battle'
+    | '/new/bingo'
+    | '/play/bingo'
+    | '/play/classic'
   id:
     | '__root__'
     | '/'
-    | '/delete'
-    | '/game'
-    | '/game-bingo'
     | '/mode'
-    | '/new-battle'
-    | '/new-bingo'
+    | '/new/battle'
+    | '/new/bingo'
+    | '/play/bingo'
+    | '/play/classic'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DeleteRoute: typeof DeleteRoute
-  GameRoute: typeof GameRoute
-  GameBingoRoute: typeof GameBingoRoute
   ModeRoute: typeof ModeRoute
   NewBattleRoute: typeof NewBattleRoute
   NewBingoRoute: typeof NewBingoRoute
+  PlayBingoRoute: typeof PlayBingoRoute
+  PlayClassicRoute: typeof PlayClassicRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/new-bingo': {
-      id: '/new-bingo'
-      path: '/new-bingo'
-      fullPath: '/new-bingo'
-      preLoaderRoute: typeof NewBingoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/new-battle': {
-      id: '/new-battle'
-      path: '/new-battle'
-      fullPath: '/new-battle'
-      preLoaderRoute: typeof NewBattleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/mode': {
       id: '/mode'
       path: '/mode'
       fullPath: '/mode'
       preLoaderRoute: typeof ModeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game-bingo': {
-      id: '/game-bingo'
-      path: '/game-bingo'
-      fullPath: '/game-bingo'
-      preLoaderRoute: typeof GameBingoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game': {
-      id: '/game'
-      path: '/game'
-      fullPath: '/game'
-      preLoaderRoute: typeof GameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/delete': {
-      id: '/delete'
-      path: '/delete'
-      fullPath: '/delete'
-      preLoaderRoute: typeof DeleteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -172,17 +124,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/classic': {
+      id: '/play/classic'
+      path: '/play/classic'
+      fullPath: '/play/classic'
+      preLoaderRoute: typeof PlayClassicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/bingo': {
+      id: '/play/bingo'
+      path: '/play/bingo'
+      fullPath: '/play/bingo'
+      preLoaderRoute: typeof PlayBingoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new/bingo': {
+      id: '/new/bingo'
+      path: '/new/bingo'
+      fullPath: '/new/bingo'
+      preLoaderRoute: typeof NewBingoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new/battle': {
+      id: '/new/battle'
+      path: '/new/battle'
+      fullPath: '/new/battle'
+      preLoaderRoute: typeof NewBattleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DeleteRoute: DeleteRoute,
-  GameRoute: GameRoute,
-  GameBingoRoute: GameBingoRoute,
   ModeRoute: ModeRoute,
   NewBattleRoute: NewBattleRoute,
   NewBingoRoute: NewBingoRoute,
+  PlayBingoRoute: PlayBingoRoute,
+  PlayClassicRoute: PlayClassicRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

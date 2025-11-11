@@ -1,11 +1,11 @@
-import GameBingo from '@/component/GameBingo'
+import ClassicGame from '@/component/game/ClassicGame'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { WordListProvider } from '@/integration/WordListProvider'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/game-bingo')({
-    component: GameBingoPage,
+export const Route = createFileRoute('/play/classic')({
+    component: ClassicPlayPage,
     ssr: false,
     beforeLoad: async ({ context: { convex } }) => {
         const user = await getUser({ convex })
@@ -18,13 +18,13 @@ export const Route = createFileRoute('/game-bingo')({
     },
 })
 
-function GameBingoPage() {
+function ClassicPlayPage() {
     const { user, language } = Route.useRouteContext()
 
     return (
         <main className="full-page touch-none overflow-hidden">
-            <WordListProvider user={user}>
-                <GameBingo user={user} language={language} />
+            <WordListProvider user={user} getGameQuery={api.game.get}>
+                <ClassicGame user={user} language={language} />
             </WordListProvider>
         </main>
     )

@@ -120,13 +120,17 @@ export const get = query({
             .withIndex('player1', q => q.eq('player1Id', args.playerId))
             .first()
 
-        if (!game)
+        let opponent = game?.player2Id ? await ctx.db.get(game.player2Id) : null
+
+        if (!game) {
             game = await ctx.db
                 .query('bingoGame')
                 .withIndex('player2', q => q.eq('player2Id', args.playerId))
                 .first()
+            opponent = game?.player1Id ? await ctx.db.get(game.player1Id) : null
+        }
 
-        if (!game) return null
+        if (!game || !opponent) return null
 
         const words = await ctx.db
             .query('word')
@@ -144,6 +148,6 @@ export const get = query({
             ),
         )
 
-        return { game, words, instances: instances.flat() }
+        return { game, words, instances: instances.flat(), opponent }
     },
 })

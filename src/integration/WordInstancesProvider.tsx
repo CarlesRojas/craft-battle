@@ -32,19 +32,20 @@ interface Props {
     children: ReactNode
     onCombine: (result: CreateWord) => Promise<{ id: Id<'word'>; isNew: boolean }>
     user: User
+    getGameQuery: typeof api.game.get | typeof api.gameBingo.get
 }
 
-export function WordInstancesProvider({ children, onCombine, user }: Props) {
-    const game = useConvexQuery(api.game.get, { playerId: user._id })
+export function WordInstancesProvider({ children, onCombine, user, getGameQuery }: Props) {
+    const game = useConvexQuery(getGameQuery, { playerId: user._id })
     const instances = useMemo(() => game?.instances ?? [], [game])
     const combineWords = useCombineWords()
 
     const addInstanceMutation = useConvexMutation(api.instance.add).withOptimisticUpdate((localStore, args) => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
         localStore.setQuery(
-            api.game.get,
+            getGameQuery,
             { playerId: user._id },
             {
                 ...currentValue,
@@ -62,11 +63,11 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     })
 
     const removeInstanceMutation = useConvexMutation(api.instance.remove).withOptimisticUpdate((localStore, args) => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
         localStore.setQuery(
-            api.game.get,
+            getGameQuery,
             { playerId: user._id },
             {
                 ...currentValue,
@@ -76,11 +77,11 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     })
 
     const replaceInstanceMutation = useConvexMutation(api.instance.replace).withOptimisticUpdate((localStore, args) => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
         localStore.setQuery(
-            api.game.get,
+            getGameQuery,
             { playerId: user._id },
             {
                 ...currentValue,
@@ -98,25 +99,25 @@ export function WordInstancesProvider({ children, onCombine, user }: Props) {
     })
 
     const clearInstancesutation = useConvexMutation(api.instance.removeAll).withOptimisticUpdate(localStore => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
-        localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: [] })
+        localStore.setQuery(getGameQuery, { playerId: user._id }, { ...currentValue, instances: [] })
     })
 
     const replaceAllMutation = useConvexMutation(api.instance.replaceAll).withOptimisticUpdate((localStore, args) => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
-        localStore.setQuery(api.game.get, { playerId: user._id }, { ...currentValue, instances: args.instances })
+        localStore.setQuery(getGameQuery, { playerId: user._id }, { ...currentValue, instances: args.instances })
     })
 
     const updateMutation = useConvexMutation(api.instance.update).withOptimisticUpdate((localStore, args) => {
-        const currentValue = localStore.getQuery(api.game.get, { playerId: user._id })
+        const currentValue = localStore.getQuery(getGameQuery, { playerId: user._id })
         if (!currentValue) return
 
         localStore.setQuery(
-            api.game.get,
+            getGameQuery,
             { playerId: user._id },
             {
                 ...currentValue,

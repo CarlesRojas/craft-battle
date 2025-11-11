@@ -3,7 +3,7 @@ import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { getTranslation } from '@/locale/getTranslation'
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useConvex, useQuery as useConvexQuery } from 'convex/react'
 import { useState } from 'react'
 
@@ -21,12 +21,15 @@ export const Route = createFileRoute('/mode')({
 function SelectGamePage() {
     const { user, language } = Route.useRouteContext()
     const t = getTranslation(language)
-    const router = useRouter()
+    const navigate = useNavigate({ from: '/mode' })
     const convex = useConvex()
     const { play } = useAudio()
 
     const [isLoading, setIsLoading] = useState(false)
     const activeClassicGame = useConvexQuery(api.game.get, { playerId: user._id })
+    const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
+
+    console.log(activeBingoGame)
 
     return (
         <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
@@ -35,24 +38,46 @@ function SelectGamePage() {
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
-                {activeClassicGame && !isLoading && (
+                {(activeClassicGame || activeBingoGame) && !isLoading && (
                     <div className="flex w-full flex-col items-center gap-4">
                         <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
 
                         <ul className="flex w-full flex-col gap-4">
-                            <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
-                                <span className="pl-2 leading-tight font-medium opacity-80">{t.mode.classicGame}</span>
+                            {activeClassicGame && (
+                                <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
+                                    <span className="pl-2 leading-tight font-medium opacity-80">
+                                        {t.mode.classicGame}
+                                    </span>
 
-                                <Button
-                                    variant="constructive"
-                                    onClick={() => {
-                                        play(Sound.CLICK)
-                                        router.navigate({ to: '/game' })
-                                    }}
-                                >
-                                    {t.mode.continue}
-                                </Button>
-                            </li>
+                                    <Button
+                                        variant="constructive"
+                                        onClick={() => {
+                                            play(Sound.CLICK)
+                                            navigate({ to: '/play/classic' })
+                                        }}
+                                    >
+                                        {t.mode.continue}
+                                    </Button>
+                                </li>
+                            )}
+
+                            {activeBingoGame && (
+                                <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
+                                    <span className="pl-2 leading-tight font-medium opacity-80">
+                                        {t.mode.bingoGame.replace('{{OPPONENT}}', activeBingoGame.opponent.username)}
+                                    </span>
+
+                                    <Button
+                                        variant="constructive"
+                                        onClick={() => {
+                                            play(Sound.CLICK)
+                                            navigate({ to: '/play/bingo' })
+                                        }}
+                                    >
+                                        {t.mode.continue}
+                                    </Button>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 )}
@@ -66,7 +91,7 @@ function SelectGamePage() {
                                 setIsLoading(true)
                                 play(Sound.CLICK)
                                 await convex.mutation(api.game.create, { playerId: user._id })
-                                router.navigate({ to: '/game' })
+                                navigate({ to: '/play/classic' })
                             }}
                             size="fit"
                             variant="white"
@@ -87,7 +112,7 @@ function SelectGamePage() {
                         <Button
                             onClick={() => {
                                 play(Sound.CLICK)
-                                router.navigate({ to: '/new-bingo' })
+                                navigate({ to: '/new/bingo' })
                             }}
                             size="fit"
                             variant="white"
@@ -96,8 +121,7 @@ function SelectGamePage() {
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.bingo.title}{' '}
-                                    <span className="text-black dark:text-white">- {t.mode.comingSoon}</span>
+                                    {t.mode.bingo.title}
                                 </h3>
 
                                 <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
@@ -109,7 +133,7 @@ function SelectGamePage() {
                         <Button
                             onClick={() => {
                                 play(Sound.CLICK)
-                                router.navigate({ to: '/new-battle' })
+                                navigate({ to: '/new/battle' })
                             }}
                             size="fit"
                             variant="white"

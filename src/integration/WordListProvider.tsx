@@ -46,10 +46,11 @@ const filterAndSortList = ({ listToFilter, query, sort, order }: FilterAndSortPr
 interface Props {
     children: ReactNode
     user: User
+    getGameQuery: typeof api.game.get | typeof api.gameBingo.get
 }
 
-export function WordListProvider({ children, user }: Props) {
-    const game = useConvexQuery(api.game.get, { playerId: user._id })
+export function WordListProvider({ children, user, getGameQuery }: Props) {
+    const game = useConvexQuery(getGameQuery, { playerId: user._id })
     const addWordMutation = useConvexMutation(api.word.add)
 
     const [query, setQuery] = useState<string>('')

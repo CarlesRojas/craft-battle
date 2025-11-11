@@ -13,6 +13,8 @@ export const en: LanguageObject = {
     mode: {
         activeGames: 'Active Games',
         classicGame: 'Classic Game',
+        bingoGame: 'Bingo Game with {{OPPONENT}}',
+        battleGame: 'Battle Game with {{OPPONENT}}',
         continue: 'Continue',
 
         choose: 'Start a new game',

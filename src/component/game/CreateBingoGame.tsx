@@ -9,7 +9,7 @@ import { isAlphanumeric } from '@/lib/normalize'
 import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
 import { useForm } from '@tanstack/react-form'
-import { useRouter } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
 import { User as UserIcon } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
@@ -20,10 +20,10 @@ interface Props {
     user: User
 }
 
-const BingoNewGame = ({ language, user }: Props) => {
+const CreateBingoGame = ({ language, user }: Props) => {
     const t = getTranslation(language)
     const { play } = useAudio()
-    const router = useRouter()
+    const navigate = useNavigate({ from: '/new/bingo' })
 
     const searchOpponent = useConvexMutation(api.username.search)
     const createInvite = useConvexMutation(api.inviteBingo.create)
@@ -32,7 +32,6 @@ const BingoNewGame = ({ language, user }: Props) => {
     const createGame = useConvexMutation(api.gameBingo.create)
 
     const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
-    console.log(activeBingoGame)
     const receivedInvites = useConvexQuery(api.inviteBingo.getReceived, { receiverId: user._id })
     const sentInvites = useConvexQuery(api.inviteBingo.getSent, { senderId: user._id })
     const hasInvites = (receivedInvites && receivedInvites.length > 0) || (sentInvites && sentInvites.length > 0)
@@ -43,8 +42,8 @@ const BingoNewGame = ({ language, user }: Props) => {
 
     const navigateToGame = useCallback(async () => {
         await deleteInvitesFromPlayer({ playerId: user._id })
-        router.navigate({ to: '/game-bingo' })
-    }, [deleteInvitesFromPlayer, router, user])
+        navigate({ to: '/play/bingo' })
+    }, [deleteInvitesFromPlayer, navigate, user])
 
     useEffect(() => {
         if (!activeBingoGame) return
@@ -279,4 +278,4 @@ const BingoNewGame = ({ language, user }: Props) => {
     )
 }
 
-export default BingoNewGame
+export default CreateBingoGame

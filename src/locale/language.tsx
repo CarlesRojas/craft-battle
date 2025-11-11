@@ -23,6 +23,8 @@ export const LanguageObjectSchema = z.object({
     mode: z.object({
         activeGames: z.string(),
         classicGame: z.string(),
+        bingoGame: z.string(),
+        battleGame: z.string(),
         continue: z.string(),
 
         choose: z.string(),

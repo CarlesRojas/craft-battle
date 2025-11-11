@@ -27,7 +27,7 @@ pnpm serve
 ## Database
 
 ```bash
-pnpx convex dev --typecheck=disable
+pnpx convex dev
 ```
 
 ## Pending Tasks

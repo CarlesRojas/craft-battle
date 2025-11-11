@@ -1,5 +1,6 @@
 import { default as Canvas } from '@/component/Canvas'
 import List from '@/component/List'
+import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
@@ -11,25 +12,22 @@ interface Props {
     language: Language
 }
 
-const GameBingo = ({ user, language }: Props) => {
+const ClassicGame = ({ user, language }: Props) => {
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
     const canvasArea = useRef<HTMLDivElement>(null)
     const listArea = useRef<HTMLDivElement>(null)
-    const selectArea = useRef<HTMLDivElement>(null)
 
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
     const { addWord } = useWordList()
 
     return (
-        <WordInstancesProvider onCombine={addWord} user={user}>
+        <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.game.get}>
             <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
                 <div className="w-full grow lg:h-full lg:w-[unset]">
-                    <div className="h-28 max-h-28 min-h-28 w-full bg-orange-500/10" ref={selectArea}></div>
-
-                    <div className="h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] min-h-[calc(100%-7rem)] w-full">
+                    <div className="size-full max-h-full min-h-full">
                         <Canvas
                             innerRef={canvasArea}
                             draggingOverCanvas={draggingOverCanvas}
@@ -51,4 +49,4 @@ const GameBingo = ({ user, language }: Props) => {
     )
 }
 
-export default GameBingo
+export default ClassicGame

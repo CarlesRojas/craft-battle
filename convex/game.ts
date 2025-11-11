@@ -81,6 +81,6 @@ export const get = query({
             ),
         )
 
-        return { game, words, instances: instances.flat() }
+        return { game, words, instances: instances.flat(), opponent: null }
     },
 })

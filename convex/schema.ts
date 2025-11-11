@@ -63,6 +63,7 @@ export default defineSchema({
         player2Id: v.id('user'),
         inviteId: v.id('inviteBingo'),
         difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
+        winner: v.optional(v.id('user')),
     })
         .index('player1', ['player1Id'])
         .index('player2', ['player2Id']),

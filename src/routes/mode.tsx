@@ -1,10 +1,13 @@
+import Invites from '@/component/Invites'
 import { Button } from '@/component/ui/button'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { Sound, useAudio } from '@/integration/AudioProvider'
+import { cn } from '@/lib/cn'
 import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useConvex, useQuery as useConvexQuery } from 'convex/react'
+import { Loader } from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/mode')({
@@ -31,12 +34,23 @@ function SelectGamePage() {
 
     return (
         <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
-            <div className="flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6">
+            {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader className="size-12 animate-spin" />
+                </div>
+            )}
+
+            <div
+                className={cn(
+                    'flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6',
+                    isLoading && 'pointer-events-none opacity-0',
+                )}
+            >
                 <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
-                {(activeClassicGame || activeBingoGame) && !isLoading && (
+                {(activeClassicGame || activeBingoGame) && (
                     <div className="flex w-full flex-col items-center gap-4">
                         <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
 
@@ -96,7 +110,6 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
-                            disabled={isLoading}
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
@@ -117,7 +130,6 @@ function SelectGamePage() {
                             size="fit"
                             variant="white"
                             className="size-full items-start"
-                            disabled={isLoading}
                         >
                             <div className="flex flex-col justify-start">
                                 <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
@@ -153,6 +165,8 @@ function SelectGamePage() {
                         </Button>
                     </ul>
                 </div>
+
+                <Invites language={language} user={user} setIsLoading={setIsLoading} currentRoute={'/mode'} />
             </div>
         </main>
     )

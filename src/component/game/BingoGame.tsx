@@ -3,13 +3,15 @@ import List from '@/component/List'
 import Marquee from '@/component/Marquee'
 import { api } from '@/db/_generated/api'
 import type { User } from '@/db/username'
+import type { CreateWord } from '@/db/word'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
 import { cn } from '@/lib/cn'
 import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
-import { useQuery as useConvexQuery } from 'convex/react'
-import { useRef, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface Props {
     user: User
@@ -18,6 +20,7 @@ interface Props {
 
 const BingoGame = ({ user, language }: Props) => {
     const t = getTranslation(language)
+    const navigate = useNavigate({ from: '/play/bingo' })
 
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
@@ -29,7 +32,29 @@ const BingoGame = ({ user, language }: Props) => {
     const [draggingOverCanvas, setDraggingOverCanvas] = useState<boolean>(false)
 
     const { addWord } = useWordList()
+
+    const completeObjective = useConvexMutation(api.bingo.completeObjective)
+
     const game = useConvexQuery(api.bingo.get, { playerId: user._id })
+
+    useEffect(() => {
+        if (!game) navigate({ to: '/mode' })
+    }, [game, navigate])
+
+    const checkObjectives = useCallback(
+        async (createdWord: CreateWord) => {
+            if (!game) return false
+
+            const completedObjective = game.objectives.find(
+                objective => !objective.playerId && objective.text === createdWord.text,
+            )
+            if (!completedObjective) return false
+
+            await completeObjective({ gameId: game.game._id, playerId: user._id, objectiveId: completedObjective._id })
+            return true
+        },
+        [completeObjective, game, user],
+    )
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.bingo.get}>
@@ -127,6 +152,7 @@ const BingoGame = ({ user, language }: Props) => {
                             innerRef={canvasArea}
                             draggingOverCanvas={draggingOverCanvas}
                             setDraggingOverCanvas={setDraggingOverCanvas}
+                            onCombine={checkObjectives}
                         />
                     </div>
                 </div>
@@ -138,6 +164,7 @@ const BingoGame = ({ user, language }: Props) => {
                     canvasArea={canvasArea}
                     setDraggingOverCanvas={setDraggingOverCanvas}
                     language={language}
+                    onCombine={checkObjectives}
                 />
             </div>
         </WordInstancesProvider>

@@ -21,7 +21,7 @@ type WordInstancesContextType = {
     replaceInstances: (instances: Array<WordInstance>) => void
     getOverlappingInstance: (word: WordInstance) => WordInstance | null
     clearOverlapped: () => void
-    combine: (word1: WordInstance, word2: WordInstance) => Promise<boolean>
+    combine: (word1: WordInstance, word2: WordInstance) => Promise<{ word: CreateWord; isNew: boolean }>
     updateSize: (instance: Partial<WordInstance>) => void
     removeNewInstance: (instanceId: Id<'instance'>) => void
 }
@@ -211,9 +211,10 @@ export function WordInstancesProvider({ children, onCombine, user, getGameQuery 
             await removeInstance(word2._id)
 
             const result = await combineWords.mutateAsync({ word1: word1.text, word2: word2.text })
+            const normalizedText = normalize(result.result, true, true)
 
             const { id, isNew } = await onCombine({
-                text: normalize(result.result, true, true),
+                text: normalizedText,
                 icon: result.icon,
             })
 
@@ -225,7 +226,7 @@ export function WordInstancesProvider({ children, onCombine, user, getGameQuery 
                 width: 0,
                 height: 0,
                 icon: result.icon,
-                text: normalize(result.result, true, true),
+                text: normalizedText,
                 gameId: game!.game._id,
                 playerId: user._id,
                 _creationTime: new Date().getTime(),
@@ -234,7 +235,10 @@ export function WordInstancesProvider({ children, onCombine, user, getGameQuery 
             if (isNew && createdIncidenceId) setNewInstances(prev => [...prev, createdIncidenceId])
             setLoadingInstances(prev => prev.filter(currId => currId !== word1._id))
 
-            return isNew
+            return {
+                word: { text: normalizedText, icon: result.icon },
+                isNew,
+            }
         },
         [replaceInstanceMutation, combineWords, game, onCombine, removeInstance, user],
     )

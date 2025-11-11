@@ -12,7 +12,7 @@ const DEFAULT_WORDS: Array<Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' 
 ]
 
 const DIFFICULTY_DEPTH_LIMITS: Record<BingoDifficulty, [number, number]> = {
-    EASY: [3, 5],
+    EASY: [3, 3],
     MEDIUM: [6, 8],
     HARD: [9, 11],
 }
@@ -112,6 +112,12 @@ export const create = mutation({
             objectives,
             async (acc: Array<Doc<'combination'>>, current, index) => {
                 const isDuplicate = acc.some(obj => obj.result === current.result)
+                console.log(
+                    'isDuplicate',
+                    acc.map(obj => obj.result),
+                    current.result,
+                    isDuplicate,
+                )
 
                 let currentWord = current
                 if (isDuplicate) {
@@ -119,10 +125,12 @@ export const create = mutation({
                     const depth = objectiveDepths[index]
 
                     while (!newWord) {
-                        newWord = await ctx.db
+                        const randomWord = await ctx.db
                             .query('combination')
                             .withIndex('random_depth', q => q.eq('depth', depth).gte('random', Math.random()))
                             .first()
+
+                        if (randomWord && !acc.some(obj => obj.result === randomWord.result)) newWord = randomWord
                     }
 
                     currentWord = newWord
@@ -204,5 +212,29 @@ export const get = query({
         )
 
         return { game, words, instances: instances.flat(), objectives, opponent }
+    },
+})
+
+export const completeObjective = mutation({
+    args: {
+        gameId: v.id('bingo'),
+        objectiveId: v.id('objective'),
+        playerId: v.id('user'),
+    },
+    handler: async (ctx, { gameId, objectiveId, playerId }) => {
+        await ctx.db.patch(objectiveId, { playerId })
+
+        const gameObjectives = await ctx.db
+            .query('objective')
+            .withIndex('game', q => q.eq('gameId', gameId))
+            .collect()
+
+        const wordsToWin = Math.ceil(WORDS_PER_GAME / 2.0)
+        const playerWordCount = gameObjectives.reduce((acc, obj) => {
+            if (obj.playerId === playerId) return acc + 1
+            return acc
+        }, 0)
+
+        if (playerWordCount >= wordsToWin) await ctx.db.patch(gameId, { winner: playerId })
     },
 })

@@ -1,5 +1,6 @@
 import CanvasWordInstance from '@/component/CanvasWordInstance'
 import { Button } from '@/component/ui/button'
+import type { CreateWord } from '@/db/word'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useTheme } from '@/integration/ThemeProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
@@ -13,11 +14,12 @@ interface Props {
     innerRef: RefObject<HTMLDivElement | null>
     draggingOverCanvas: boolean
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
+    onCombine: (resultingWord: CreateWord) => Promise<boolean>
 }
 
 export const CANVAS_PADDING = 12
 
-const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) => {
+const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas, onCombine }: Props) => {
     const { instances, replaceInstances, loadingInstances, clearInstances } = useWordInstances()
     const { theme: resolvedTheme } = useTheme()
     const { play } = useAudio()
@@ -90,6 +92,7 @@ const Canvas = ({ innerRef, draggingOverCanvas, setDraggingOverCanvas }: Props) 
                         canvasArea={innerRef}
                         setDraggingOverCanvas={setDraggingOverCanvas}
                         isLoading={loadingInstances.includes(instance._id)}
+                        onCombine={onCombine}
                     />
                 </div>
             ))}

@@ -1,6 +1,7 @@
 import ListFilter from '@/component/ListFilter'
 import { default as ListWord } from '@/component/ListWord'
 import { Button } from '@/component/ui/button'
+import type { CreateWord } from '@/db/word'
 import { useWordList } from '@/integration/WordListProvider'
 import type { Language } from '@/locale/language'
 import { ArrowDown, ArrowUp } from 'lucide-react'
@@ -15,6 +16,7 @@ interface Props {
     canvasArea: RefObject<HTMLDivElement | null>
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
     language: Language
+    onCombine: (resultingWord: CreateWord) => Promise<boolean>
 }
 
 const List = ({
@@ -24,6 +26,7 @@ const List = ({
     canvasArea,
     setDraggingOverCanvas,
     language,
+    onCombine,
 }: Props) => {
     const { list } = useWordList()
 
@@ -94,6 +97,7 @@ const List = ({
                             scrollArea={scrollAreaDesktop}
                             canvasArea={canvasArea}
                             setDraggingOverCanvas={setDraggingOverCanvas}
+                            onCombine={onCombine}
                         />
                     ))}
                 </div>
@@ -111,6 +115,7 @@ const List = ({
                             scrollArea={scrollAreaMobile}
                             canvasArea={canvasArea}
                             setDraggingOverCanvas={setDraggingOverCanvas}
+                            onCombine={onCombine}
                         />
                     ))}
                 </div>

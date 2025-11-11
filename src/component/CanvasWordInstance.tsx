@@ -2,6 +2,7 @@ import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
+import type { CreateWord } from '@/db/word'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
@@ -18,9 +19,10 @@ interface Props {
     isMobile?: boolean
     isLoading?: boolean
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
+    onCombine: (resultingWord: CreateWord) => Promise<boolean>
 }
 
-const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggingOverCanvas }: Props) => {
+const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggingOverCanvas, onCombine }: Props) => {
     const {
         overlappedInstanceId,
         getOverlappingInstance,
@@ -88,8 +90,11 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
                         removeInstance(instance._id)
                     } else if (overlappingInstance) {
                         play(Sound.BUBBLE)
-                        const isNew = await combine(overlappingInstance, updatedInstance)
-                        if (isNew) play(Sound.PING)
+                        const { isNew, word: combinedWord } = await combine(overlappingInstance, updatedInstance)
+                        const isObjective = await onCombine(combinedWord)
+                        if (isObjective)
+                            play(Sound.PING) // TODO add a better sound
+                        else if (isNew) play(Sound.PING)
                     } else
                         updateSize({
                             ...updatedInstance,

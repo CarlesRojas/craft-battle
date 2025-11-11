@@ -2,6 +2,7 @@ import { CANVAS_PADDING } from '@/component/Canvas'
 import WordCapsule from '@/component/WordCapsule'
 import type { Doc, Id } from '@/db/_generated/dataModel'
 import type { WordInstance } from '@/db/instance'
+import type { CreateWord } from '@/db/word'
 import { Sound, useAudio } from '@/integration/AudioProvider'
 import { useWordInstances } from '@/integration/WordInstancesProvider'
 import { clamp } from '@/lib/clamp'
@@ -17,9 +18,10 @@ interface Props {
     canvasArea: RefObject<HTMLDivElement | null>
     scrollArea: RefObject<HTMLDivElement | null>
     setDraggingOverCanvas: (draggingOverCanvas: boolean) => void
+    onCombine: (resultingWord: CreateWord) => Promise<boolean>
 }
 
-const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas }: Props) => {
+const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas, onCombine }: Props) => {
     const { addInstance, getOverlappingInstance, clearOverlapped, combine } = useWordInstances()
     const { play } = useAudio()
 
@@ -100,8 +102,11 @@ const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas }: Props
 
                     if (overlappingInstance) {
                         play(Sound.BUBBLE)
-                        const isNew = await combine(overlappingInstance, newInstance)
-                        if (isNew) play(Sound.PING)
+                        const { isNew, word: combinedWord } = await combine(overlappingInstance, newInstance)
+                        const isObjective = await onCombine(combinedWord)
+                        if (isObjective)
+                            play(Sound.PING) // TODO add a better sound
+                        else if (isNew) play(Sound.PING)
                     } else addInstance(newInstance)
                 } else if (canvasArea.current && isDragging.current) play(Sound.CLEAR)
 

@@ -5,7 +5,9 @@ import type { User } from '@/db/username'
 import { WordInstancesProvider } from '@/integration/WordInstancesProvider'
 import { useWordList } from '@/integration/WordListProvider'
 import type { Language } from '@/locale/language'
-import { useRef, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { useQuery as useConvexQuery } from 'convex/react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
     user: User
@@ -13,6 +15,8 @@ interface Props {
 }
 
 const ClassicGame = ({ user, language }: Props) => {
+    const navigate = useNavigate({ from: '/play/classic' })
+
     const dropArea = useRef<HTMLDivElement>(null)
     const scrollAreaMobile = useRef<HTMLDivElement>(null)
     const scrollAreaDesktop = useRef<HTMLDivElement>(null)
@@ -23,6 +27,11 @@ const ClassicGame = ({ user, language }: Props) => {
 
     const { addWord } = useWordList()
 
+    const game = useConvexQuery(api.classic.get, { playerId: user._id })
+    useEffect(() => {
+        if (!game) navigate({ to: '/mode' })
+    }, [game, navigate])
+
     return (
         <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.classic.get}>
             <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
@@ -32,6 +41,7 @@ const ClassicGame = ({ user, language }: Props) => {
                             innerRef={canvasArea}
                             draggingOverCanvas={draggingOverCanvas}
                             setDraggingOverCanvas={setDraggingOverCanvas}
+                            onCombine={() => Promise.resolve(false)}
                         />
                     </div>
                 </div>
@@ -43,6 +53,7 @@ const ClassicGame = ({ user, language }: Props) => {
                     canvasArea={canvasArea}
                     setDraggingOverCanvas={setDraggingOverCanvas}
                     language={language}
+                    onCombine={() => Promise.resolve(false)}
                 />
             </div>
         </WordInstancesProvider>

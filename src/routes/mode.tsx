@@ -50,7 +50,7 @@ function SelectGamePage() {
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
-                {(activeClassicGame || activeBingoGame) && (
+                {(activeClassicGame || (activeBingoGame && !activeBingoGame.game.winner)) && (
                     <div className="flex w-full flex-col items-center gap-4">
                         <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
 
@@ -74,7 +74,7 @@ function SelectGamePage() {
                                 </li>
                             )}
 
-                            {activeBingoGame && (
+                            {activeBingoGame && !activeBingoGame.game.winner && (
                                 <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
                                     <span className="pl-2 leading-tight font-medium opacity-80">
                                         {t.mode.bingoGame.replace('{{OPPONENT}}', activeBingoGame.opponent.username)}

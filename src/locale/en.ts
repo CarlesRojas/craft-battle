@@ -64,6 +64,24 @@ export const en: LanguageObject = {
             reject: 'Reject',
             revoke: 'Revoke',
         },
+
+        win: {
+            victory: 'Victory!',
+            defeat: 'Defeat!',
+
+            victorySubtitle: 'You defeated {{OPPONENT}}!',
+            defeatSubtitle: '{{OPPONENT}} defeated you!',
+
+            summary: {
+                title: 'Game Summary',
+                difficulty: 'Difficulty',
+                opponentScore: 'Opponent Score',
+                yourScore: 'Your Score',
+            },
+
+            rematch: 'Rematch',
+            backToMenu: 'Back to Menu',
+        },
     },
 
     game: {

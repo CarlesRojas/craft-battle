@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ModeRouteImport } from './routes/mode'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WinBingoRouteImport } from './routes/win/bingo'
 import { Route as PlayClassicRouteImport } from './routes/play/classic'
 import { Route as PlayBingoRouteImport } from './routes/play/bingo'
 import { Route as NewBingoRouteImport } from './routes/new/bingo'
@@ -24,6 +25,11 @@ const ModeRoute = ModeRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WinBingoRoute = WinBingoRouteImport.update({
+  id: '/win/bingo',
+  path: '/win/bingo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayClassicRoute = PlayClassicRouteImport.update({
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/new/bingo': typeof NewBingoRoute
   '/play/bingo': typeof PlayBingoRoute
   '/play/classic': typeof PlayClassicRoute
+  '/win/bingo': typeof WinBingoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/new/bingo': typeof NewBingoRoute
   '/play/bingo': typeof PlayBingoRoute
   '/play/classic': typeof PlayClassicRoute
+  '/win/bingo': typeof WinBingoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/new/bingo': typeof NewBingoRoute
   '/play/bingo': typeof PlayBingoRoute
   '/play/classic': typeof PlayClassicRoute
+  '/win/bingo': typeof WinBingoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/new/bingo'
     | '/play/bingo'
     | '/play/classic'
+    | '/win/bingo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/new/bingo'
     | '/play/bingo'
     | '/play/classic'
+    | '/win/bingo'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/new/bingo'
     | '/play/bingo'
     | '/play/classic'
+    | '/win/bingo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   NewBingoRoute: typeof NewBingoRoute
   PlayBingoRoute: typeof PlayBingoRoute
   PlayClassicRoute: typeof PlayClassicRoute
+  WinBingoRoute: typeof WinBingoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/win/bingo': {
+      id: '/win/bingo'
+      path: '/win/bingo'
+      fullPath: '/win/bingo'
+      preLoaderRoute: typeof WinBingoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/classic': {
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewBingoRoute: NewBingoRoute,
   PlayBingoRoute: PlayBingoRoute,
   PlayClassicRoute: PlayClassicRoute,
+  WinBingoRoute: WinBingoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

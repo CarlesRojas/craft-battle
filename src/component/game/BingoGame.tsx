@@ -39,6 +39,7 @@ const BingoGame = ({ user, language }: Props) => {
 
     useEffect(() => {
         if (!game) navigate({ to: '/mode' })
+        else if (game.game.winner) navigate({ to: '/win/bingo' })
     }, [game, navigate])
 
     const checkObjectives = useCallback(

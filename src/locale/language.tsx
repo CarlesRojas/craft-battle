@@ -74,6 +74,24 @@ export const LanguageObjectSchema = z.object({
             reject: z.string(),
             revoke: z.string(),
         }),
+
+        win: z.object({
+            victory: z.string(),
+            defeat: z.string(),
+
+            victorySubtitle: z.string(),
+            defeatSubtitle: z.string(),
+
+            summary: z.object({
+                title: z.string(),
+                difficulty: z.string(),
+                opponentScore: z.string(),
+                yourScore: z.string(),
+            }),
+
+            rematch: z.string(),
+            backToMenu: z.string(),
+        }),
     }),
 
     game: z.object({

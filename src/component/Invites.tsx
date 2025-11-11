@@ -38,7 +38,7 @@ const Invites = ({ language, user, setIsLoading, currentRoute }: Props) => {
     }, [deleteInvitesFromPlayer, user, navigate])
 
     useEffect(() => {
-        if (!activeBingoGame) return
+        if (!activeBingoGame || activeBingoGame.game.winner) return
         setIsLoading(true)
         navigateToGame()
     }, [activeBingoGame, navigateToGame, setIsLoading])

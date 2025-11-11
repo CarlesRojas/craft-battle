@@ -12,7 +12,7 @@ const DEFAULT_WORDS: Array<Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' 
 ]
 
 const DIFFICULTY_DEPTH_LIMITS: Record<BingoDifficulty, [number, number]> = {
-    EASY: [3, 3],
+    EASY: [3, 5],
     MEDIUM: [6, 8],
     HARD: [9, 11],
 }
@@ -112,12 +112,6 @@ export const create = mutation({
             objectives,
             async (acc: Array<Doc<'combination'>>, current, index) => {
                 const isDuplicate = acc.some(obj => obj.result === current.result)
-                console.log(
-                    'isDuplicate',
-                    acc.map(obj => obj.result),
-                    current.result,
-                    isDuplicate,
-                )
 
                 let currentWord = current
                 if (isDuplicate) {

@@ -20,7 +20,7 @@ export default defineSchema({
         text: v.string(),
         icon: v.string(),
 
-        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        gameId: v.union(v.id('classic'), v.id('bingo')),
         playerId: v.id('user'),
     })
         .index('player', ['gameId', 'playerId'])
@@ -51,14 +51,14 @@ export default defineSchema({
     // CLASSIC
     // ##############################################################
 
-    game: defineTable({
+    classic: defineTable({
         playerId: v.id('user'),
     }).index('player', ['playerId']),
 
     // BINGO
     // ##############################################################
 
-    bingoGame: defineTable({
+    bingo: defineTable({
         player1Id: v.id('user'),
         player2Id: v.id('user'),
         objectives: v.array(v.string()),

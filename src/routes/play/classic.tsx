@@ -11,7 +11,7 @@ export const Route = createFileRoute('/play/classic')({
         const user = await getUser({ convex })
         if (!user) throw redirect({ to: '/' })
 
-        const game = await convex.convexClient.query(api.game.get, { playerId: user._id })
+        const game = await convex.convexClient.query(api.classic.get, { playerId: user._id })
         if (!game) throw redirect({ to: '/' })
 
         return { user }
@@ -23,7 +23,7 @@ function ClassicPlayPage() {
 
     return (
         <main className="full-page touch-none overflow-hidden">
-            <WordListProvider user={user} getGameQuery={api.game.get}>
+            <WordListProvider user={user} getGameQuery={api.classic.get}>
                 <ClassicGame user={user} language={language} />
             </WordListProvider>
         </main>

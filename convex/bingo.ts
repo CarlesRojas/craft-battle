@@ -28,19 +28,19 @@ export const create = mutation({
     handler: async (ctx, args) => {
         const games = await Promise.all([
             ctx.db
-                .query('bingoGame')
+                .query('bingo')
                 .withIndex('player1', q => q.eq('player1Id', args.player1Id))
                 .first(),
             ctx.db
-                .query('bingoGame')
+                .query('bingo')
                 .withIndex('player1', q => q.eq('player1Id', args.player2Id))
                 .first(),
             ctx.db
-                .query('bingoGame')
+                .query('bingo')
                 .withIndex('player2', q => q.eq('player2Id', args.player1Id))
                 .first(),
             ctx.db
-                .query('bingoGame')
+                .query('bingo')
                 .withIndex('player2', q => q.eq('player2Id', args.player2Id))
                 .first(),
         ])
@@ -94,7 +94,7 @@ export const create = mutation({
             ),
         )
 
-        const gameId = await ctx.db.insert('bingoGame', {
+        const gameId = await ctx.db.insert('bingo', {
             ...args,
             objectives: objectives.filter(obj => !!obj).map(obj => obj.result),
         })
@@ -116,7 +116,7 @@ export const get = query({
     },
     handler: async (ctx, args) => {
         let game = await ctx.db
-            .query('bingoGame')
+            .query('bingo')
             .withIndex('player1', q => q.eq('player1Id', args.playerId))
             .first()
 
@@ -124,7 +124,7 @@ export const get = query({
 
         if (!game) {
             game = await ctx.db
-                .query('bingoGame')
+                .query('bingo')
                 .withIndex('player2', q => q.eq('player2Id', args.playerId))
                 .first()
             opponent = game?.player1Id ? await ctx.db.get(game.player1Id) : null

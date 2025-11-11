@@ -26,10 +26,8 @@ function SelectGamePage() {
     const { play } = useAudio()
 
     const [isLoading, setIsLoading] = useState(false)
-    const activeClassicGame = useConvexQuery(api.game.get, { playerId: user._id })
-    const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
-
-    console.log(activeBingoGame)
+    const activeClassicGame = useConvexQuery(api.classic.get, { playerId: user._id })
+    const activeBingoGame = useConvexQuery(api.bingo.get, { playerId: user._id })
 
     return (
         <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
@@ -53,6 +51,7 @@ function SelectGamePage() {
                                         variant="constructive"
                                         onClick={() => {
                                             play(Sound.CLICK)
+                                            // TODO add modal to confirm that this will delete the existing game
                                             navigate({ to: '/play/classic' })
                                         }}
                                     >
@@ -71,6 +70,7 @@ function SelectGamePage() {
                                         variant="constructive"
                                         onClick={() => {
                                             play(Sound.CLICK)
+                                            // TODO add modal to confirm that this will delete the existing game
                                             navigate({ to: '/play/bingo' })
                                         }}
                                     >
@@ -90,7 +90,7 @@ function SelectGamePage() {
                             onClick={async () => {
                                 setIsLoading(true)
                                 play(Sound.CLICK)
-                                await convex.mutation(api.game.create, { playerId: user._id })
+                                await convex.mutation(api.classic.create, { playerId: user._id })
                                 navigate({ to: '/play/classic' })
                             }}
                             size="fit"

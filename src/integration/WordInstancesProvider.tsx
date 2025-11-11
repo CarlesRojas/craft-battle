@@ -32,7 +32,7 @@ interface Props {
     children: ReactNode
     onCombine: (result: CreateWord) => Promise<{ id: Id<'word'>; isNew: boolean }>
     user: User
-    getGameQuery: typeof api.game.get | typeof api.gameBingo.get
+    getGameQuery: typeof api.classic.get | typeof api.bingo.get
 }
 
 export function WordInstancesProvider({ children, onCombine, user, getGameQuery }: Props) {

@@ -46,7 +46,7 @@ const filterAndSortList = ({ listToFilter, query, sort, order }: FilterAndSortPr
 interface Props {
     children: ReactNode
     user: User
-    getGameQuery: typeof api.game.get | typeof api.gameBingo.get
+    getGameQuery: typeof api.classic.get | typeof api.bingo.get
 }
 
 export function WordListProvider({ children, user, getGameQuery }: Props) {

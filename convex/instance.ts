@@ -13,7 +13,7 @@ export const add = mutation({
         icon: v.string(),
         playerId: v.id('user'),
         text: v.string(),
-        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        gameId: v.union(v.id('classic'), v.id('bingo')),
         _creationTime: v.number(),
     },
     handler: async (ctx, { wordId, x, y, width, height, text }) => {
@@ -50,7 +50,7 @@ export const replace = mutation({
         icon: v.string(),
         playerId: v.id('user'),
         text: v.string(),
-        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        gameId: v.union(v.id('classic'), v.id('bingo')),
         _creationTime: v.number(),
     },
     handler: async (ctx, { instanceId, wordId, x, y, width, height, text }) => {
@@ -89,7 +89,7 @@ export const replaceAll = mutation({
                 icon: v.string(),
                 playerId: v.id('user'),
                 text: v.string(),
-                gameId: v.union(v.id('game'), v.id('bingoGame')),
+                gameId: v.union(v.id('classic'), v.id('bingo')),
                 _creationTime: v.number(),
             }),
         ),

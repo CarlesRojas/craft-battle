@@ -24,7 +24,7 @@ const ClassicGame = ({ user, language }: Props) => {
     const { addWord } = useWordList()
 
     return (
-        <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.game.get}>
+        <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.classic.get}>
             <div className="flex size-full flex-col items-center justify-center lg:flex-row" ref={dropArea}>
                 <div className="w-full grow lg:h-full lg:w-[unset]">
                     <div className="size-full max-h-full min-h-full">

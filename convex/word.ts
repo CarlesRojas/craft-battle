@@ -6,7 +6,7 @@ import { mutation } from './_generated/server'
 export const add = mutation({
     args: {
         playerId: v.id('user'),
-        gameId: v.union(v.id('game'), v.id('bingoGame')),
+        gameId: v.union(v.id('classic'), v.id('bingo')),
         text: v.string(),
         icon: v.string(),
     },

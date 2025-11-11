@@ -11,7 +11,7 @@ import type { Language } from '@/locale/language'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
-import { User as UserIcon } from 'lucide-react'
+import { Loader, User as UserIcon } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import z from 'zod'
 
@@ -29,9 +29,9 @@ const CreateBingoGame = ({ language, user }: Props) => {
     const createInvite = useConvexMutation(api.inviteBingo.create)
     const removeInvite = useConvexMutation(api.inviteBingo.remove)
     const deleteInvitesFromPlayer = useConvexMutation(api.inviteBingo.deleteFromPlayer)
-    const createGame = useConvexMutation(api.gameBingo.create)
+    const createGame = useConvexMutation(api.bingo.create)
 
-    const activeBingoGame = useConvexQuery(api.gameBingo.get, { playerId: user._id })
+    const activeBingoGame = useConvexQuery(api.bingo.get, { playerId: user._id })
     const receivedInvites = useConvexQuery(api.inviteBingo.getReceived, { receiverId: user._id })
     const sentInvites = useConvexQuery(api.inviteBingo.getSent, { senderId: user._id })
     const hasInvites = (receivedInvites && receivedInvites.length > 0) || (sentInvites && sentInvites.length > 0)
@@ -39,6 +39,7 @@ const CreateBingoGame = ({ language, user }: Props) => {
     const [opponents, setOpponents] = useState<Array<User>>([])
     const [hasSearched, setHasSearched] = useState(false)
     const [difficulty, setDifficulty] = useState(BingoDifficulty.EASY)
+    const [isLoading, setIsLoading] = useState(false)
 
     const navigateToGame = useCallback(async () => {
         await deleteInvitesFromPlayer({ playerId: user._id })
@@ -72,6 +73,13 @@ const CreateBingoGame = ({ language, user }: Props) => {
             setHasSearched(true)
         },
     })
+
+    if (isLoading || activeBingoGame)
+        return (
+            <div className="flex size-full items-center justify-center">
+                <Loader className="size-12 animate-spin" />
+            </div>
+        )
 
     return (
         <div className="flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6">
@@ -115,7 +123,6 @@ const CreateBingoGame = ({ language, user }: Props) => {
                 <Button
                     onClick={() => {
                         // TODO: Implement random opponent search
-                        console.log('Finding random opponent')
                     }}
                     className="w-full"
                 >
@@ -249,6 +256,7 @@ const CreateBingoGame = ({ language, user }: Props) => {
                                             <Button
                                                 onClick={async () => {
                                                     play(Sound.CLICK)
+                                                    setIsLoading(true)
                                                     await createGame({
                                                         player1Id: invite.senderId,
                                                         player2Id: invite.receiverId,

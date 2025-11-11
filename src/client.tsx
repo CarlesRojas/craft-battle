@@ -4,7 +4,6 @@ import { hydrateRoot } from 'react-dom/client'
 
 if ('serviceWorker' in navigator) {
     const registerServiceWorker = () => {
-        console.log('Registering service worker')
         navigator.serviceWorker.register('/service-worker.js')
     }
 

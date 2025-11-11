@@ -11,7 +11,7 @@ export const Route = createFileRoute('/play/bingo')({
         const user = await getUser({ convex })
         if (!user) throw redirect({ to: '/' })
 
-        const game = await convex.convexClient.query(api.gameBingo.get, { playerId: user._id })
+        const game = await convex.convexClient.query(api.bingo.get, { playerId: user._id })
         if (!game) throw redirect({ to: '/' })
 
         return { user }
@@ -23,7 +23,7 @@ function BingoPlayPage() {
 
     return (
         <main className="full-page touch-none overflow-hidden">
-            <WordListProvider user={user} getGameQuery={api.gameBingo.get}>
+            <WordListProvider user={user} getGameQuery={api.bingo.get}>
                 <BingoGame user={user} language={language} />
             </WordListProvider>
         </main>

@@ -27,26 +27,32 @@ export const create = mutation({
         difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
     },
     handler: async (ctx, args) => {
-        const games = await Promise.all([
-            ctx.db
-                .query('bingo')
-                .withIndex('player1', q => q.eq('player1Id', args.player1Id))
-                .first(),
-            ctx.db
-                .query('bingo')
-                .withIndex('player1', q => q.eq('player1Id', args.player2Id))
-                .first(),
-            ctx.db
-                .query('bingo')
-                .withIndex('player2', q => q.eq('player2Id', args.player1Id))
-                .first(),
-            ctx.db
-                .query('bingo')
-                .withIndex('player2', q => q.eq('player2Id', args.player2Id))
-                .first(),
-        ])
+        const games = [
+            async () =>
+                await ctx.db
+                    .query('bingo')
+                    .withIndex('player1', q => q.eq('player1Id', args.player1Id))
+                    .first(),
+            async () =>
+                await ctx.db
+                    .query('bingo')
+                    .withIndex('player1', q => q.eq('player1Id', args.player2Id))
+                    .first(),
+            async () =>
+                await ctx.db
+                    .query('bingo')
+                    .withIndex('player2', q => q.eq('player2Id', args.player1Id))
+                    .first(),
+            async () =>
+                await ctx.db
+                    .query('bingo')
+                    .withIndex('player2', q => q.eq('player2Id', args.player2Id))
+                    .first(),
+        ]
 
-        for (const existingGame of games) {
+        for (const getGame of games) {
+            const existingGame = await getGame()
+
             if (existingGame) {
                 const existingObjectives = await ctx.db
                     .query('objective')

@@ -30,16 +30,18 @@ function NewBingoPage() {
                 </div>
             )}
 
-            <div
-                className={cn(
-                    'flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6',
-                    isLoading && 'pointer-events-none opacity-0',
-                )}
-            >
-                <CreateBingoGame language={language} user={user} />
+            {user && (
+                <div
+                    className={cn(
+                        'flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6',
+                        isLoading && 'pointer-events-none opacity-0',
+                    )}
+                >
+                    <CreateBingoGame language={language} user={user} />
 
-                <Invites language={language} user={user} setIsLoading={setIsLoading} currentRoute={'/new/bingo'} />
-            </div>
+                    <Invites language={language} user={user} setIsLoading={setIsLoading} currentRoute={'/new/bingo'} />
+                </div>
+            )}
         </main>
     )
 }

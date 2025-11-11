@@ -23,9 +23,11 @@ function ClassicPlayPage() {
 
     return (
         <main className="full-page touch-none overflow-hidden">
-            <WordListProvider user={user} getGameQuery={api.classic.get}>
-                <ClassicGame user={user} language={language} />
-            </WordListProvider>
+            {user && (
+                <WordListProvider user={user} getGameQuery={api.classic.get}>
+                    <ClassicGame user={user} language={language} />
+                </WordListProvider>
+            )}
         </main>
     )
 }

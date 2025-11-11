@@ -23,9 +23,11 @@ function BingoPlayPage() {
 
     return (
         <main className="full-page touch-none overflow-hidden">
-            <WordListProvider user={user} getGameQuery={api.bingo.get}>
-                <BingoGame user={user} language={language} />
-            </WordListProvider>
+            {user && (
+                <WordListProvider user={user} getGameQuery={api.bingo.get}>
+                    <BingoGame user={user} language={language} />
+                </WordListProvider>
+            )}
         </main>
     )
 }

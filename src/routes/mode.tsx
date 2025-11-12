@@ -38,7 +38,8 @@ function SelectGamePage() {
     const convex = useConvex()
     const { play } = useAudio()
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingClassic, setIsLoadingClassic] = useState(false)
+    const [isLoadingBingo, setIsLoadingBingo] = useState(false)
     const activeClassicGame = useConvexQuery(api.classic.get, { playerId: user._id })
     const activeBingoGame = useConvexQuery(api.bingo.get, { playerId: user._id })
 
@@ -68,7 +69,7 @@ function SelectGamePage() {
     )
 
     const startClassicGame = async () => {
-        setIsLoading(true)
+        setIsLoadingClassic(true)
         play(Sound.CLICK)
         await convex.mutation(api.classic.create, { playerId: user._id })
         navigate({ to: '/play/classic' })
@@ -81,16 +82,23 @@ function SelectGamePage() {
 
     return (
         <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
-            {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center">
+            {isLoadingClassic && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-80">
                     <Loader className="size-12 animate-spin" />
+                </div>
+            )}
+
+            {isLoadingBingo && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-80">
+                    <Loader className="size-12 animate-spin" />
+                    <p>{t.bingo.loading}</p>
                 </div>
             )}
 
             <div
                 className={cn(
                     'flex h-fit w-full max-w-lg flex-col items-center gap-12 place-self-start px-3 py-6',
-                    isLoading && 'pointer-events-none opacity-0',
+                    (isLoadingClassic || isLoadingBingo) && 'pointer-events-none opacity-0',
                 )}
             >
                 <h1 className="font-goldman w-full text-left text-3xl tracking-wider text-balance text-sky-600 dark:text-sky-500">
@@ -144,7 +152,7 @@ function SelectGamePage() {
                 <div className="flex w-full flex-col items-center gap-4">
                     <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.choose}</h2>
 
-                    <ul className="grid w-full grid-rows-3 gap-4">
+                    <ul className="grid w-full grid-rows-2 gap-4">
                         {hasActiveClassicGame && (
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -197,8 +205,18 @@ function SelectGamePage() {
 
                                 <DialogContent>
                                     <DialogHeader>
-                                        <DialogTitle>{t.mode.dialog.bingoTitle}</DialogTitle>
-                                        <DialogDescription>{t.mode.dialog.bingoSubtitle}</DialogDescription>
+                                        <DialogTitle>
+                                            {t.mode.dialog.bingoTitle.replace(
+                                                '{{OPPONENT}}',
+                                                activeBingoGame.opponent.username,
+                                            )}
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            {t.mode.dialog.bingoSubtitle.replace(
+                                                '{{OPPONENT}}',
+                                                activeBingoGame.opponent.username,
+                                            )}
+                                        </DialogDescription>
                                     </DialogHeader>
 
                                     <DialogFooter className="sm:justify-end">
@@ -228,33 +246,10 @@ function SelectGamePage() {
                                 {BingoButton}
                             </Button>
                         )}
-
-                        {/*
-                        <Button
-                            onClick={() => {
-                                play(Sound.CLICK)
-                                navigate({ to: '/new/battle' })
-                            }}
-                            size="fit"
-                            variant="white"
-                            className="size-full items-start"
-                            disabled
-                        >
-                            <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.battle.title}{' '}
-                                    <span className="text-black dark:text-white">- {t.mode.comingSoon}</span>
-                                </h3>
-
-                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                    {t.mode.battle.description}
-                                </p>
-                            </div>
-                        </Button> */}
                     </ul>
                 </div>
 
-                <Invites language={language} user={user} setIsLoading={setIsLoading} currentRoute={'/mode'} />
+                <Invites language={language} user={user} setIsLoading={setIsLoadingBingo} currentRoute={'/mode'} />
             </div>
         </main>
     )

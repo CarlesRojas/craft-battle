@@ -11,6 +11,7 @@ import { getTranslation } from '@/locale/getTranslation'
 import type { Language } from '@/locale/language'
 import { useNavigate } from '@tanstack/react-router'
 import { useMutation as useConvexMutation, useQuery as useConvexQuery } from 'convex/react'
+import { Loader } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface Props {
@@ -34,13 +35,20 @@ const BingoGame = ({ user, language }: Props) => {
     const { addWord } = useWordList()
 
     const completeObjective = useConvexMutation(api.bingo.completeObjective)
+    const registerPresence = useConvexMutation(api.bingo.registerPresence)
 
     const game = useConvexQuery(api.bingo.get, { playerId: user._id })
 
     useEffect(() => {
         if (!game) navigate({ to: '/mode' })
         else if (game.game.winner) navigate({ to: '/win/bingo' })
-    }, [game, navigate])
+        else {
+            const isPlayer1 = game.game.player1Id === user._id
+
+            if ((isPlayer1 && !game.game.player1Entered) || (!isPlayer1 && !game.game.player2Entered))
+                registerPresence({ gameId: game.game._id, isPlayer1 })
+        }
+    }, [game, navigate, registerPresence, user])
 
     const checkObjectives = useCallback(
         async (createdWord: CreateWord) => {
@@ -56,6 +64,16 @@ const BingoGame = ({ user, language }: Props) => {
         },
         [completeObjective, game, user],
     )
+
+    if (!game || !game.game.player1Entered || !game.game.player2Entered)
+        return (
+            <div className="relative flex size-full items-center justify-center pt-8">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-80">
+                    <Loader className="size-12 animate-spin" />
+                    <p>{t.bingo.loading}</p>
+                </div>
+            </div>
+        )
 
     return (
         <WordInstancesProvider onCombine={addWord} user={user} getGameQuery={api.bingo.get}>
@@ -105,7 +123,7 @@ const BingoGame = ({ user, language }: Props) => {
                         </div>
 
                         <div className="grid w-full max-w-3xl grid-cols-2 gap-3 lg:grid-cols-3">
-                            {game?.objectives.map(objective => (
+                            {game.objectives.map(objective => (
                                 <div
                                     key={objective._id}
                                     className={cn(

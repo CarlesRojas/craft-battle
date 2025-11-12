@@ -37,10 +37,19 @@ const Invites = ({ language, user, setIsLoading, currentRoute }: Props) => {
     }, [deleteInvitesFromPlayer, user, navigate])
 
     useEffect(() => {
-        if (!activeBingoGame || activeBingoGame.game.winner) return
+        if (!activeBingoGame) return
+        const isPlayer1 = activeBingoGame.game.player1Id === user._id
+
+        if (
+            activeBingoGame.game.winner ||
+            (isPlayer1 && activeBingoGame.game.player1Entered) ||
+            (!isPlayer1 && activeBingoGame.game.player2Entered)
+        )
+            return
+
         setIsLoading(true)
         navigateToGame()
-    }, [activeBingoGame, navigateToGame, setIsLoading])
+    }, [activeBingoGame, navigateToGame, setIsLoading, user._id])
 
     if (!hasInvites) return null
 

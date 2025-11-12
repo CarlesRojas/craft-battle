@@ -2,6 +2,7 @@ import CreateBingoGame from '@/component/game/CreateBingoGame'
 import Invites from '@/component/Invites'
 import { getUser } from '@/data/getUser'
 import { cn } from '@/lib/cn'
+import { getTranslation } from '@/locale/getTranslation'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { Loader } from 'lucide-react'
 import { useState } from 'react'
@@ -19,14 +20,16 @@ export const Route = createFileRoute('/new/bingo')({
 
 function NewBingoPage() {
     const { user, language } = Route.useRouteContext()
+    const t = getTranslation(language)
 
     const [isLoading, setIsLoading] = useState(false)
 
     return (
         <main className="full-page relative flex items-center justify-center overflow-y-auto pt-8">
             {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-80">
                     <Loader className="size-12 animate-spin" />
+                    <p>{t.bingo.loading}</p>
                 </div>
             )}
 

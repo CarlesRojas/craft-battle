@@ -58,6 +58,7 @@ export const en: LanguageObject = {
         objectives: 'First to get 3 wins!',
         you: 'You',
         opponent: 'Opponent',
+        loading: 'Waiting for all players to join...',
 
         difficulty: {
             select: 'Select difficulty',
@@ -69,8 +70,8 @@ export const en: LanguageObject = {
         invite: {
             title: 'Invites',
             send: 'Send invite',
-            sent: 'You have invited {{USER}} to a bingo game. ({{DIFFICULTY}})',
-            content: '{{USER}} has invited you to a bingo game! ({{DIFFICULTY}})',
+            sent: 'You have invited {{USER}} to a Bingo game. ({{DIFFICULTY}})',
+            content: '{{USER}} has invited you to a Bingo game! ({{DIFFICULTY}})',
             accept: 'Accept',
             reject: 'Reject',
             revoke: 'Revoke',

@@ -31,7 +31,7 @@ function BingoWinPage() {
 
     if (!game)
         return (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center opacity-80">
                 <Loader className="size-12 animate-spin" />
             </div>
         )

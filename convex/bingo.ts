@@ -142,7 +142,11 @@ export const create = mutation({
             [],
         )
 
-        const gameId = await ctx.db.insert('bingo', args)
+        const gameId = await ctx.db.insert('bingo', {
+            ...args,
+            player1Entered: false,
+            player2Entered: false,
+        })
 
         await Promise.all(
             objectives.map(obj =>
@@ -236,5 +240,17 @@ export const completeObjective = mutation({
         }, 0)
 
         if (playerWordCount >= wordsToWin) await ctx.db.patch(gameId, { winner: playerId })
+    },
+})
+
+export const registerPresence = mutation({
+    args: {
+        gameId: v.id('bingo'),
+        isPlayer1: v.boolean(),
+    },
+    handler: async (ctx, { gameId, isPlayer1 }) => {
+        isPlayer1
+            ? await ctx.db.patch(gameId, { player1Entered: true })
+            : await ctx.db.patch(gameId, { player2Entered: true })
     },
 })

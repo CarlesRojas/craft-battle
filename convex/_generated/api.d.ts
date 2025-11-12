@@ -8,36 +8,54 @@
  * @module
  */
 
-import type * as bingo from '../bingo.js'
-import type * as classic from '../classic.js'
-import type * as combination from '../combination.js'
-import type * as instance from '../instance.js'
-import type * as inviteBingo from '../inviteBingo.js'
-import type * as username from '../username.js'
-import type * as word from '../word.js'
+import type * as bingo from "../bingo.js";
+import type * as classic from "../classic.js";
+import type * as combination from "../combination.js";
+import type * as instance from "../instance.js";
+import type * as inviteBingo from "../inviteBingo.js";
+import type * as username from "../username.js";
+import type * as word from "../word.js";
 
-import type { ApiFromModules, FilterApi, FunctionReference } from 'convex/server'
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
+
+declare const fullApi: ApiFromModules<{
+  bingo: typeof bingo;
+  classic: typeof classic;
+  combination: typeof combination;
+  instance: typeof instance;
+  inviteBingo: typeof inviteBingo;
+  username: typeof username;
+  word: typeof word;
+}>;
 
 /**
- * A utility for referencing Convex functions in your app's API.
+ * A utility for referencing Convex functions in your app's public API.
  *
  * Usage:
  * ```js
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-declare const fullApi: ApiFromModules<{
-    bingo: typeof bingo
-    classic: typeof classic
-    combination: typeof combination
-    instance: typeof instance
-    inviteBingo: typeof inviteBingo
-    username: typeof username
-    word: typeof word
-}>
-declare const fullApiWithMounts: typeof fullApi
+export declare const api: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "public">
+>;
 
-export declare const api: FilterApi<typeof fullApiWithMounts, FunctionReference<any, 'public'>>
-export declare const internal: FilterApi<typeof fullApiWithMounts, FunctionReference<any, 'internal'>>
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
+export declare const internal: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "internal">
+>;
 
-export declare const components: {}
+export declare const components: {};

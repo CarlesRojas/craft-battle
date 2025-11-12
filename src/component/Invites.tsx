@@ -17,7 +17,6 @@ interface Props {
     currentRoute: string
 }
 
-// TODO this only includes bingo invites
 const Invites = ({ language, user, setIsLoading, currentRoute }: Props) => {
     const t = getTranslation(language)
     const navigate = useNavigate({ from: currentRoute })

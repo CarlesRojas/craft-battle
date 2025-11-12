@@ -1,5 +1,15 @@
 import Invites from '@/component/Invites'
 import { Button } from '@/component/ui/button'
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/component/ui/dialog'
 import { getUser } from '@/data/getUser'
 import { api } from '@/db/_generated/api'
 import { Sound, useAudio } from '@/integration/AudioProvider'
@@ -32,6 +42,43 @@ function SelectGamePage() {
     const activeClassicGame = useConvexQuery(api.classic.get, { playerId: user._id })
     const activeBingoGame = useConvexQuery(api.bingo.get, { playerId: user._id })
 
+    const hasActiveClassicGame = !!activeClassicGame
+    const hasActiveBingoGame = !!activeBingoGame && !activeBingoGame.game.winner
+
+    const ClassicButton = (
+        <div className="flex flex-col justify-start">
+            <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
+                {t.mode.classic.title}
+            </h3>
+
+            <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
+                {t.mode.classic.description}
+            </p>
+        </div>
+    )
+
+    const BingoButton = (
+        <div className="flex flex-col justify-start">
+            <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
+                {t.mode.bingo.title}
+            </h3>
+
+            <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">{t.mode.bingo.description}</p>
+        </div>
+    )
+
+    const startClassicGame = async () => {
+        setIsLoading(true)
+        play(Sound.CLICK)
+        await convex.mutation(api.classic.create, { playerId: user._id })
+        navigate({ to: '/play/classic' })
+    }
+
+    const startBingoGame = () => {
+        play(Sound.CLICK)
+        navigate({ to: '/new/bingo' })
+    }
+
     return (
         <main className="full-page relative flex h-fit items-center justify-center overflow-y-auto pt-8">
             {isLoading && (
@@ -50,12 +97,12 @@ function SelectGamePage() {
                     {t.common.welcomeUser.replace('{{USER}}', user.username)}
                 </h1>
 
-                {(activeClassicGame || (activeBingoGame && !activeBingoGame.game.winner)) && (
+                {(hasActiveClassicGame || hasActiveBingoGame) && (
                     <div className="flex w-full flex-col items-center gap-4">
                         <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.activeGames}</h2>
 
                         <ul className="flex w-full flex-col gap-4">
-                            {activeClassicGame && (
+                            {hasActiveClassicGame && (
                                 <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
                                     <span className="pl-2 leading-tight font-medium opacity-80">
                                         {t.mode.classicGame}
@@ -65,7 +112,6 @@ function SelectGamePage() {
                                         variant="constructive"
                                         onClick={() => {
                                             play(Sound.CLICK)
-                                            // TODO add modal to confirm that this will delete the existing game
                                             navigate({ to: '/play/classic' })
                                         }}
                                     >
@@ -74,7 +120,7 @@ function SelectGamePage() {
                                 </li>
                             )}
 
-                            {activeBingoGame && !activeBingoGame.game.winner && (
+                            {hasActiveBingoGame && (
                                 <li className="flex w-full items-center justify-between gap-4 border border-neutral-300 bg-neutral-300/50 p-2 dark:border-neutral-800 dark:bg-neutral-800/50">
                                     <span className="pl-2 leading-tight font-medium opacity-80">
                                         {t.mode.bingoGame.replace('{{OPPONENT}}', activeBingoGame.opponent.username)}
@@ -84,7 +130,6 @@ function SelectGamePage() {
                                         variant="constructive"
                                         onClick={() => {
                                             play(Sound.CLICK)
-                                            // TODO add modal to confirm that this will delete the existing game
                                             navigate({ to: '/play/bingo' })
                                         }}
                                     >
@@ -100,48 +145,91 @@ function SelectGamePage() {
                     <h2 className="font-goldman w-full text-xl tracking-wide opacity-80">{t.mode.choose}</h2>
 
                     <ul className="grid w-full grid-rows-3 gap-4">
-                        <Button
-                            onClick={async () => {
-                                setIsLoading(true)
-                                play(Sound.CLICK)
-                                await convex.mutation(api.classic.create, { playerId: user._id })
-                                navigate({ to: '/play/classic' })
-                            }}
-                            size="fit"
-                            variant="white"
-                            className="size-full items-start"
-                        >
-                            <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.classic.title}
-                                </h3>
+                        {hasActiveClassicGame && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button size="fit" variant="white" className="size-full items-start">
+                                        {ClassicButton}
+                                    </Button>
+                                </DialogTrigger>
 
-                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                    {t.mode.classic.description}
-                                </p>
-                            </div>
-                        </Button>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>{t.mode.dialog.classicTitle}</DialogTitle>
+                                        <DialogDescription>{t.mode.dialog.classicSubtitle}</DialogDescription>
+                                    </DialogHeader>
 
-                        <Button
-                            onClick={() => {
-                                play(Sound.CLICK)
-                                navigate({ to: '/new/bingo' })
-                            }}
-                            size="fit"
-                            variant="white"
-                            className="size-full items-start"
-                        >
-                            <div className="flex flex-col justify-start">
-                                <h3 className="font-goldman w-full text-left text-xl tracking-wide text-sky-600 dark:text-sky-500">
-                                    {t.mode.bingo.title}
-                                </h3>
+                                    <DialogFooter className="sm:justify-end">
+                                        <DialogClose asChild>
+                                            <Button type="button" variant="white">
+                                                {t.mode.dialog.cancel}
+                                            </Button>
+                                        </DialogClose>
 
-                                <p className="font-montserrat text-left text-sm whitespace-normal opacity-80">
-                                    {t.mode.bingo.description}
-                                </p>
-                            </div>
-                        </Button>
+                                        <DialogClose asChild>
+                                            <Button onClick={startClassicGame} type="button" variant="constructive">
+                                                {t.mode.dialog.start}
+                                            </Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
 
+                        {!hasActiveClassicGame && (
+                            <Button
+                                onClick={startClassicGame}
+                                size="fit"
+                                variant="white"
+                                className="size-full items-start"
+                            >
+                                {ClassicButton}
+                            </Button>
+                        )}
+
+                        {hasActiveBingoGame && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button size="fit" variant="white" className="size-full items-start">
+                                        {BingoButton}
+                                    </Button>
+                                </DialogTrigger>
+
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>{t.mode.dialog.bingoTitle}</DialogTitle>
+                                        <DialogDescription>{t.mode.dialog.bingoSubtitle}</DialogDescription>
+                                    </DialogHeader>
+
+                                    <DialogFooter className="sm:justify-end">
+                                        <DialogClose asChild>
+                                            <Button type="button" variant="white">
+                                                {t.mode.dialog.cancel}
+                                            </Button>
+                                        </DialogClose>
+
+                                        <DialogClose asChild>
+                                            <Button onClick={startBingoGame} type="button" variant="constructive">
+                                                {t.mode.dialog.start}
+                                            </Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
+
+                        {!hasActiveBingoGame && (
+                            <Button
+                                onClick={startBingoGame}
+                                size="fit"
+                                variant="white"
+                                className="size-full items-start"
+                            >
+                                {BingoButton}
+                            </Button>
+                        )}
+
+                        {/*
                         <Button
                             onClick={() => {
                                 play(Sound.CLICK)
@@ -162,7 +250,7 @@ function SelectGamePage() {
                                     {t.mode.battle.description}
                                 </p>
                             </div>
-                        </Button>
+                        </Button> */}
                     </ul>
                 </div>
 

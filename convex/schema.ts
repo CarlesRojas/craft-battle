@@ -84,13 +84,4 @@ export default defineSchema({
         .index('sender', ['senderId'])
         .index('receiver', ['receiverId'])
         .index('users', ['senderId', 'receiverId']),
-
-    // BATTLE
-    // ##############################################################
-
-    fight: defineTable({
-        attackWord: v.string(),
-        defenseWord: v.string(),
-        damageDealt: v.number(),
-    }).index('words', ['attackWord', 'defenseWord']),
 })

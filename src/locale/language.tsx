@@ -40,6 +40,17 @@ export const LanguageObjectSchema = z.object({
             description: z.string(),
         }),
 
+        dialog: z.object({
+            classicTitle: z.string(),
+            classicSubtitle: z.string(),
+
+            bingoTitle: z.string(),
+            bingoSubtitle: z.string(),
+
+            start: z.string(),
+            cancel: z.string(),
+        }),
+
         battle: z.object({
             title: z.string(),
             description: z.string(),

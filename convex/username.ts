@@ -52,8 +52,6 @@ export const search = mutation({
             .withSearchIndex('user', q => q.search('normalizedUsername', normalize(searchQuery)))
             .take(4)
 
-        // TODO only look for users not currently in a game
-
         return result
             .filter(user => user._id !== excludeId)
             .map(({ key, ...user }) => user)

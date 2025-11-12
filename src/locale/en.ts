@@ -25,10 +25,21 @@ export const en: LanguageObject = {
             description:
                 'The classic mode where you play solo and can craft any word by continuously combining 2 words',
         },
+
         bingo: {
             title: 'Bingo',
-            description: 'Race to craft the random words in the bingo. You can play solo or with a friend.',
+            description: 'Race a friend to craft the random words in the bingo. First to get three words wins!',
         },
+
+        dialog: {
+            classicTitle: 'Start a new Classic Game?',
+            classicSubtitle: 'This will delete all your current progress in the Classic Game.',
+            bingoTitle: 'Start a new Bingo Game with {{OPPONENT}}?',
+            bingoSubtitle: 'This will delete all your current progress in the Bingo Game with {{OPPONENT}}.',
+            start: 'Start New Game',
+            cancel: 'Cancel',
+        },
+
         battle: {
             title: 'Battle',
             description:

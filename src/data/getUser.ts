@@ -22,6 +22,7 @@ export const getUser = async ({ convex }: Props) => {
     if (parsedUser.data) {
         user = await convex.convexClient.mutation(api.username.create, parsedUser.data)
         if (!user) localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}_USER`)
+        else await convex.convexClient.mutation(api.username.registerPresence, { userId: user._id })
     }
 
     return user

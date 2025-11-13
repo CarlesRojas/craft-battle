@@ -58,18 +58,10 @@ export const create = mutation({
                     .withIndex('game', q => q.eq('gameId', existingGame._id))
                     .collect()
 
-                const existingGameWords = (
-                    await Promise.all([
-                        ctx.db
-                            .query('word')
-                            .withIndex('player', q => q.eq('gameId', existingGame._id).eq('playerId', args.player1Id))
-                            .collect(),
-                        ctx.db
-                            .query('word')
-                            .withIndex('player', q => q.eq('gameId', existingGame._id).eq('playerId', args.player2Id))
-                            .collect(),
-                    ])
-                ).flat()
+                const existingGameWords = await ctx.db
+                    .query('word')
+                    .withIndex('game', q => q.eq('gameId', existingGame._id))
+                    .collect()
 
                 const existingGameWordInstances = (
                     await Promise.all(
@@ -82,13 +74,11 @@ export const create = mutation({
                     )
                 ).flat()
 
-                await Promise.all(existingObjectives.map(async objective => await ctx.db.delete(objective._id)))
-
-                await Promise.all(existingGameWordInstances.map(async instance => await ctx.db.delete(instance._id)))
-
-                await Promise.all(existingGameWords.map(async word => await ctx.db.delete(word._id)))
-
-                await ctx.db.delete(existingGame._id)
+                await Promise.all(
+                    [...existingObjectives, ...existingGameWordInstances, ...existingGameWords, existingGame].map(
+                        async elem => await ctx.db.delete(elem._id),
+                    ),
+                )
             }
         }
 

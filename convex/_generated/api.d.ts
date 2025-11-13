@@ -11,6 +11,7 @@
 import type * as bingo from "../bingo.js";
 import type * as classic from "../classic.js";
 import type * as combination from "../combination.js";
+import type * as crons from "../crons.js";
 import type * as instance from "../instance.js";
 import type * as inviteBingo from "../inviteBingo.js";
 import type * as searchingOpponent from "../searchingOpponent.js";
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   bingo: typeof bingo;
   classic: typeof classic;
   combination: typeof combination;
+  crons: typeof crons;
   instance: typeof instance;
   inviteBingo: typeof inviteBingo;
   searchingOpponent: typeof searchingOpponent;

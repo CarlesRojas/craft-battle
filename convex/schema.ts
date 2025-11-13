@@ -9,9 +9,11 @@ export default defineSchema({
         username: v.string(),
         normalizedUsername: v.string(),
         key: v.string(),
+        lastLogin: v.number(),
     })
         .index('username', ['normalizedUsername'])
-        .searchIndex('user', { searchField: 'normalizedUsername' }),
+        .searchIndex('user', { searchField: 'normalizedUsername' })
+        .index('lastLogin', ['lastLogin']),
 
     // WORD
     // ##############################################################
@@ -24,7 +26,8 @@ export default defineSchema({
         playerId: v.id('user'),
     })
         .index('player', ['gameId', 'playerId'])
-        .index('playerWord', ['text', 'playerId']),
+        .index('playerWord', ['text', 'playerId'])
+        .index('game', ['gameId']),
 
     instance: defineTable({
         wordId: v.id('word'),

@@ -22,7 +22,7 @@ export const create = mutation({
         if (existingGame) {
             const existingGameWords = await ctx.db
                 .query('word')
-                .withIndex('player', q => q.eq('gameId', existingGame._id).eq('playerId', args.playerId))
+                .withIndex('game', q => q.eq('gameId', existingGame._id))
                 .collect()
 
             const existingGameWordInstances = (
@@ -36,11 +36,11 @@ export const create = mutation({
                 )
             ).flat()
 
-            await Promise.all(existingGameWordInstances.map(async instance => await ctx.db.delete(instance._id)))
-
-            await Promise.all(existingGameWords.map(async word => await ctx.db.delete(word._id)))
-
-            await ctx.db.delete(existingGame._id)
+            await Promise.all(
+                [...existingGameWordInstances, ...existingGameWords, existingGame].map(
+                    async elem => await ctx.db.delete(elem._id),
+                ),
+            )
         }
 
         const gameId = await ctx.db.insert('classic', args)

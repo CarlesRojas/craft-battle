@@ -104,8 +104,7 @@ const ListWord = ({ word, canvasArea, scrollArea, setDraggingOverCanvas, onCombi
                         play(Sound.BUBBLE)
                         const { isNew, word: combinedWord } = await combine(overlappingInstance, newInstance)
                         const isObjective = await onCombine(combinedWord)
-                        if (isObjective)
-                            play(Sound.PING) // TODO add a better sound
+                        if (isObjective) play(Sound.SUCCESS)
                         else if (isNew) play(Sound.PING)
                     } else addInstance(newInstance)
                 } else if (canvasArea.current && isDragging.current) play(Sound.CLEAR)

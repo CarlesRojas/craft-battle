@@ -92,8 +92,7 @@ const CanvasWordInstance = ({ instance, canvasArea, isLoading = false, setDraggi
                         play(Sound.BUBBLE)
                         const { isNew, word: combinedWord } = await combine(overlappingInstance, updatedInstance)
                         const isObjective = await onCombine(combinedWord)
-                        if (isObjective)
-                            play(Sound.PING) // TODO add a better sound
+                        if (isObjective) play(Sound.SUCCESS)
                         else if (isNew) play(Sound.PING)
                     } else
                         updateSize({

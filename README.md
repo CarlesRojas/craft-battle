@@ -29,5 +29,3 @@ pnpm serve
 ```bash
 pnpx convex dev
 ```
-
-## Pending Tasks

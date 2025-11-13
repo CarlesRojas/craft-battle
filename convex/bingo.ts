@@ -12,7 +12,7 @@ const DEFAULT_WORDS: Array<Omit<Doc<'word'>, '_id' | '_creationTime' | 'gameId' 
 ]
 
 const DIFFICULTY_DEPTH_LIMITS: Record<BingoDifficulty, [number, number]> = {
-    EASY: [3, 5],
+    EASY: [3, 3],
     MEDIUM: [6, 8],
     HARD: [9, 11],
 }

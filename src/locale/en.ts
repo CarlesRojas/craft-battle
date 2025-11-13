@@ -50,6 +50,7 @@ export const en: LanguageObject = {
     bingo: {
         findMatch: 'Find a match',
         findRandomOpponent: 'Find a random opponent',
+        waitingForOpponent: 'Finding opponent...',
         searchFriend: 'Search for friends',
         searchPlaceholder: 'Enter username',
         searchOpponent: 'Search',

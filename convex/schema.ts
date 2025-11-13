@@ -61,7 +61,6 @@ export default defineSchema({
     bingo: defineTable({
         player1Id: v.id('user'),
         player2Id: v.id('user'),
-        inviteId: v.id('inviteBingo'),
         difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
         winner: v.optional(v.id('user')),
         player1Entered: v.boolean(),
@@ -86,4 +85,11 @@ export default defineSchema({
         .index('sender', ['senderId'])
         .index('receiver', ['receiverId'])
         .index('users', ['senderId', 'receiverId']),
+
+    searchingOpponent: defineTable({
+        userId: v.id('user'),
+        difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),
+    })
+        .index('difficulty', ['difficulty'])
+        .index('user', ['userId']),
 })

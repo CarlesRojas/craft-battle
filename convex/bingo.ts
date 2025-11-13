@@ -21,7 +21,6 @@ const WORDS_PER_GAME = 5
 
 export const create = mutation({
     args: {
-        inviteId: v.id('inviteBingo'),
         player1Id: v.id('user'),
         player2Id: v.id('user'),
         difficulty: v.union(v.literal('EASY'), v.literal('MEDIUM'), v.literal('HARD')),

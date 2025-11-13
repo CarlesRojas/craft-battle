@@ -40,7 +40,7 @@ function NewBingoPage() {
                         isLoading && 'pointer-events-none opacity-0',
                     )}
                 >
-                    <CreateBingoGame language={language} user={user} />
+                    <CreateBingoGame language={language} user={user} setIsLoading={setIsLoading} />
 
                     <Invites language={language} user={user} setIsLoading={setIsLoading} currentRoute={'/new/bingo'} />
                 </div>

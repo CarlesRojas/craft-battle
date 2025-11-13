@@ -108,7 +108,6 @@ const Invites = ({ language, user, setIsLoading, currentRoute }: Props) => {
                                                 player1Id: invite.senderId,
                                                 player2Id: invite.receiverId,
                                                 difficulty: invite.difficulty,
-                                                inviteId: invite._id,
                                             })
                                         }}
                                         variant="constructive"

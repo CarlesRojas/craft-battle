@@ -13,6 +13,7 @@ import type * as classic from "../classic.js";
 import type * as combination from "../combination.js";
 import type * as instance from "../instance.js";
 import type * as inviteBingo from "../inviteBingo.js";
+import type * as searchingOpponent from "../searchingOpponent.js";
 import type * as username from "../username.js";
 import type * as word from "../word.js";
 
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   combination: typeof combination;
   instance: typeof instance;
   inviteBingo: typeof inviteBingo;
+  searchingOpponent: typeof searchingOpponent;
   username: typeof username;
   word: typeof word;
 }>;

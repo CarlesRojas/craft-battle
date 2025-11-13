@@ -60,6 +60,7 @@ export const LanguageObjectSchema = z.object({
     bingo: z.object({
         findMatch: z.string(),
         findRandomOpponent: z.string(),
+        waitingForOpponent: z.string(),
         searchFriend: z.string(),
         searchPlaceholder: z.string(),
         searchOpponent: z.string(),
